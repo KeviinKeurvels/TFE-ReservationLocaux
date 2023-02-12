@@ -11,6 +11,8 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { homeOutline, accessibilityOutline} from 'ionicons/icons';
+
+/*pages*/
 import Room from './pages/Room';
 import Schedule from './pages/Schedule';
 
