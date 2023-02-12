@@ -1,12 +1,15 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonItem } from '@ionic/react';
 import { IonDatetime, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/react';
-import { useState } from 'react';
 
 import './Schedule.css';
 
 const Schedule: React.FC = () => {
+  let currentYear= new Date().getFullYear();
 
-  const [date, setDate] = useState(new Date());
+  function getInformationFromADate(date : any){
+    console.log(date);
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -17,7 +20,13 @@ const Schedule: React.FC = () => {
       <IonContent fullscreen>
         <h1 id="title_schedule">Choisissez un jour</h1>
         <IonItem>
-          <IonDatetime id="calendar" presentation="date"></IonDatetime>
+        <IonDatetime
+        presentation="date"
+        min={String(currentYear-1)}
+        max={String(currentYear+3)}
+        onIonChange={(e)=>getInformationFromADate(e.target.value)}
+      >
+      </IonDatetime>
         </IonItem>
 
         <h1 id="title_schedule">Réservations</h1>

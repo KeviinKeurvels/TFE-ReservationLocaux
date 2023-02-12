@@ -5,6 +5,7 @@ import './Room.css';
 
 const Room: React.FC = () => {
   const history = useHistory();
+  
   function redirectToRoom(){
     history.push("/schedule");
   }
