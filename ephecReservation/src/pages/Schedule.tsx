@@ -7,7 +7,14 @@ const Schedule: React.FC = () => {
   let currentYear= new Date().getFullYear();
 
   function getInformationFromADate(date : any){
-    console.log(date);
+    //si la date est bien du bon format et bon compris dans la range d'année
+    if([currentYear-1, currentYear, currentYear+1,currentYear+2,currentYear+3].includes(new Date(date).getFullYear())){
+      console.log(new Date(date));
+    }
+    else{//si mauvaise date
+      return -1;
+    }
+    
   }
 
   return (
@@ -30,6 +37,7 @@ const Schedule: React.FC = () => {
         </IonItem>
 
         <h1 id="title_schedule">Réservations</h1>
+        
         <IonCard color="warning">
           <IonCardHeader>
             <IonCardTitle>Arnaud Dewulf</IonCardTitle>
