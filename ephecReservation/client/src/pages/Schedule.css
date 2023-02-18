@@ -1,0 +1,14 @@
+#title_schedule{
+              margin-top: 20px;
+              margin-left: 10px;
+}
+
+#calendar{
+              margin-bottom: 10px;
+}
+
+ion-card-header {
+              display: flex;
+              flex-flow: column-reverse;
+            }
+
