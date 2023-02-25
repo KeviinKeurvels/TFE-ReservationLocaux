@@ -13,8 +13,9 @@ import { IonReactRouter } from '@ionic/react-router';
 import { homeOutline, accessibilityOutline} from 'ionicons/icons';
 
 /*pages*/
-import Room from './pages/Room';
-import Schedule from './pages/Schedule';
+import Room from './pages/Room/Room';
+import Schedule from './pages/Schedule/Schedule';
+import Home from './pages/Home/Home';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -48,8 +49,11 @@ const App: React.FC = () => (
           <Route exact path="/schedule">
             <Schedule />
           </Route>
+          <Route exact path="/home">
+            <Home />
+          </Route>
           <Route exact path="/">
-            <Redirect to="/room" />
+            <Redirect to="/home" />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
