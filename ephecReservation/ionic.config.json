@@ -1,7 +1,0 @@
-{
-  "name": "ephecReservation",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react"
-}

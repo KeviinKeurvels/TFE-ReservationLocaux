@@ -1,10 +1,11 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import './Room.css';
 
 const Room: React.FC = () => {
   const history = useHistory();
+  
   function redirectToRoom(){
     history.push("/schedule");
   }
@@ -12,9 +13,9 @@ const Room: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader className='topBar'>
+      <IonHeader>
         <IonToolbar id="top_bar">
-          <IonTitle>EPHEC Reservation</IonTitle>
+        <IonTitle>Locaux</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
