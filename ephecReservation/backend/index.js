@@ -41,7 +41,7 @@ app.get("/reservations/byRoomAndDay", (req,res)=>{
               +"inner join ephecreservation.room_reservation on reservation.idRe=room_reservation.idRe "
               +"inner join ephecreservation.room on room.idRo=room_reservation.idRo "
 
-              +"WHERE day="+day+" AND room_reservation.idRo="+room+" ORDER BY hourBegin";
+              +"WHERE day="+day+" AND room.name="+room+" ORDER BY hourBegin";
 
               db.query(query,(err,data)=>{
                             if(err) return res.json(err)
