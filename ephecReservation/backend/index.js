@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors())
 
 app.listen(8800, ()=>{
-              console.log('Server ready')
+              console.log('Server ready on port 8800')
 })
 
 
@@ -31,11 +31,18 @@ app.get("/reservations", (req,res)=>{
 })
 
 //to get all reservations for a day
-app.get("/reservations/byDay", (req,res)=>{
+app.get("/reservations/byRoomAndDay", (req,res)=>{
               let day = req.query.day;
-              const query = "SELECT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin," 
-              +" TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, idRe, title  FROM "
-              +"reservation WHERE day="+day+" ORDER BY hourBegin";
+              let room = req.query.room;
+              const query = "SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin," 
+              +" TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title "
+
+              +"FROM ephecreservation.reservation  "
+              +"inner join ephecreservation.room_reservation on reservation.idRe=room_reservation.idRe "
+              +"inner join ephecreservation.room on room.idRo=room_reservation.idRo "
+
+              +"WHERE day="+day+" AND room_reservation.idRo="+room+" ORDER BY hourBegin";
+
               db.query(query,(err,data)=>{
                             if(err) return res.json(err)
                             return res.json(data)
