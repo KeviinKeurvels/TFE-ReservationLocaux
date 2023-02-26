@@ -10,12 +10,13 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { homeOutline, accessibilityOutline} from 'ionicons/icons';
+import { homeOutline, accessibilityOutline, logOutOutline} from 'ionicons/icons';
 
 /*pages*/
 import Room from './pages/Room/Room';
 import Schedule from './pages/Schedule/Schedule';
 import Home from './pages/Home/Home';
+import SignOut from './pages/SignOut/SignOut';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -46,11 +47,14 @@ const App: React.FC = () => (
           <Route exact path="/room">
             <Room />
           </Route>
-          <Route exact path="/schedule">
+          <Route exact path="/schedule/:idRoom">
             <Schedule />
           </Route>
           <Route exact path="/home">
             <Home />
+          </Route>
+          <Route exact path="/signOut">
+            <SignOut />
           </Route>
           <Route exact path="/">
             <Redirect to="/home" />
@@ -61,14 +65,22 @@ const App: React.FC = () => (
             <IonIcon icon={homeOutline} />
             <IonLabel>Locaux</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="schedule" href="/schedule">
-            <IonIcon icon={accessibilityOutline} />
-            <IonLabel>Perso</IonLabel>
+
+          <IonTabButton tab="signOut" href="/signOut">
+            <IonIcon icon={logOutOutline} />
+            <IonLabel>Déconnexion</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>
   </IonApp>
+  
 );
 
 export default App;
+
+/*          <IonTabButton tab="home" href="/">
+            <IonIcon icon={accessibilityOutline} />
+            <IonLabel>Perso</IonLabel>
+          </IonTabButton>
+          */
