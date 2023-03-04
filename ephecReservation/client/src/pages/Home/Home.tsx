@@ -8,7 +8,7 @@ import config from "../../config.json";
 const Home: React.FC = () => {
 
   const history = useHistory();
-  function redirectToRoom() {
+  function redirectToRoom(){
     history.push("/room");
   }
 
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonButton className='button_connexion' onClick={() => redirectToRoom()}>Connexion</IonButton>
+      <IonButton className='button_connexion' onClick={()=>redirectToRoom()}>Connexion</IonButton>
 
 
       </IonContent>
