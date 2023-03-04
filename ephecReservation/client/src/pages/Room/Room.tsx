@@ -1,20 +1,19 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonCardContent, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-
-//importation des autres fichiers
 import './Room.css';
-import CardRoom from "../../components/CardRoom/CardRoom"
 import config from "../../config.json"
 
 const Room: React.FC = () => {
-  //pour avoir tout les locaux
+  //pour avoir les reservations d'un jour
+  const history = useHistory();
   const [rooms, setRooms] = useState([]);
 
-
+  /*
+  *   Récupère les informations de tout les locaux
+*/
   const fetchRooms = async () => {
-    /*
-    *   Récupère les informations de tout les locaux
-    */
     try {
       fetch(config.API_URL + "/rooms")
         .then((res) => res.json())
@@ -33,7 +32,9 @@ const Room: React.FC = () => {
   }, []);
 
 
-
+  function redirectToSchedule(idRoom : number) {
+    history.push("/schedule/"+idRoom);
+  }
 
 
   return (
@@ -44,9 +45,16 @@ const Room: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
-        <CardRoom Rooms={rooms} />
-
+        {rooms.map(room => (
+          <IonCard onClick={() => redirectToSchedule(room["idRo"])} key={room["idRo"]}>
+            <IonCardHeader>
+              <IonCardTitle>{room["name"]}</IonCardTitle>
+            </IonCardHeader>
+            <IonCardContent>
+              {room["description"]}
+            </IonCardContent>
+          </IonCard>
+        ))}
 
 
       </IonContent>
