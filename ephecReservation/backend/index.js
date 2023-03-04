@@ -52,12 +52,3 @@ app.get("/reservation", (req,res)=>{
               })
 })
 
-
-//to get information about all rooms
-app.get("/rooms", (req,res)=>{
-              const query = "SELECT * FROM room";
-              db.query(query,(err,data)=>{
-                            if(err) return res.json(err)
-                            return res.json(data)
-              })
-})
