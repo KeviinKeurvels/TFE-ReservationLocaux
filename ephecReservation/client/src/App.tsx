@@ -47,7 +47,7 @@ const App: React.FC = () => (
           <Route exact path="/room">
             <Room />
           </Route>
-          <Route exact path="/schedule/:nameRoom">
+          <Route exact path="/schedule/:idRoom">
             <Schedule />
           </Route>
           <Route exact path="/home">

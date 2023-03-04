@@ -1,16 +1,12 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonItem, IonDatetime } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonItem } from '@ionic/react';
+import { IonDatetime, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import React from 'react';
-
-//importation des autres fichiers
 import './Schedule.css';
-import CardReservation from '../../components/CardSchedule/CardReservation';
+
 import config from "../../config.json";
 
-
 const Schedule: React.FC = () => {  
-  //récupération des paramètres
   let  params : any; 
   params = useParams();
   
@@ -23,13 +19,12 @@ const Schedule: React.FC = () => {
   const [reservations, setReservations] = useState([]);
   const [dateChosen, setDateChosen] = useState(formatDate(currentDate));
 
-
+  /*
+  *   Récupère les informations d'une réservation pour un jour
+*/
   const fetchOneReservation = async () => {
-      /*
-      *   Récupère les informations d'une réservation pour un jour
-      */
     try {
-      fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='"+ params["nameRoom"]+"'")
+      fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room="+ params["idRoom"])
         .then((res) => res.json())
         .then((res) => {
           setReservations(res);
@@ -60,9 +55,8 @@ const Schedule: React.FC = () => {
 
   }
 
-  
+  //pour avoir la date dans le bon format pour la DB
   function formatDate(date: any) {
-    //pour avoir la date dans le bon format pour la DB
     var d = new Date(date),
       month = '' + (d.getMonth() + 1),
       day = '' + d.getDate(),
@@ -77,14 +71,11 @@ const Schedule: React.FC = () => {
   }
 
 
-
-
-
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar id="top_bar">
-          <IonTitle>Horaire {params["nameRoom"]}</IonTitle>
+          <IonTitle>Horaire </IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -101,7 +92,22 @@ const Schedule: React.FC = () => {
         </IonItem>
 
         <h1 id="title_schedule">Réservations</h1>
-        <CardReservation Reservations={reservations} />
+
+        {reservations.map(reservation => (
+          <IonCard color="warning" key={reservation["idRe"]}>
+            <IonCardHeader>
+              <IonCardTitle>Arnaud Dewulf</IonCardTitle>
+              <IonCardSubtitle>{reservation["hourBegin"]} - {reservation["hourEnd"]}</IonCardSubtitle>
+            </IonCardHeader>
+
+            <IonCardContent>
+              {reservation["title"]}
+            </IonCardContent>
+          </IonCard>
+        ))
+
+        }
+
 
       </IonContent>
     </IonPage>

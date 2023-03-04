@@ -1,9 +1,16 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
-
-//importation des pages
+import { IonDatetime, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 import './Home.css';
 
+import config from "../../config.json";
+
 const Home: React.FC = () => {
+
+  const history = useHistory();
+  function redirectToRoom() {
+    history.push("/room");
+  }
 
   return (
     <IonPage>
@@ -13,7 +20,7 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonButton className='button_connexion' routerLink="/room">Connexion</IonButton>
+        <IonButton className='button_connexion' onClick={() => redirectToRoom()}>Connexion</IonButton>
 
 
       </IonContent>
