@@ -33,9 +33,7 @@ app.get("/reservations", (req,res)=>{
 //to get all reservations for a day
 app.get("/reservations/byDay", (req,res)=>{
               let day = req.query.day;
-              const query = "SELECT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin," 
-              +" TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, idRe, title  FROM "
-              +"reservation WHERE day="+day+" ORDER BY hourBegin";
+              const query = "SELECT * FROM reservation WHERE day="+day;
               db.query(query,(err,data)=>{
                             if(err) return res.json(err)
                             return res.json(data)
