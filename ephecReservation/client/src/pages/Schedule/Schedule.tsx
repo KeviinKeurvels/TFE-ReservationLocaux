@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonItem, IonDatetime } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonItem, IonDatetime, IonList, IonGrid, IonVirtualScroll } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import React from 'react';
@@ -9,11 +9,11 @@ import CardReservation from '../../components/CardSchedule/CardReservation';
 import config from "../../config.json";
 
 
-const Schedule: React.FC = () => {  
+const Schedule: React.FC = () => {
   //récupération des paramètres
-  let  params : any; 
+  let params: any;
   params = useParams();
-  
+
   //le jour d'aujourd'hui
   let currentDate = new Date();
   //l'année actuelle
@@ -25,19 +25,15 @@ const Schedule: React.FC = () => {
 
 
   const fetchOneReservation = async () => {
-      /*
-      *   Récupère les informations d'une réservation pour un jour
-      */
-    try {
-      fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='"+ params["nameRoom"]+"'")
+    /*
+    *   Récupère les informations d'une réservation pour un jour
+    */
+      fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["nameRoom"] + "'")
         .then((res) => res.json())
         .then((res) => {
           setReservations(res);
         })
-    }
-    catch (err) {
-      console.log(err);
-    }
+        .catch((err)=>console.log(err))
   }
 
 
@@ -50,7 +46,7 @@ const Schedule: React.FC = () => {
 
   function getInformationFromADate(date: any) {
     //si la date est bien du bon format et bon compris dans la range d'année
-    if ([currentYear - 1, currentYear, currentYear + 1, currentYear + 2, currentYear + 3].includes(new Date(date).getFullYear())) {
+    if ([currentYear, currentYear + 1, currentYear + 2].includes(new Date(date).getFullYear())) {
       let goodFormatDate = formatDate(date);
       setDateChosen(goodFormatDate);
     }
@@ -60,7 +56,7 @@ const Schedule: React.FC = () => {
 
   }
 
-  
+
   function formatDate(date: any) {
     //pour avoir la date dans le bon format pour la DB
     var d = new Date(date),
@@ -93,8 +89,8 @@ const Schedule: React.FC = () => {
           <IonDatetime
             presentation="date"
             value={dateChosen}
-            min={String(currentYear - 1)}
-            max={String(currentYear + 3)}
+            min={String(currentYear)}
+            max={String(currentYear + 2)}
             onIonChange={(e) => getInformationFromADate(e.target.value)}
           >
           </IonDatetime>

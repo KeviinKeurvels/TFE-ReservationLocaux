@@ -1,37 +1,32 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
 
 //importation des autres fichiers
-import './Room.css';
-import CardRoom from "../../components/CardRoom/CardRoom"
+import './Implantation.css';
+import CardImplantation from '../../components/CardImplantation/CardImplantation'
 import config from "../../config.json"
 
-const Room: React.FC = () => {
-    //récupération des paramètres
-    let  params : any; 
-    params = useParams();
-
+const Implantation: React.FC = () => {
   //pour avoir tout les locaux
-  const [rooms, setRooms] = useState([]);
+  const [implantations, setImplantations] = useState([]);
 
 
-  const fetchRooms = async () => {
+  const fetchImplantations = async () => {
     /*
     *   Récupère les informations de tout les locaux
     */
-      fetch(config.API_URL + "/rooms/byImplantation?implantation='"+ params["nameImplantation"]+"'")
+
+      fetch(config.API_URL + "/implantations")
         .then((res) => res.json())
         .then((res) => {
-          setRooms(res);
+          setImplantations(res);
         })
         .catch((err)=>console.log(err))
-
   }
 
   useEffect(() => {
 
-    fetchRooms()
+    fetchImplantations()
   }, []);
 
 
@@ -42,12 +37,12 @@ const Room: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar id="top_bar">
-          <IonTitle>Locaux</IonTitle>
+          <IonTitle>Implantations</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
 
-        <CardRoom Rooms={rooms} />
+        <CardImplantation Implantations={implantations} />
 
 
 
@@ -56,4 +51,4 @@ const Room: React.FC = () => {
   );
 };
 
-export default Room;
+export default Implantation;
