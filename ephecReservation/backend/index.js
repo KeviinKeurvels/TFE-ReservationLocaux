@@ -21,6 +21,8 @@ app.listen(8800, ()=>{
 })
 
 
+///////////////////////////////////////// RESERVATION
+
 //to get all reservations
 app.get("/reservations", (req,res)=>{
               const query = "SELECT * FROM reservation"
@@ -34,14 +36,16 @@ app.get("/reservations", (req,res)=>{
 app.get("/reservations/byRoomAndDay", (req,res)=>{
               let day = req.query.day;
               let room = req.query.room;
-              const query = "SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin," 
-              +" TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title "
+              const query = `
+              SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
+              TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title 
 
-              +"FROM ephecreservation.reservation  "
-              +"inner join ephecreservation.room_reservation on reservation.idRe=room_reservation.idRe "
-              +"inner join ephecreservation.room on room.idRo=room_reservation.idRo "
+              FROM ephecreservation.reservation  
+              inner join ephecreservation.room_reservation on reservation.idRe=room_reservation.idRe 
+              inner join ephecreservation.room on room.idRo=room_reservation.idRo 
 
-              +"WHERE day="+day+" AND room.name="+room+" ORDER BY hourBegin";
+              WHERE day=${day} AND room.name=${room} ORDER BY hourBegin
+              `;
 
               db.query(query,(err,data)=>{
                             if(err) return res.json(err)
@@ -60,9 +64,31 @@ app.get("/reservation", (req,res)=>{
 })
 
 
+
+///////////////////////////////////////// ROOM
 //to get information about all rooms
-app.get("/rooms", (req,res)=>{
-              const query = "SELECT * FROM room";
+app.get("/rooms/byImplantation", (req,res)=>{
+              let implantation = req.query.implantation;
+              const query = `
+              SELECT DISTINCT room.idRo, room.name, description
+
+              FROM ephecreservation.implantation  
+              inner join ephecreservation.room_implantation on implantation.idIm=room_implantation.idIm 
+              inner join ephecreservation.room on room.idRo=room_implantation.idRo 
+              WHERE implantation.name=${implantation}
+
+              `;
+              db.query(query,(err,data)=>{
+                            if(err) return res.json(err)
+                            return res.json(data)
+              })
+})
+
+
+///////////////////////////////////////// IMPLANTATION
+//to get information about all implantations
+app.get("/implantations", (req,res)=>{
+              const query = "SELECT * FROM implantation";
               db.query(query,(err,data)=>{
                             if(err) return res.json(err)
                             return res.json(data)

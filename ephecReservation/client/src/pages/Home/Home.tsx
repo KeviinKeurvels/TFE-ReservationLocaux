@@ -13,7 +13,7 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonButton className='button_connexion' routerLink="/room">Connexion</IonButton>
+        <IonButton className='button_connexion' routerLink="/implantation">Connexion</IonButton>
 
 
       </IonContent>

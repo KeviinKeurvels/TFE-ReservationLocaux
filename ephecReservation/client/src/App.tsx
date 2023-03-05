@@ -13,9 +13,10 @@ import { IonReactRouter } from '@ionic/react-router';
 import { homeOutline, accessibilityOutline, logOutOutline} from 'ionicons/icons';
 
 /*pages*/
+import Home from './pages/Home/Home';
+import Implantation from './pages/Implantation/Implantation';
 import Room from './pages/Room/Room';
 import Schedule from './pages/Schedule/Schedule';
-import Home from './pages/Home/Home';
 import SignOut from './pages/SignOut/SignOut';
 
 /* Core CSS required for Ionic components to work properly */
@@ -44,14 +45,17 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/room">
+        <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path="/implantation">
+            <Implantation />
+          </Route>          
+          <Route exact path="/room/:nameImplantation">
             <Room />
           </Route>
           <Route exact path="/schedule/:nameRoom">
             <Schedule />
-          </Route>
-          <Route exact path="/home">
-            <Home />
           </Route>
           <Route exact path="/signOut">
             <SignOut />
@@ -61,9 +65,9 @@ const App: React.FC = () => (
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          <IonTabButton tab="room" href="/room">
+          <IonTabButton tab="implantation" href="/implantation">
             <IonIcon icon={homeOutline} />
-            <IonLabel>Locaux</IonLabel>
+            <IonLabel>Implantation</IonLabel>
           </IonTabButton>
 
           <IonTabButton tab="signOut" href="/signOut">
