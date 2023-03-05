@@ -28,12 +28,12 @@ const Schedule: React.FC = () => {
     /*
     *   Récupère les informations d'une réservation pour un jour
     */
-      fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["nameRoom"] + "'")
-        .then((res) => res.json())
-        .then((res) => {
-          setReservations(res);
-        })
-        .catch((err)=>console.log(err))
+    fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["nameRoom"] + "'")
+      .then((res) => res.json())
+      .then((res) => {
+        setReservations(res);
+      })
+      .catch((err) => console.log(err))
   }
 
 
@@ -95,10 +95,9 @@ const Schedule: React.FC = () => {
           >
           </IonDatetime>
         </IonItem>
-
-        <h1 id="title_schedule">Réservations</h1>
-        <CardReservation Reservations={reservations} />
-
+        <IonItem>
+          <CardReservation Reservations={reservations} />
+        </IonItem>
       </IonContent>
     </IonPage>
   );
