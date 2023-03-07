@@ -38,11 +38,12 @@ app.get("/reservations/byRoomAndDay", (req,res)=>{
               let room = req.query.room;
               const query = `
               SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
-              TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title 
+              TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName 
 
-              FROM ephecreservation.reservation  
-              inner join ephecreservation.room_reservation on reservation.idRe=room_reservation.idRe 
-              inner join ephecreservation.room on room.idRo=room_reservation.idRo 
+              FROM teacher  
+              inner join reservation on teacher.idTe=reservation.idTe 
+              inner join room_reservation on reservation.idRe=room_reservation.idRe 
+              inner join room on room.idRo=room_reservation.idRo 
 
               WHERE day=${day} AND room.name=${room} ORDER BY hourBegin
               `;

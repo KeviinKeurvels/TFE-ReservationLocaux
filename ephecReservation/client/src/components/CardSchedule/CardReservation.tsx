@@ -15,7 +15,7 @@ const CardReservation = ({ Reservations }: CardReservationProps) => {
       {Reservations.length != 0 ? Reservations.map((reservation: any) => (
         <IonCard color="warning" key={reservation["idRe"]}>
           <IonCardHeader>
-            <IonCardTitle>Arnaud Dewulf</IonCardTitle>
+            <IonCardTitle>{reservation["teacherName"]}</IonCardTitle>
             <IonCardSubtitle>{reservation["hourBegin"]} - {reservation["hourEnd"]}</IonCardSubtitle>
           </IonCardHeader>
 
