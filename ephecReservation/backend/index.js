@@ -42,8 +42,7 @@ app.get("/reservations/byRoomAndDay", (req,res)=>{
 
               FROM teacher  
               inner join reservation on teacher.idTe=reservation.idTe 
-              inner join room_reservation on reservation.idRe=room_reservation.idRe 
-              inner join room on room.idRo=room_reservation.idRo 
+              inner join room on room.idRo=reservation.idRo 
 
               WHERE day=${day} AND room.name=${room} ORDER BY hourBegin
               `;
@@ -55,12 +54,25 @@ app.get("/reservations/byRoomAndDay", (req,res)=>{
 })
 
 //to get information about one reservations
-app.get("/reservation", (req,res)=>{
+app.get("/reservations/getOne", (req,res)=>{
               let id = req.query.id;
               const query = "SELECT * FROM reservation WHERE idRe="+id;
               db.query(query,(err,data)=>{
                             if(err) return res.json(err)
                             return res.json(data)
+              })
+})
+
+
+app.post("/reservations", (req,res)=>{
+              const query= `
+              INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo) 
+              VALUES("${req.body.title}",'${req.body.day}','${req.body.hourBegin}','${req.body.hourEnd}','${req.body.idTe}',(SELECT idRo FROM ROOM WHERE name='${req.body.nameRoom}'))
+              `;
+
+              db.query(query, (err,data)=>{
+                            if(err) return res.json(err)
+                            return res.json("Reservation added successfully.")
               })
 })
 
@@ -74,8 +86,7 @@ app.get("/rooms/byImplantation", (req,res)=>{
               SELECT DISTINCT room.idRo, room.name, description
 
               FROM ephecreservation.implantation  
-              inner join ephecreservation.room_implantation on implantation.idIm=room_implantation.idIm 
-              inner join ephecreservation.room on room.idRo=room_implantation.idRo 
+              inner join ephecreservation.room on room.idIm=implantation.idIm 
               WHERE implantation.name=${implantation}
 
               `;

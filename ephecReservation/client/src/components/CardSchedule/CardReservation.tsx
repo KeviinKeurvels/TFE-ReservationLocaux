@@ -11,7 +11,6 @@ const CardReservation = ({ Reservations }: CardReservationProps) => {
 
   return (
     <div className='content_reservation'>
-      <h1 id="title_schedule">Réservations</h1>
       {Reservations.length != 0 ? Reservations.map((reservation: any) => (
         <IonCard color="warning" key={reservation["idRe"]}>
           <IonCardHeader>

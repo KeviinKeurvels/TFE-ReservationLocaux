@@ -1,14 +1,81 @@
-#title_schedule{
-              margin-top: 20px;
-              margin-left: 10px;
+#title_schedule {
+  margin-top: 20px;
+  margin-left: 10px;
 }
 
-#calendar{
-              margin-bottom: 10px;
+#calendar {
+  margin-bottom: 10px;
 }
+
+.add_button {
+  margin-left: 25%;
+  margin-top: 15px;
+}
+
+.hour_end_field{
+    margin-left:10%!important;
+}
+
+#success_response {
+  text-align: center;
+  color: rgb(147, 218, 41);
+  font-weight: bolder;
+}
+
+#failed_response {
+  text-align: center;
+  color: red;
+  font-weight: bolder;
+}
+
+#submit_button {
+  padding: 10px 15px;
+  background-color: rgb(49, 130, 250);
+  border: none;
+  color: white;
+  border-radius: 25px;
+
+}
+
+#message_schedule{
+  color: gray;
+  margin-top:1%;
+}
+
+form{
+  margin-top: 50px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+ion-toolbar {
+  color: #fffcfc;
+}
+
+ion-modal{
+  max-height: 100%;
+}
+
 
 ion-card-header {
-              display: flex;
-              flex-flow: column-reverse;
-            }
+  display: flex;
+  flex-flow: column-reverse;
+}
 
+ion-modal#example-modal {
+  --height: 50%;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+ion-modal#example-modal::part(backdrop) {
+  background: rgba(209, 213, 219);
+  opacity: 1;
+}
+
+ion-modal#example-modal ion-toolbar {
+  --background: rgb(14 116 144);
+  --color: white;
+}
