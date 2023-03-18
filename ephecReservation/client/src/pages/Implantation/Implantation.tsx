@@ -9,24 +9,31 @@ import config from "../../config.json"
 const Implantation: React.FC = () => {
   //pour avoir tout les locaux
   const [implantations, setImplantations] = useState([]);
+  //pour voir quand il va fetch les données
+  const [isLoading, setIsLoading] = useState(false);
 
-
-  const fetchImplantations = async () => {
-    /*
-    *   Récupère les informations de tout les locaux
-    */
-
-      fetch(config.API_URL + "/implantations")
-        .then((res) => res.json())
-        .then((res) => {
-          setImplantations(res);
-        })
-        .catch((err)=>console.log(err))
-  }
 
   useEffect(() => {
 
-    fetchImplantations()
+        /*
+    *   Récupère les informations de toutes les implantations
+    */
+        const controller = new AbortController();
+        const signal = controller.signal;
+        setIsLoading(true);
+        fetch(config.API_URL + "/implantations", {signal})
+          .then((res) => res.json())
+          .then((res) => {
+            setImplantations(res);
+            setIsLoading(false);
+          })
+          .catch((err) => {
+            if(err.name !== "AbortError"){
+              console.log(err)
+            }
+          });
+    
+          return () => controller.abort();
   }, []);
 
 
@@ -41,7 +48,13 @@ const Implantation: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
+        {/* This is the modal that is hidden by default */}
+        <div style={{ display: isLoading ? 'flex' : 'none' }} className='modal'>
+          <div className='modal-content'>
+            <div className='loader'></div>
+            <div className='modal-text'>Chargement en cours...</div>
+          </div>
+        </div>
         <CardImplantation Implantations={implantations} />
 
 

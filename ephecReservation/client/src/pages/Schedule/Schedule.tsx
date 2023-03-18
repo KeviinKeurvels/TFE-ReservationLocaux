@@ -29,6 +29,7 @@ const Schedule: React.FC = () => {
   let params: any;
   params = useParams();
 
+  // pour voir quand une réservation a été ajoutée
   let reservationAdded = false;
 
   //le jour d'aujourd'hui
@@ -38,6 +39,8 @@ const Schedule: React.FC = () => {
   //pour avoir les reservations d'un jour
   const [reservations, setReservations] = useState([]);
   const [dateChosen, setDateChosen] = useState(formatDate(currentDate));
+  //pour voir quand il va fetch les données
+  const [isLoading, setIsLoading] = useState(false);
 
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
@@ -53,14 +56,16 @@ const Schedule: React.FC = () => {
 
 
 
-  const fetchOneReservation = async () => {
+  const fetchAllReservationForOneDay = async () => {
     /*
     *   Récupère les informations d'une réservation pour un jour
     */
+    setIsLoading(true);
     fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["nameRoom"] + "'")
       .then((res) => res.json())
       .then((res) => {
         setReservations(res);
+        setIsLoading(false);
       })
       .catch((err) => console.log(err))
   }
@@ -69,7 +74,7 @@ const Schedule: React.FC = () => {
   //le useEffect de dateChosen qui fait que quand on change de date, il va re fetch
   useEffect(() => {
 
-    fetchOneReservation()
+    fetchAllReservationForOneDay()
   }, [dateChosen]);
 
 
@@ -125,11 +130,9 @@ const Schedule: React.FC = () => {
 
   function allFieldsChecked(form: any) {
     //cette fonction va regarder si tous les champs sont conformes
-      //pour la box qui va afficher les messages lors de la réservation
-  let responseBox = document.getElementById("callbackMessage");
-  //pour la box qui où il y a le formulaire de réservation
-  let formReservation=document.getElementById("formReservation");
-    
+    //pour la box qui va afficher les messages lors de la réservation
+    let responseBox = document.getElementById("callbackMessage");
+
     //variable qui va contenir le message d'erreur
     let problem = undefined;
     if (form.day.value < currentYear || form.day.value > currentYear + 2) {
@@ -166,11 +169,23 @@ const Schedule: React.FC = () => {
   }
 
   function handleSubmit(event: any) {
+    //cache le bouton
+    let submitButton = document.getElementById("submit_button");
+    if (submitButton !== undefined && submitButton !== null) {
+      submitButton.style.display = "none";
+    }
+    //ne recharge pas la page
     event.preventDefault();
-      //pour la box qui va afficher les messages lors de la réservation
-  let responseBox = document.getElementById("callbackMessage");
-  //pour la box qui où il y a le formulaire de réservation
-  let formReservation=document.getElementById("formReservation");
+    //pour la box qui va afficher les messages lors de la réservation
+    let responseBox = document.getElementById("callbackMessage");
+    //pour la box qui où il y a le formulaire de réservation
+    let formReservation = document.getElementById("formReservation");
+
+    //pour afficher un message en attendant
+    if (responseBox !== undefined && responseBox !== null) {
+      responseBox.innerHTML = "<p id='waiting_response'>Veuillez patienter, nous traitons votre requête.</p>";
+    }
+
 
     if (allFieldsChecked(event.target)) {
       //si tous les champs respectent bien ce qu'il faut
@@ -194,7 +209,7 @@ const Schedule: React.FC = () => {
           if (res.status === 200) {
             reservationAdded = true;
             if (formReservation !== undefined && formReservation !== null) {
-              formReservation.innerHTML="";
+              formReservation.innerHTML = "";
             }
 
             responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
@@ -216,6 +231,13 @@ const Schedule: React.FC = () => {
           }
         })
     }
+    else{
+      if (submitButton !== undefined && submitButton !== null) {
+        submitButton.style.display = "block";
+      }
+    }
+
+
 
 
   }
@@ -233,6 +255,13 @@ const Schedule: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
+        {/* This is the modal that is hidden by default */}
+        <div style={{ display: isLoading ? 'flex' : 'none' }} className='modal'>
+          <div className='modal-content'>
+            <div className='loader'></div>
+            <div className='modal-text'>Chargement en cours...</div>
+          </div>
+        </div>
         <h1 id="title_schedule">Choisissez un jour</h1>
         <IonItem>
           <IonDatetime
@@ -248,9 +277,10 @@ const Schedule: React.FC = () => {
           <h1 id="title_schedule">Réservations</h1>
           <IonButton fill="outline" id='open-modal' className='add_button'><IonIcon icon={addOutline} />Ajouter</IonButton>
         </IonRow>
+
         <IonModal id="example-modal" ref={modal} trigger="open-modal">
           <IonContent>
-            <IonToolbar color="primary">
+            <IonToolbar color="warning">
               <IonTitle>Réservation {params["nameRoom"]}</IonTitle>
               <IonButtons slot="end">
                 <IonButton color="light" onClick={() => dismiss()}>

@@ -1,4 +1,4 @@
-import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonItem, IonCardSubtitle } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonCardSubtitle, IonButton, IonCol, IonRow } from '@ionic/react';
 
 
 import './CardReservation.css'
@@ -15,11 +15,22 @@ const CardReservation = ({ Reservations }: CardReservationProps) => {
         <IonCard color="warning" key={reservation["idRe"]}>
           <IonCardHeader>
             <IonCardTitle>{reservation["teacherName"]}</IonCardTitle>
-            <IonCardSubtitle>{reservation["hourBegin"]} - {reservation["hourEnd"]}</IonCardSubtitle>
+            <IonCardSubtitle>
+              {reservation["hourBegin"]} - {reservation["hourEnd"]}
+            </IonCardSubtitle>
           </IonCardHeader>
 
           <IonCardContent>
             {reservation["title"]}
+            <IonRow>
+              <IonCol>
+                <IonButton color="success">📝 Modifier</IonButton>
+              </IonCol>
+              <IonCol>
+
+                <IonButton color="danger">❌Supprimer</IonButton>
+              </IonCol>
+            </IonRow>
           </IonCardContent>
         </IonCard>
       ))
