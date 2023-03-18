@@ -28,9 +28,14 @@
   font-weight: bolder;
 }
 
+#waiting_response{
+  text-align: center;
+  color: gray;
+}
+
 #submit_button {
   padding: 10px 15px;
-  background-color: rgb(49, 130, 250);
+  background-color: rgb(241, 189, 15);
   border: none;
   color: white;
   border-radius: 25px;

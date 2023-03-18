@@ -8,31 +8,34 @@ import CardRoom from "../../components/CardRoom/CardRoom"
 import config from "../../config.json"
 
 const Room: React.FC = () => {
-    //récupération des paramètres
-    let  params : any; 
-    params = useParams();
-
+  //récupération des paramètres
+  const {nameImplantation : implantation} : any = useParams();
+  //pour voir quand il va fetch les données
+  const [isLoading, setIsLoading] = useState(false);
   //pour avoir tout les locaux
   const [rooms, setRooms] = useState([]);
 
-
-  const fetchRooms = async () => {
-    /*
+  useEffect(() => {
+        /*
     *   Récupère les informations de tout les locaux
     */
-      fetch(config.API_URL + "/rooms/byImplantation?implantation='"+ params["nameImplantation"]+"'")
-        .then((res) => res.json())
-        .then((res) => {
-          setRooms(res);
-        })
-        .catch((err)=>console.log(err))
+    const controller = new AbortController();
+    const signal = controller.signal;
+    setIsLoading(true);
+    fetch(`${config.API_URL}/rooms/byImplantation?implantation='${implantation}'`, {signal})
+      .then((res) => res.json())
+      .then((res) => {
+        setRooms(res);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        if(err.name !== "AbortError"){
+          console.log(err)
+        }
+      });
 
-  }
-
-  useEffect(() => {
-
-    fetchRooms()
-  }, []);
+      return () => controller.abort();
+  }, [implantation]);
 
 
 
@@ -46,7 +49,12 @@ const Room: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
+        <div style={{ display: isLoading ? 'flex' : 'none' }} className='modal'>
+          <div className='modal-content'>
+            <div className='loader'></div>
+            <div className='modal-text'>Chargement en cours...</div>
+          </div>
+        </div>
         <CardRoom Rooms={rooms} />
 
 
