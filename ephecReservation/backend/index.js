@@ -38,7 +38,7 @@ app.get("/reservations/byRoomAndDay", (req,res)=>{
               let room = req.query.room;
               const query = `
               SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
-              TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName 
+              TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName, day 
 
               FROM teacher  
               inner join reservation on teacher.idTe=reservation.idTe 
@@ -63,7 +63,7 @@ app.get("/reservations/getOne", (req,res)=>{
               })
 })
 
-
+// to add a new reservation
 app.post("/reservations", (req,res)=>{
               const query= `
               INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo) 
@@ -75,6 +75,33 @@ app.post("/reservations", (req,res)=>{
                             return res.json("Reservation added successfully.")
               })
 })
+
+//to update a reservation
+app.put("/reservations/updateOne", (req,res)=>{
+              const query= `
+              UPDATE reservation
+              SET title="${req.body.title}",day='${req.body.day}',hourBegin='${req.body.hourBegin}',hourEnd='${req.body.hourEnd}'
+              WHERE idRe = ${req.body.idRe}
+              `;
+
+              db.query(query, (err,data)=>{
+                            if(err) return res.json(err)
+                            return res.json("Reservation updated successfully.")
+              })
+})
+
+//to delete a reservation
+app.delete("/reservations/deleteOne",  (req,res)=>{
+              const reservationId = req.body.id;
+              const query= `
+              DELETE FROM reservation WHERE idRe = ${reservationId}
+              `;
+
+              db.query(query, (err,data)=>{
+                            if(err) return res.json(err)
+                            return res.json("Reservation has been deleted successfully.")
+              });
+});
 
 
 
