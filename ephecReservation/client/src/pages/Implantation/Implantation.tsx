@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 //importation des autres fichiers
 import './Implantation.css';
 import CardImplantation from '../../components/CardImplantation/CardImplantation'
+import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json"
 
 const Implantation: React.FC = () => {
@@ -48,13 +49,7 @@ const Implantation: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {/* This is the modal that is hidden by default */}
-        <div style={{ display: isLoading ? 'flex' : 'none' }} className='modal'>
-          <div className='modal-content'>
-            <div className='loader'></div>
-            <div className='modal-text'>Chargement en cours...</div>
-          </div>
-        </div>
+      <ModalLoading isLoading={isLoading} />
         <CardImplantation Implantations={implantations} />
 
 

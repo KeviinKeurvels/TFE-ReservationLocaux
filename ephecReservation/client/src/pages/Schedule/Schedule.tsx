@@ -20,7 +20,9 @@ import { useRef } from 'react';
 //importation des autres fichiers
 import './Schedule.css';
 import CardReservation from '../../components/CardSchedule/CardReservation';
+import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
+
 
 
 
@@ -47,7 +49,7 @@ const Schedule: React.FC = () => {
   function dismiss() {
     //va reload la page pour actualiser les réservations
     if (reservationAdded) {
-      window.location.reload();
+      fetchAllReservationForOneDay();
     }
     modal.current?.dismiss();
 
@@ -137,6 +139,9 @@ const Schedule: React.FC = () => {
     let problem = undefined;
     if (form.day.value < currentYear || form.day.value > currentYear + 2) {
       problem = "La date sélectionnée n'est pas bonne";
+    }
+    else if(form.day.value === "" ||form.hourBegin.value === "" ||form.hourEnd.value === ""){
+      problem = "Un ou plusieurs champs sont vides";
     }
     else if (form.nameReservation.value.length < 2 || form.nameReservation.value.length > 40) {
       problem = "L'intitulé n'est pas de taille acceptable (entre 2-40 caractères)";
@@ -255,13 +260,7 @@ const Schedule: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {/* This is the modal that is hidden by default */}
-        <div style={{ display: isLoading ? 'flex' : 'none' }} className='modal'>
-          <div className='modal-content'>
-            <div className='loader'></div>
-            <div className='modal-text'>Chargement en cours...</div>
-          </div>
-        </div>
+      <ModalLoading isLoading={isLoading} />
         <h1 id="title_schedule">Choisissez un jour</h1>
         <IonItem>
           <IonDatetime
@@ -311,14 +310,12 @@ const Schedule: React.FC = () => {
             </div>
             <div id="callbackMessage">
             </div>
-
-
           </IonContent>
         </IonModal>
 
 
         <IonItem>
-          <CardReservation Reservations={reservations} />
+          <CardReservation Reservations={reservations} NameRoom={params["nameRoom"]} />
         </IonItem>
 
 
