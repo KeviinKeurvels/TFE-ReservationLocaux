@@ -13,6 +13,14 @@
               flex-direction: column;   
 }
 
+#submit_button_modify{
+              padding: 10px 15px;
+              background-color: rgb(241, 189, 15);
+              border: none;
+              color: white;
+              border-radius: 25px;
+}
+
 ion-modal#delete_reservationmodal {
               --width: fit-content;
               --min-width: 90%;

@@ -1,0 +1,41 @@
+.no_reservation{
+              text-align: center;
+              color: gray;
+              margin-top: 10%;
+}
+
+.content_reservation{
+              width: 100%;
+}
+
+.button_card{
+              display: flex;
+              flex-direction: column;   
+}
+
+#submit_button_modify{
+              padding: 10px 15px;
+              background-color: rgb(241, 189, 15);
+              border: none;
+              color: white;
+              border-radius: 25px;
+}
+
+ion-modal#delete_reservationmodal {
+              --width: fit-content;
+              --min-width: 90%;
+              --height: fit-content;
+              --border-radius: 6px;
+              --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+              text-align: center;
+
+}
+            
+ion-modal#delete_reservationmodal h4 {
+              margin: 20px 20px 10px 20px;
+}
+
+            
+ion-modal#delete_reservationmodal .wrapper {
+              margin-bottom: 10px;
+}

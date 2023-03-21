@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import CardReservation from './CardReservation';
+import CardReservation from './CardSchedule';
 let propsWithInfo = [{
 
               "idRe": 1,

@@ -1,13 +1,3 @@
-.reservation_top_button {
-  display: flex;
-  flex-direction: column;
-   margin-top: 15px !important;
-}
-
-.hour_end_field{
-    margin-left:10%!important;
-}
-
 #title_schedule {
   margin-top: 20px;
   margin-left: 10px;
@@ -15,6 +5,15 @@
 
 #calendar {
   margin-bottom: 10px;
+}
+
+.add_button {
+  margin-left: 25%;
+  margin-top: 15px;
+}
+
+.hour_end_field{
+    margin-left:10%!important;
 }
 
 #success_response {
