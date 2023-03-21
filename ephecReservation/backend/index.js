@@ -22,7 +22,7 @@ app.listen(8800, ()=>{
 
 
 ///////////////////////////////////////// RESERVATION
-
+//////////////////GENERAL
 //to get all reservations
 app.get("/reservations", (req,res)=>{
               const query = "SELECT * FROM reservation"
@@ -102,8 +102,25 @@ app.delete("/reservations/deleteOne",  (req,res)=>{
                             return res.json("Reservation has been deleted successfully.")
               });
 });
+//////////////////FOR AN USER
+//to get all reservations for an user
+app.get("/reservations/forAnUser", (req,res)=>{
+              let idTeacher = req.query.idTeacher;
+              const query = `
+              SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
+              TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName, day, room.name as roomName
 
+              FROM teacher  
+              inner join reservation on teacher.idTe=reservation.idTe 
+              inner join room on room.idRo=reservation.idRo 
 
+              WHERE teacher.idTe=${idTeacher} ORDER BY day, hourBegin, roomName
+              `;
+              db.query(query,(err,data)=>{
+                            if(err) return res.json(err)
+                            return res.json(data)
+              })
+})
 
 ///////////////////////////////////////// ROOM
 //to get information about all rooms

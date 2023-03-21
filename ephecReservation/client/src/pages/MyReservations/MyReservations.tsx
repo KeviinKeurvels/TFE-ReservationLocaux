@@ -1,6 +1,5 @@
 import {
-  IonCol,
-  IonDatetime, IonIcon, IonRow,
+  IonCol, IonIcon, IonRow,
 } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
@@ -19,15 +18,15 @@ import {
 } from '@ionic/react';
 import { useRef } from 'react';
 //importation des autres fichiers
-import './Schedule.css';
-import CardReservation from '../../components/CardSchedule/CardSchedule';
+import './MyReservations.css';
+import CardReservation from '../../components/CardMyReservations/CardMyReservations';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
 
 
 
 
-const Schedule: React.FC = () => {
+const MyReservations: React.FC = () => {
   //récupération des paramètres
   let params: any;
   params = useParams();
@@ -50,7 +49,7 @@ const Schedule: React.FC = () => {
   function dismiss() {
     //va reload la page pour actualiser les réservations
     if (reservationAdded) {
-      fetchAllReservationForOneDay();
+      fetchAllReservationForOneUser();
     }
     modal.current?.dismiss();
 
@@ -59,12 +58,12 @@ const Schedule: React.FC = () => {
 
 
 
-  const fetchAllReservationForOneDay = async () => {
+  const fetchAllReservationForOneUser = async () => {
     /*
     *   Récupère les informations d'une réservation pour un jour
     */
     setIsLoading(true);
-    fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["nameRoom"] + "'")
+    fetch(config.API_URL + "/reservations/forAnUser?idTeacher=" + params["idUser"])
       .then((res) => res.json())
       .then((res) => {
         setReservations(res);
@@ -76,7 +75,8 @@ const Schedule: React.FC = () => {
 
   //le useEffect de dateChosen qui fait que quand on change de date, il va re fetch
   useEffect(() => {
-    fetchAllReservationForOneDay()
+
+    fetchAllReservationForOneUser()
   }, [dateChosen]);
 
 
@@ -91,8 +91,6 @@ const Schedule: React.FC = () => {
     }
 
   }
-
-
 
 
   function formatDate(date: any) {
@@ -258,28 +256,14 @@ const Schedule: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar id="top_bar">
-          <IonTitle>Horaire {params["nameRoom"]}</IonTitle>
+          <IonTitle>Mes réservations</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
       <ModalLoading isLoading={isLoading} />
-        <h1 id="title_schedule">Choisissez un jour</h1>
-        <IonItem>
-          <IonDatetime
-            presentation="date"
-            value={dateChosen}
-            min={String(currentYear)}
-            max={String(currentYear + 2)}
-            onIonChange={(e) => getInformationFromADate(e.target.value)}
-          >
-          </IonDatetime>
-        </IonItem>
-        <IonRow>
+      <IonRow>
           <IonCol>
-          <h1 id="title_schedule">Réservations</h1>
-          </IonCol>
-          <IonCol>
-          <IonButton fill="outline" className='reservation_top_button' onClick={()=>fetchAllReservationForOneDay()}><IonIcon icon={refreshOutline} /></IonButton>
+          <IonButton fill="outline" className='reservation_top_button' onClick={()=>fetchAllReservationForOneUser()}><IonIcon icon={refreshOutline} /></IonButton>
           </IonCol>
           <IonCol>
           <IonButton fill="outline" id='open-modal' color='success' className='reservation_top_button'><IonIcon icon={addOutline} />Ajouter</IonButton>
@@ -337,4 +321,4 @@ const Schedule: React.FC = () => {
   );
 };
 
-export default Schedule;
+export default MyReservations;

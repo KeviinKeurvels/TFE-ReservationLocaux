@@ -4,18 +4,24 @@ import {
 } from '@ionic/react';
 import { useRef } from 'react';
 import config from "../../config.json";
-import './CardReservation.css'
+import './CardMyReservations.css'
 
-type CardReservationProps = {
+type CardMyReservationsProps = {
   Reservations: any;
   NameRoom: any;
 }
 
 
-const CardReservation = ({ Reservations, NameRoom }: CardReservationProps) => {
+const CardReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) => {
 
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
+
+  function convertDate(dateString : any) {
+    //converti la date en format EU 
+    let date = new Date(dateString);
+    return date.getDate()+"/"+(date.getMonth() + 1)+"/"+date.getFullYear();
+}
 
   function deleteAReservation(reservationId: any) {
     //pour supprimer une réservation
@@ -190,9 +196,9 @@ const CardReservation = ({ Reservations, NameRoom }: CardReservationProps) => {
       {Reservations.length != 0 ? Reservations.map((reservation: any) => (
         <IonCard color="warning" key={reservation["idRe"]}>
           <IonCardHeader>
-            <IonCardTitle>{reservation["teacherName"]}</IonCardTitle>
+            <IonCardTitle>{reservation["roomName"]}</IonCardTitle>
             <IonCardSubtitle>
-              {reservation["hourBegin"]} - {reservation["hourEnd"]}
+              {convertDate(reservation["day"])} | {reservation["hourBegin"]} - {reservation["hourEnd"]}
             </IonCardSubtitle>
           </IonCardHeader>
 
