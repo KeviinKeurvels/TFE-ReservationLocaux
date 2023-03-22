@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import CardReservation from './CardSchedule';
+import CardSchedule from './CardSchedule';
 let propsWithInfo = [{
 
               "idRe": 1,
@@ -13,18 +13,18 @@ let propsWithInfo = [{
 
 let propsWithoutInfo=[];
 
-describe('CardReservation', () => {
+describe('CardSchedule', () => {
               it('Should render without crash', async () => {
                             render(
-                                          <CardReservation Reservations={propsWithInfo} />
+                                          <CardSchedule Reservations={propsWithInfo} />
                             )
               })
 })
 
-describe('CardReservation', () => {
+describe('CardSchedule', () => {
               it('Should render without crash', async () => {
                             render(
-                                          <CardReservation Reservations={propsWithoutInfo} />
+                                          <CardSchedule Reservations={propsWithoutInfo} />
                             )
               })
 })
