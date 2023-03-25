@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 import React from 'react';
 import { addOutline, refreshOutline } from 'ionicons/icons';
 import {
-  IonButtons,
   IonButton,
   IonModal,
   IonHeader,
@@ -20,7 +19,7 @@ import {
 import { useRef } from 'react';
 //importation des autres fichiers
 import './Schedule.css';
-import CardReservation from '../../components/CardSchedule/CardSchedule';
+import CardSchedule from '../../components/CardSchedule/CardSchedule';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
 
@@ -31,9 +30,6 @@ const Schedule: React.FC = () => {
   //récupération des paramètres
   let params: any;
   params = useParams();
-
-  // pour voir quand une réservation a été ajoutée
-  let reservationAdded = false;
 
   //le jour d'aujourd'hui
   let currentDate = new Date();
@@ -47,14 +43,7 @@ const Schedule: React.FC = () => {
 
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
-  function dismiss() {
-    //va reload la page pour actualiser les réservations
-    if (reservationAdded) {
-      fetchAllReservationForOneDay();
-    }
-    modal.current?.dismiss();
 
-  }
 
 
 
@@ -77,6 +66,7 @@ const Schedule: React.FC = () => {
   //le useEffect de dateChosen qui fait que quand on change de date, il va re fetch
   useEffect(() => {
     fetchAllReservationForOneDay()
+    console.log("sss")
   }, [dateChosen]);
 
 
@@ -214,16 +204,15 @@ const Schedule: React.FC = () => {
       }).then(function (res) {
         if (responseBox !== undefined && responseBox !== null) {
           if (res.status === 200) {
-            reservationAdded = true;
             if (formReservation !== undefined && formReservation !== null) {
               formReservation.innerHTML = "";
             }
 
             responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
+            fetchAllReservationForOneDay()
 
           }
           else {
-            reservationAdded = false;
 
             responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
 
@@ -232,7 +221,6 @@ const Schedule: React.FC = () => {
         }
       })
         .catch(function (res) {
-          reservationAdded = false;
           if (responseBox !== undefined && responseBox !== null) {
             responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
           }
@@ -248,6 +236,7 @@ const Schedule: React.FC = () => {
 
 
   }
+
 
 
 
@@ -290,11 +279,6 @@ const Schedule: React.FC = () => {
           <IonContent>
             <IonToolbar color="warning">
               <IonTitle>Réservation {params["nameRoom"]}</IonTitle>
-              <IonButtons slot="end">
-                <IonButton color="light" onClick={() => dismiss()}>
-                  Fermer
-                </IonButton>
-              </IonButtons>
             </IonToolbar>
             <div id="formReservation">
               <form onSubmit={handleSubmit}>
@@ -324,7 +308,7 @@ const Schedule: React.FC = () => {
 
 
         <IonItem>
-          <CardReservation Reservations={reservations} NameRoom={params["nameRoom"]} />
+          <CardSchedule Reservations={reservations} NameRoom={params["nameRoom"]} fetchAllReservationForOneDay={fetchAllReservationForOneDay} />
         </IonItem>
 
 

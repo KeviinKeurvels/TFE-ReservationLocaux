@@ -12,15 +12,16 @@ import { allFieldsChecked } from '../../functions/CardReservations/CardReservati
 type CardScheduleProps = {
   Reservations: any;
   NameRoom: any;
+  fetchAllReservationForOneDay: (newReservations: any) => void;
 }
 
 
-const CardReservation = ({ Reservations, NameRoom }: CardScheduleProps) => {
+const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: CardScheduleProps) => {
 
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
 
-  function deleteAReservation(reservationId: any) {
+  function deleteAReservation(reservationId: any, day:any) {
     //pour supprimer une réservation
     let modalBox = document.getElementById("ModalFor" + reservationId);
     if (typeof (reservationId) === "number") {
@@ -36,7 +37,8 @@ const CardReservation = ({ Reservations, NameRoom }: CardScheduleProps) => {
       }).then(function (res) {
         if (res.status === 200) {
           if (modalBox !== undefined && modalBox !== null) {
-            modalBox.innerHTML = "<p id='success_response'>Votre réservation a bien été supprimée.<br/>Rafraichissez la page pour avoir les nouvelles données.</p>";
+            modalBox.innerHTML = "<p id='success_response'>Votre réservation a bien été supprimée.";
+            fetchAllReservationForOneDay(day);
           }
         }
         else {
@@ -70,6 +72,10 @@ const CardReservation = ({ Reservations, NameRoom }: CardScheduleProps) => {
     if (responseBox !== undefined && responseBox !== null) {
       responseBox.innerHTML = "<p id='waiting_response'>Veuillez patienter, nous traitons votre requête.</p>";
     }
+    const updatedReservation = {
+      ...Reservations,
+      // update reservation data
+    };
 
 
     if (allFieldsChecked(event.target, idReservation, dayReservation, Reservations)) {
@@ -95,8 +101,8 @@ const CardReservation = ({ Reservations, NameRoom }: CardScheduleProps) => {
               formReservation.innerHTML = "";
             }
 
-            responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été mise à jour.<br/>Rafraichissez la page pour avoir les nouvelles données.</p>";
-
+            responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été mise à jour.</p>";
+            fetchAllReservationForOneDay(dayReservation);
           }
           else {
 
@@ -174,7 +180,7 @@ const CardReservation = ({ Reservations, NameRoom }: CardScheduleProps) => {
                   <div className='wrapper' id={`ModalFor${reservation['idRe']}`}>
                     <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
                       de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
-                    <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'])}>Supprimer</IonButton>
+                    <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'], reservation['day'])}>Supprimer</IonButton>
                   </div>
                 </IonModal>
               </IonCol>
@@ -191,4 +197,4 @@ const CardReservation = ({ Reservations, NameRoom }: CardScheduleProps) => {
   );
 };
 
-export default CardReservation;
+export default CardSchedule;

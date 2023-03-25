@@ -10,7 +10,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { homeOutline, calendarOutline, logOutOutline} from 'ionicons/icons';
+import { homeOutline, calendarOutline, logOutOutline } from 'ionicons/icons';
 
 /*pages*/
 import Home from './pages/Home/Home';
@@ -46,18 +46,22 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-        <Route exact path="/home">
+          <Route exact path="/home">
             <Home />
           </Route>
           <Route exact path="/implantation">
             <Implantation />
-          </Route>          
+          </Route>
           <Route exact path="/room/:nameImplantation">
             <Room />
           </Route>
-          <Route exact path="/schedule/:nameRoom">
-            <Schedule />
-          </Route>
+          <Route
+            exact
+            path="/schedule/:nameRoom"
+            render={({ match }) => (
+              <Schedule key={match.params.nameRoom} />
+            )}
+          />
           <Route exact path="/signOut">
             <SignOut />
           </Route>
@@ -85,7 +89,7 @@ const App: React.FC = () => (
       </IonTabs>
     </IonReactRouter>
   </IonApp>
-  
+
 );
 
 export default App;
