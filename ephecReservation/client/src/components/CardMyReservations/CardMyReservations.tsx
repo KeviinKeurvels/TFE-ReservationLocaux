@@ -17,7 +17,7 @@ type CardMyReservationsProps = {
 }
 
 
-const CardReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) => {
+const CardMyReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) => {
 
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
@@ -203,4 +203,4 @@ const CardReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) =>
   );
 };
 
-export default CardReservation;
+export default CardMyReservation;
