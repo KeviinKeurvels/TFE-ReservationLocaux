@@ -12,7 +12,6 @@ const CardRoom  = ({ Rooms }: CardRoomProps) => {
   function redirectToSchedule(nameRoom : number) {
     //va rediriger vers la page schedule du local
     history.push("/schedule/"+nameRoom);
-    //va reload la page pour actualiser les réservations
   }
 
   return (

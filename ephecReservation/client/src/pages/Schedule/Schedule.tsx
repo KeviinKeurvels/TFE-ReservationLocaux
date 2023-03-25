@@ -66,7 +66,6 @@ const Schedule: React.FC = () => {
   //le useEffect de dateChosen qui fait que quand on change de date, il va re fetch
   useEffect(() => {
     fetchAllReservationForOneDay()
-    console.log("sss")
   }, [dateChosen]);
 
 

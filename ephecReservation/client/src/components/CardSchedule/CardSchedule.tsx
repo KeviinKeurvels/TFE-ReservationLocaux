@@ -12,7 +12,7 @@ import { allFieldsChecked } from '../../functions/CardReservations/CardReservati
 type CardScheduleProps = {
   Reservations: any;
   NameRoom: any;
-  fetchAllReservationForOneDay: (newReservations: any) => void;
+  fetchAllReservationForOneDay: () => void;
 }
 
 
@@ -38,7 +38,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
         if (res.status === 200) {
           if (modalBox !== undefined && modalBox !== null) {
             modalBox.innerHTML = "<p id='success_response'>Votre réservation a bien été supprimée.";
-            fetchAllReservationForOneDay(day);
+            fetchAllReservationForOneDay();
           }
         }
         else {
@@ -102,7 +102,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
             }
 
             responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été mise à jour.</p>";
-            fetchAllReservationForOneDay(dayReservation);
+            fetchAllReservationForOneDay();
           }
           else {
 
