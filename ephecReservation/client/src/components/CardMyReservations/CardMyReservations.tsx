@@ -13,11 +13,11 @@ import { allFieldsChecked, convertDate } from '../../functions/CardReservations/
 
 type CardMyReservationsProps = {
   Reservations: any;
-  NameRoom: any;
+  fetchAllReservationForOneUser : () => void;
 }
 
 
-const CardMyReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) => {
+const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: CardMyReservationsProps) => {
 
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
@@ -40,7 +40,8 @@ const CardMyReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) 
       }).then(function (res) {
         if (res.status === 200) {
           if (modalBox !== undefined && modalBox !== null) {
-            modalBox.innerHTML = "<p id='success_response'>Votre réservation a bien été supprimée.<br/>Rafraichissez la page pour avoir les nouvelles données.</p>";
+            modalBox.innerHTML = "<p id='success_response'>Votre réservation a bien été supprimée.";
+            fetchAllReservationForOneUser();
           }
         }
         else {
@@ -57,11 +58,18 @@ const CardMyReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) 
     }
   }
 
+  const fetchReservationForOneDay = async (dateChosen:any, nameRoom:any) => {
+    return fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + nameRoom + "'")
+      .then((res) => res.json())
+      .catch((err) => "InternalError");
+  }
+  
 
 
 
 
-  function handleSubmit(event: any, idReservation: any, dayReservation : any) {
+
+  function handleSubmit(event: any, idReservation: any, dayReservation : any, NameRoom : any) {
     //cache le bouton
     let submitButton = document.getElementById("submit_button_modify");
     if (submitButton !== undefined && submitButton !== null) {
@@ -79,57 +87,64 @@ const CardMyReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) 
       responseBox.innerHTML = "<p id='waiting_response'>Veuillez patienter, nous traitons votre requête.</p>";
     }
 
-
-    if (allFieldsChecked(event.target, idReservation, dayReservation, Reservations)) {
-      //si tous les champs respectent bien ce qu'il faut
-
-      fetch(config.API_URL + "/reservations/updateOne", {
-        method: 'PUT',
-        headers: { 'Content-type': 'application/json' },
-        body: (
-          JSON.stringify({
-            idRe: idReservation,
-            title: event.target.nameReservation.value,
-            day: dayReservation,
-            hourBegin: event.target.hourBegin.value,
-            hourEnd: event.target.hourEnd.value,
-          }
-          )
-        ),
-      }).then(function (res) {
-        if (responseBox !== undefined && responseBox !== null) {
-          if (res.status === 200) {
-            if (formReservation !== undefined && formReservation !== null) {
-              formReservation.innerHTML = "";
+    fetchReservationForOneDay(dayReservation, NameRoom)
+    .then(reservationsForOneDayAndOneRoom => {
+      if (reservationsForOneDayAndOneRoom !== "InternalError") {
+        //s'il n'y a pas eu de problème pour lors du fetch
+        if (allFieldsChecked(event.target, idReservation, dayReservation, reservationsForOneDayAndOneRoom)) {
+          //si tous les champs respectent bien ce qu'il faut
+    
+          fetch(config.API_URL + "/reservations/updateOne", {
+            method: 'PUT',
+            headers: { 'Content-type': 'application/json' },
+            body: (
+              JSON.stringify({
+                idRe: idReservation,
+                title: event.target.nameReservation.value,
+                day: dayReservation,
+                hourBegin: event.target.hourBegin.value,
+                hourEnd: event.target.hourEnd.value,
+              }
+              )
+            ),
+          }).then(function (res) {
+            if (responseBox !== undefined && responseBox !== null) {
+              if (res.status === 200) {
+                if (formReservation !== undefined && formReservation !== null) {
+                  formReservation.innerHTML = "";
+                }
+    
+                responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été mise à jour.";
+                fetchAllReservationForOneUser();
+    
+              }
+              else {
+    
+                responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+    
+              }
+    
             }
-
-            responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été mise à jour.<br/>Rafraichissez la page pour avoir les nouvelles données.</p>";
-
-          }
-          else {
-
-            responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
-
-          }
-
+          })
+            .catch(function (res) {
+              if (responseBox !== undefined && responseBox !== null) {
+                responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+              }
+            })
         }
-      })
-        .catch(function (res) {
-          if (responseBox !== undefined && responseBox !== null) {
-            responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+        else {
+          if (submitButton !== undefined && submitButton !== null) {
+            submitButton.style.display = "block";
           }
-        })
-    }
-    else {
-      if (submitButton !== undefined && submitButton !== null) {
-        submitButton.style.display = "block";
+        }
+      
+      } else {
+        if (responseBox !== undefined && responseBox !== null) {
+          responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayer plus tard.</p>";
+        }
       }
+    });
     }
-
-
-
-
-  }
 
 
   return (
@@ -137,7 +152,7 @@ const CardMyReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) 
       {Reservations.length != 0 ? Reservations.map((reservation: any) => (
         <IonCard color="warning" key={reservation["idRe"]}>
           <IonCardHeader>
-            <IonCardTitle>{reservation["roomName"]}</IonCardTitle>
+            <IonCardTitle> {reservation["implantationName"]}<br/>{reservation["roomName"]}</IonCardTitle>
             <IonCardSubtitle>
               {convertDate(reservation["day"])} | {reservation["hourBegin"]} - {reservation["hourEnd"]}
             </IonCardSubtitle>
@@ -152,10 +167,10 @@ const CardMyReservation = ({ Reservations, NameRoom }: CardMyReservationsProps) 
                 <IonModal id="example-modal" ref={modal} trigger={`modify_button_for${reservation['idRe']}`}>
                   <IonContent>
                     <IonToolbar color="warning">
-                      <IonTitle>Réservation {NameRoom}</IonTitle>
+                      <IonTitle>Réservation {reservation["roomName"]}</IonTitle>
                     </IonToolbar>
                     <div id="formReservationModify">
-                      <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'])}>
+                      <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'], reservation["roomName"])}>
                         <label htmlFor="day">Jour de la réservation:</label>
                         <input type="date" id="day" name="day" defaultValue={reservation.day} disabled required /><br />
                         <table>

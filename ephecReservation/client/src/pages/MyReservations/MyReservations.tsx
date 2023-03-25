@@ -16,7 +16,7 @@ import {
 } from '@ionic/react';
 //importation des autres fichiers
 import './MyReservations.css';
-import CardReservation from '../../components/CardMyReservations/CardMyReservations';
+import CardMyReservation from '../../components/CardMyReservations/CardMyReservations';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
 
@@ -76,7 +76,7 @@ const MyReservations: React.FC = () => {
 
 
         <IonItem>
-          <CardReservation Reservations={reservations} NameRoom={params["nameRoom"]} />
+          <CardMyReservation Reservations={reservations}  fetchAllReservationForOneUser={fetchAllReservationForOneUser} />
         </IonItem>
 
 

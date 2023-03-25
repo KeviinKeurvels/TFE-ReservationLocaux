@@ -98,11 +98,12 @@ router.get("/forAnUser", (req,res)=>{
   let idTeacher = req.query.idTeacher;
   const query = `
   SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
-  TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName, day, room.name as roomName
+  TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName, day, room.name as roomName, implantation.name as implantationName
 
   FROM teacher  
   inner join reservation on teacher.idTe=reservation.idTe 
   inner join room on room.idRo=reservation.idRo 
+  inner join implantation on room.idIm=implantation.idIm
 
   WHERE teacher.idTe=${idTeacher} ORDER BY day, hourBegin, roomName
   `;
