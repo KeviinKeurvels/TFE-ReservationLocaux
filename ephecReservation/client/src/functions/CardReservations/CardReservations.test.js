@@ -8,7 +8,7 @@ describe('allFieldsChecked', () => {
                                           nameReservation: { value: 'My reservation' },
                             };
                             const idReservation = 'reservationId';
-                            const dayReservation = '2022-04-01';
+                            const dayReservation = '2023-04-01';
                             const reservations = [];
 
                             const result = allFieldsChecked(form, idReservation, dayReservation, reservations);
@@ -23,7 +23,7 @@ describe('allFieldsChecked', () => {
                                           nameReservation: { value: 'My reservation' },
                             };
                             const idReservation = 'reservationId';
-                            const dayReservation = '2022-04-01';
+                            const dayReservation = '2023-04-01';
                             const reservations = [];
 
                             const result = allFieldsChecked(form, idReservation, dayReservation, reservations);
@@ -38,7 +38,7 @@ describe('allFieldsChecked', () => {
                                           nameReservation: { value: 'My reservation' },
                             };
                             const idReservation = 'reservationId';
-                            const dayReservation = '2022-04-01';
+                            const dayReservation = '2023-04-01';
                             const reservations = [];
 
                             const result = allFieldsChecked(form, idReservation, dayReservation, reservations);
@@ -53,7 +53,7 @@ describe('allFieldsChecked', () => {
                                           nameReservation: { value: '' },
                             };
                             const idReservation = 'reservationId';
-                            const dayReservation = '2022-04-01';
+                            const dayReservation = '2023-04-01';
                             const reservations = [];
 
                             const result = allFieldsChecked(form, idReservation, dayReservation, reservations);
@@ -90,7 +90,7 @@ describe('checkIfThereIsAlreadyAReservation', () => {
   it('should return false if there are no existing reservations at the given time', () => {
     const hourBegin = '10:00';
     const hourEnd = '11:00';
-    const dateChosen = '2022-01-01';
+    const dateChosen = '2023-01-01';
     const idReservation = 3;
     const alreadyReserved = checkIfThereIsAlreadyAReservation(hourBegin, hourEnd, dateChosen, idReservation, Reservations);
 
@@ -100,7 +100,7 @@ describe('checkIfThereIsAlreadyAReservation', () => {
   it('should return true if there is an existing reservation at the given time', () => {
     const hourBegin = '09:30';
     const hourEnd = '10:30';
-    const dateChosen = '2022-01-01';
+    const dateChosen = '2023-01-01';
     const idReservation = 3;
     const alreadyReserved = checkIfThereIsAlreadyAReservation(hourBegin, hourEnd, dateChosen, idReservation, Reservations);
 
@@ -110,7 +110,7 @@ describe('checkIfThereIsAlreadyAReservation', () => {
   it('should not consider the current reservation when checking for existing reservations', () => {
     const hourBegin = '11:00';
     const hourEnd = '12:00';
-    const dateChosen = '2022-01-01';
+    const dateChosen = '2023-01-01';
     const idReservation = 2;
     const alreadyReserved = checkIfThereIsAlreadyAReservation(hourBegin, hourEnd, dateChosen, idReservation, Reservations);
 
@@ -120,8 +120,8 @@ describe('checkIfThereIsAlreadyAReservation', () => {
 
 
 test('convertDate should return a formatted date string', () => {
-              const date = new Date('2022-04-03T08:00:00Z'); // une date au format ISO
-              const expected = '3/4/2022'; // le résultat attendu au format EU
+              const date = new Date('2023-04-03'); // une date au format ISO
+              const expected = '3/4/2023'; // le résultat attendu au format EU
               
               expect(convertDate(date)).toEqual(expected);
             });
