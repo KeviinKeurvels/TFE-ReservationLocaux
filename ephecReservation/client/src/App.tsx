@@ -2,7 +2,6 @@ import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
-  IonLabel,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
@@ -10,7 +9,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { homeOutline, calendarOutline, logOutOutline } from 'ionicons/icons';
+import { homeOutline, calendarOutline, logOutOutline, settingsOutline } from 'ionicons/icons';
 
 /*pages*/
 import Home from './pages/Home/Home';
@@ -19,6 +18,7 @@ import Room from './pages/Room/Room';
 import Schedule from './pages/Schedule/Schedule';
 import SignOut from './pages/SignOut/SignOut';
 import MyReservations from './pages/MyReservations/MyReservations';
+import Administration from './pages/Administration/Administration';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -68,6 +68,9 @@ const App: React.FC = () => (
           <Route exact path="/myReservations/:idUser">
             <MyReservations />
           </Route>
+          <Route exact path="/administration">
+            <Administration />
+          </Route>
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
@@ -75,15 +78,15 @@ const App: React.FC = () => (
         <IonTabBar slot="bottom">
           <IonTabButton tab="implantation" href="/implantation">
             <IonIcon icon={homeOutline} />
-            <IonLabel>Implantations</IonLabel>
           </IonTabButton>
           <IonTabButton tab="myReservations" href="/myReservations/1">
             <IonIcon icon={calendarOutline} />
-            <IonLabel>Mes réservations</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="administration" href="/administration">
+            <IonIcon icon={settingsOutline} />
           </IonTabButton>
           <IonTabButton tab="signOut" href="/signOut">
             <IonIcon icon={logOutOutline} />
-            <IonLabel>Déconnexion</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>

@@ -48,14 +48,6 @@
   margin-top:1%;
 }
 
-form{
-  margin-top: 50px !important;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
 ion-toolbar {
   color: #fffcfc;
 }

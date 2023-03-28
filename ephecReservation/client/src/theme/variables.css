@@ -236,8 +236,19 @@ http://ionicframework.com/docs/theming/ */
 }
 
 
+
+
+
 #top_bar {
   --background: orange;
   color: white;
+}
+
+form{
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
