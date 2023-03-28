@@ -21,7 +21,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
 
-  function deleteAReservation(reservationId: any, day:any) {
+  function deleteAReservation(reservationId: any, day: any) {
     //pour supprimer une réservation
     let modalBox = document.getElementById("ModalFor" + reservationId);
     if (typeof (reservationId) === "number") {
@@ -55,7 +55,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
     }
   }
 
-  function handleSubmit(event: any, idReservation: any, dayReservation : any) {
+  function handleSubmit(event: any, idReservation: any, dayReservation: any) {
     //cache le bouton
     let submitButton = document.getElementById("submit_button_modify");
     if (submitButton !== undefined && submitButton !== null) {
@@ -129,64 +129,66 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
   return (
     <div className='content_reservation'>
       {Reservations.length != 0 ? Reservations.map((reservation: any) => (
-        <IonCard color="warning" key={reservation["idRe"]}>
+        <IonCard color={reservation["title"].includes("UNAVAILABLE:") ? "danger" : "warning"} key={reservation["idRe"]}>
           <IonCardHeader>
-            <IonCardTitle>{reservation["teacherName"]}</IonCardTitle>
+            <IonCardTitle>{reservation["title"].includes("UNAVAILABLE:") ? reservation["title"].substring(12) : reservation["teacherName"]}</IonCardTitle>
             <IonCardSubtitle>
               {reservation["hourBegin"]} - {reservation["hourEnd"]}
             </IonCardSubtitle>
           </IonCardHeader>
-
+          {reservation["title"].includes("UNAVAILABLE:") ? "" :
           <IonCardContent>
             {reservation["title"]}
-            <IonRow>
 
-              <IonCol>
-                <IonButton color="success" className="button_card" id={`modify_button_for${reservation['idRe']}`}>📝 Modifier</IonButton>
-                <IonModal id="example-modal" ref={modal} trigger={`modify_button_for${reservation['idRe']}`}>
-                  <IonContent>
-                    <IonToolbar color="warning">
-                      <IonTitle>Réservation {NameRoom}</IonTitle>
-                    </IonToolbar>
-                    <div id="formReservationModify">
-                      <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'])}>
-                        <label htmlFor="day">Jour de la réservation:</label>
-                        <input type="date" id="day" name="day" defaultValue={reservation.day} disabled required /><br />
-                        <table>
-                          <tbody>
-                            <tr><td><label htmlFor="hourBegin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hourEnd" className='hour_end_field'>Fin:</label></td></tr>
-                            <tr>
-                              <td><input type="time" id="hourBegin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00" defaultValue={reservation.hourBegin}></input></td>
-                              <td><input type="time" id="hourEnd" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00" defaultValue={reservation.hourEnd}></input></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        <p id="message_schedule">Les horaires vont de 8:00 à 18:00</p>
-                        <br />
-                        <label htmlFor="nameReservation">Intitulé de la réservation:</label>
-                        <input type="text" id="nameReservation" name="nameReservation" required defaultValue={reservation.title}></input><br />
-                        <input id="submit_button_modify" type="submit" value="Modifier" />
-                      </form>
+              <IonRow>
+                <IonCol>
+                  <IonButton color="success" className="button_card" id={`modify_button_for${reservation['idRe']}`}>📝 Modifier</IonButton>
+                  <IonModal id="example-modal" ref={modal} trigger={`modify_button_for${reservation['idRe']}`}>
+                    <IonContent>
+                      <IonToolbar color="warning">
+                        <IonTitle>Réservation {NameRoom}</IonTitle>
+                      </IonToolbar>
+                      <div id="formReservationModify">
+                        <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'])}>
+                          <label htmlFor="day">Jour de la réservation:</label>
+                          <input type="date" id="day" name="day" defaultValue={reservation.day} disabled required /><br />
+                          <table>
+                            <tbody>
+                              <tr><td><label htmlFor="hourBegin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hourEnd" className='hour_end_field'>Fin:</label></td></tr>
+                              <tr>
+                                <td><input type="time" id="hourBegin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00" defaultValue={reservation.hourBegin}></input></td>
+                                <td><input type="time" id="hourEnd" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00" defaultValue={reservation.hourEnd}></input></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <p id="message_schedule">Les horaires vont de 8:00 à 18:00</p>
+                          <br />
+                          <label htmlFor="nameReservation">Intitulé de la réservation:</label>
+                          <input type="text" id="nameReservation" name="nameReservation" required defaultValue={reservation.title}></input><br />
+                          <input id="submit_button_modify" type="submit" value="Modifier" />
+                        </form>
+                      </div>
+                      <div id="callbackMessageModify">
+                      </div>
+                    </IonContent>
+                  </IonModal>
+                </IonCol>
+
+                <IonCol>
+                  <IonButton color="danger" className="button_card" id={`delete_button_for${reservation['idRe']}`}>❌Supprimer</IonButton>
+                  <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for${reservation['idRe']}`}>
+                    <div className='wrapper' id={`ModalFor${reservation['idRe']}`}>
+                      <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
+                        de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
+                      <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'], reservation['day'])}>Supprimer</IonButton>
                     </div>
-                    <div id="callbackMessageModify">
-                    </div>
-                  </IonContent>
-                </IonModal>
-              </IonCol>
+                  </IonModal>
+                </IonCol>
 
-              <IonCol>
-                <IonButton color="danger" className="button_card" id={`delete_button_for${reservation['idRe']}`}>❌Supprimer</IonButton>
-                <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for${reservation['idRe']}`}>
-                  <div className='wrapper' id={`ModalFor${reservation['idRe']}`}>
-                    <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
-                      de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
-                    <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'], reservation['day'])}>Supprimer</IonButton>
-                  </div>
-                </IonModal>
-              </IonCol>
-
-            </IonRow>
+              </IonRow>
+            
           </IonCardContent>
+          }
         </IonCard>
 
       ))
