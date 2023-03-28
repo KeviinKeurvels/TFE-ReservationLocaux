@@ -1,0 +1,23 @@
+name: Code Client Test
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  client_test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+        cache: 'npm'
+        cache-dependency-path: ${{github.workspace}}/ephecReservation/client/package-lock.json
+    - run: npm i
+      working-directory: ephecReservation/client
+    - run: npm test
+      working-directory: ephecReservation/client
