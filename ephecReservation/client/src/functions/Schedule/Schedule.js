@@ -50,7 +50,7 @@ export function checkIfThereIsAlreadyAReservation(hourBegin, hourEnd, reservatio
 export function allFieldsChecked(form, reservations, currentYear) {
     //cette fonction va regarder si tous les champs sont conformes
     //pour la box qui va afficher les messages lors de la réservation
-    let responseBox = document.getElementById("callbackMessage");
+    let responseBox = document.getElementById("callback_message");
 
     //variable qui va contenir le message d'erreur
     let problem = undefined;

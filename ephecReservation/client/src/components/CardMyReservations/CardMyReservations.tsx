@@ -26,7 +26,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
 
   function deleteAReservation(reservationId: any) {
     //pour supprimer une réservation
-    let modalBox = document.getElementById("ModalFor" + reservationId);
+    let modalBox = document.getElementById("modal_for_" + reservationId);
     if (typeof (reservationId) === "number") {
       fetch(config.API_URL + "/reservations/deleteOne", {
         method: 'DELETE',
@@ -78,9 +78,9 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
     //ne recharge pas la page
     event.preventDefault();
     //pour la box qui va afficher les messages lors de la modification de réservation
-    let responseBox = document.getElementById("callbackMessageModify");
+    let responseBox = document.getElementById("callback_message_modify");
     //pour la box qui où il y a le formulaire de modification de réservation
-    let formReservation = document.getElementById("formReservationModify");
+    let formReservation = document.getElementById("form_reservation_modify");
 
     //pour afficher un message en attendant
     if (responseBox !== undefined && responseBox !== null) {
@@ -169,27 +169,27 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
                     <IonToolbar color="warning">
                       <IonTitle>Réservation {reservation["roomName"]}</IonTitle>
                     </IonToolbar>
-                    <div id="formReservationModify">
+                    <div id="form_reservation_modify">
                       <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'], reservation["roomName"])}>
                         <label htmlFor="day">Jour de la réservation:</label>
                         <input type="date" id="day" name="day" defaultValue={reservation.day} disabled required /><br />
                         <table>
                           <tbody>
-                            <tr><td><label htmlFor="hourBegin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hourEnd" className='hour_end_field'>Fin:</label></td></tr>
+                            <tr><td><label htmlFor="hour_begin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hour_end" className='hour_end_field'>Fin:</label></td></tr>
                             <tr>
-                              <td><input type="time" id="hourBegin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00" defaultValue={reservation.hourBegin}></input></td>
-                              <td><input type="time" id="hourEnd" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00" defaultValue={reservation.hourEnd}></input></td>
+                              <td><input type="time" id="hour_begin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00" defaultValue={reservation.hourBegin}></input></td>
+                              <td><input type="time" id="hour_end" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00" defaultValue={reservation.hourEnd}></input></td>
                             </tr>
                           </tbody>
                         </table>
                         <p id="message_schedule">Les horaires vont de 8:00 à 18:00</p>
                         <br />
-                        <label htmlFor="nameReservation">Intitulé de la réservation:</label>
-                        <input type="text" id="nameReservation" name="nameReservation" required defaultValue={reservation.title}></input><br />
+                        <label htmlFor="name_reservation">Intitulé de la réservation:</label>
+                        <input type="text" id="name_reservation" name="nameReservation" required defaultValue={reservation.title}></input><br />
                         <input id="submit_button_modify" type="submit" value="Modifier" />
                       </form>
                     </div>
-                    <div id="callbackMessageModify">
+                    <div id="callback_message_modify">
                     </div>
                   </IonContent>
                 </IonModal>
@@ -198,7 +198,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
               <IonCol>
                 <IonButton color="danger" className="button_card" id={`delete_button_for${reservation['idRe']}`}>❌Supprimer</IonButton>
                 <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for${reservation['idRe']}`}>
-                  <div className='wrapper' id={`ModalFor${reservation['idRe']}`}>
+                  <div className='wrapper' id={`modal_for_${reservation['idRe']}`}>
                     <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
                       de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
                     <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'])}>Supprimer</IonButton>
