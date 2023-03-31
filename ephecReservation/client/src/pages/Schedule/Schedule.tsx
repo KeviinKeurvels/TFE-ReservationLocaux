@@ -78,9 +78,9 @@ const Schedule: React.FC = () => {
     //ne recharge pas la page
     event.preventDefault();
     //pour la box qui va afficher les messages lors de la réservation
-    let responseBox = document.getElementById("callbackMessage");
+    let responseBox = document.getElementById("callback_message");
     //pour la box qui où il y a le formulaire de réservation
-    let formReservation = document.getElementById("formReservation");
+    let formReservation = document.getElementById("form_reservation");
 
     //pour afficher un message en attendant
     if (responseBox !== undefined && responseBox !== null) {
@@ -187,25 +187,25 @@ const Schedule: React.FC = () => {
             <div id="formReservation">
               <form onSubmit={handleSubmit}>
                 <label htmlFor="day">Jour de la réservation:</label>
-                <input type="date" id="day" name="day" value={dateChosen} onChange={(e) => getInformationFromADate(e.target.value)} min={String(currentYear)} max={String(currentYear + 2)} required /><br />
+                <input type="date" id="day" name="day" value={dateChosen} onChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear)} min={String(currentYear)} max={String(currentYear + 2)} required /><br />
 
                 <table>
                   <tbody>
-                    <tr><td><label htmlFor="hourBegin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hourEnd" className='hour_end_field'>Fin:</label></td></tr>
+                    <tr><td><label htmlFor="hour_begin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hour_end" className='hour_end_field'>Fin:</label></td></tr>
                     <tr>
-                      <td><input type="time" id="hourBegin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00"></input></td>
-                      <td><input type="time" id="hourEnd" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00"></input></td>
+                      <td><input type="time" id="hour_begin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00"></input></td>
+                      <td><input type="time" id="hour_end" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00"></input></td>
                     </tr>
                   </tbody>
                 </table>
                 <p id="message_schedule">Les horaires vont de 8:00 à 18:00</p>
                 <br />
-                <label htmlFor="nameReservation">Intitulé de la réservation:</label>
-                <input type="text" id="nameReservation" name="nameReservation" required></input><br />
+                <label htmlFor="name_reservation">Intitulé de la réservation:</label>
+                <input type="text" id="name_reservation" name="nameReservation" required></input><br />
                 <input id="submit_button" type="submit" value="Réserver" />
               </form>
             </div>
-            <div id="callbackMessage">
+            <div id="callback_message">
             </div>
           </IonContent>
         </IonModal>

@@ -1,7 +1,7 @@
 export function allFieldsChecked(form, idReservation, dayReservation, Reservations) {
               //cette fonction va regarder si tous les champs sont conformes
               //pour la box qui va afficher les messages lors de la réservation
-              let responseBox = document.getElementById("callbackMessageModify");
+              let responseBox = document.getElementById("callback_message_modify");
 
               //variable qui va contenir le message d'erreur
               let problem = undefined;

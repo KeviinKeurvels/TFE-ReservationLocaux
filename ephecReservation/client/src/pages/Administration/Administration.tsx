@@ -78,7 +78,7 @@ const Administration: React.FC = () => {
   function allFieldsChecked(form: any) {
     //cette fonction va regarder si tous les champs sont conformes
     //pour la box qui va afficher les messages lors de la réservation
-    let responseBox = document.getElementById("callbackMessageUnavailable");
+    let responseBox = document.getElementById("callback_message_unavailable");
 
     //variable qui va contenir le message d'erreur
     let problem = undefined;
@@ -126,7 +126,7 @@ const Administration: React.FC = () => {
     //ne recharge pas la page
     event.preventDefault();
     //pour la box qui va afficher les messages lors de la réservation
-    let responseBox = document.getElementById("callbackMessageUnavailable");
+    let responseBox = document.getElementById("callback_message_unavailable");
     //pour la box qui où il y a le formulaire de réservation
     let formUnavailable = document.getElementById("form_unavailable");
 
@@ -279,10 +279,10 @@ const Administration: React.FC = () => {
                           <input type="date" id="day" name="day" defaultValue={dateChosen} min={String(currentYear)} max={String(currentYear + 2)} required /><br />
                           <table>
                             <tbody>
-                              <tr><td><label htmlFor="hourBegin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hourEnd" className='hour_end_field'>Fin:</label></td></tr>
+                              <tr><td><label htmlFor="hour_begin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hour_end" className='hour_end_field'>Fin:</label></td></tr>
                               <tr>
-                                <td><input type="time" id="hourBegin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00"></input></td>
-                                <td><input type="time" id="hourEnd" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00"></input></td>
+                                <td><input type="time" id="hour_begin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00"></input></td>
+                                <td><input type="time" id="hour_end" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00"></input></td>
                               </tr>
                             </tbody>
                           </table>
@@ -293,7 +293,7 @@ const Administration: React.FC = () => {
                           <input id="submit_button" type="submit" value="Rendre indisponible" />
                         </form>
                       </div>
-                      <div id="callbackMessageUnavailable">
+                      <div id="callback_message_unavailable">
                       </div>
                     </IonContent>
                   </IonModal>
