@@ -1,12 +1,10 @@
 import express from "express";
-import cors from "cors";
 import db from "../database.js";
 
 const router = express.Router();
 
 
 router.use(express.json());
-router.use(cors());
 
 
 //////////////////GENERAL

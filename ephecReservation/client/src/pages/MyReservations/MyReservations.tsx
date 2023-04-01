@@ -14,11 +14,14 @@ import {
   IonPage,
   IonItem,
 } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 //importation des autres fichiers
 import './MyReservations.css';
 import CardMyReservation from '../../components/CardMyReservations/CardMyReservations';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
+//hook pour check si il y a des données
+import useAuthentication from "../../hooks/checkAuthentication";
 
 
 
@@ -33,13 +36,21 @@ const MyReservations: React.FC = () => {
   //pour voir quand il va fetch les données
   const [isLoading, setIsLoading] = useState(false);
 
-
+  const history = useHistory();
+  //check si l'utilisateur est connecté
+  useAuthentication();
+  
   const fetchAllReservationForOneUser = async () => {
     /*
     *   Récupère les informations d'une réservation pour un jour
     */
     setIsLoading(true);
-    fetch(config.API_URL + "/reservations/forAnUser?idTeacher=" + params["idUser"])
+    fetch(config.API_URL + "/reservations/forAnUser?idTeacher=" + params["idUser"], {
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`,
+        'upn': `${localStorage.getItem('upn')}`
+      }
+    })
       .then((res) => res.json())
       .then((res) => {
         setReservations(res);
@@ -51,7 +62,12 @@ const MyReservations: React.FC = () => {
 
   //le useEffect de dateChosen qui fait que quand on change de date, il va re fetch
   useEffect(() => {
-    fetchAllReservationForOneUser()
+    if (localStorage.length === 0) {
+      history.push("/");
+    }
+    else {
+      fetchAllReservationForOneUser()
+    }
   }, []);
 
 

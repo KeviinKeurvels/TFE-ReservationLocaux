@@ -17,12 +17,15 @@ import {
   IonItem,
 } from '@ionic/react';
 import { useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 //importation des autres fichiers
 import './Schedule.css';
 import CardSchedule from '../../components/CardSchedule/CardSchedule';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
 import { getInformationFromADate, formatDate, allFieldsChecked } from '../../functions/Schedule/Schedule';
+//hook pour check si il y a des données
+import useAuthentication from "../../hooks/checkAuthentication";
 
 
 
@@ -41,8 +44,14 @@ const Schedule: React.FC = () => {
   //pour voir quand il va fetch les données
   const [isLoading, setIsLoading] = useState(false);
 
+
+
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
+  //check si l'utilisateur est connecté
+  useAuthentication();
+  const history = useHistory();
+
 
 
 
@@ -53,19 +62,31 @@ const Schedule: React.FC = () => {
     *   Récupère les informations d'une réservation pour un jour
     */
     setIsLoading(true);
-    fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["nameRoom"] + "'")
+    fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["nameRoom"] + "'", {
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`,
+        'upn': `${localStorage.getItem('upn')}`
+      }
+    })
       .then((res) => res.json())
       .then((res) => {
         setReservations(res);
         setIsLoading(false);
       })
       .catch((err) => console.log(err))
+
   }
 
 
   //le useEffect de dateChosen qui fait que quand on change de date, il va re fetch
   useEffect(() => {
-    fetchAllReservationForOneDay()
+    if (localStorage.length === 0) {
+      history.push("/");
+    }
+    else {
+      fetchAllReservationForOneDay()
+    }
+
   }, [dateChosen]);
 
 
@@ -93,7 +114,11 @@ const Schedule: React.FC = () => {
 
       fetch(config.API_URL + "/reservations", {
         method: 'POST',
-        headers: { 'Content-type': 'application/json' },
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': `${localStorage.getItem('token')}`,
+          'upn': `${localStorage.getItem('upn')}`
+        },
         body: (
           JSON.stringify({
             title: event.target.nameReservation.value,

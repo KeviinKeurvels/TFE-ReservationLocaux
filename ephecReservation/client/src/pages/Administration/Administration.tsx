@@ -5,12 +5,14 @@ import {
 } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useRef } from 'react';
-
+import { useHistory } from 'react-router-dom';
 //importations des fichiers et fonctions
 import './Administration.css';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import { formatDate } from '../../functions/Schedule/Schedule';
 import config from "../../config.json";
+//hook pour check si il y a des données
+import useAuthentication from "../../hooks/checkAuthentication";
 
 const Administration: React.FC = () => {
 
@@ -28,16 +30,30 @@ const Administration: React.FC = () => {
   //l'année actuelle
   let currentYear = currentDate.getFullYear();
   const dateChosen = formatDate(currentDate);
+  //check si l'utilisateur est connecté
+  useAuthentication();
+  const history = useHistory();
+
 
   useEffect(() => {
 
     /*
-*   Récupère les informations de toutes les implantations
-*/
+    *   Récupère les informations de toutes les implantations
+    */
+    if (localStorage.length === 0) {
+      history.push("/");
+    }
+    else {
     const controller = new AbortController();
     const signal = controller.signal;
     setIsLoading(true);
-    fetch(config.API_URL + "/implantations", { signal })
+    fetch(config.API_URL + "/implantations", {
+      signal,
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`,
+        'upn': `${localStorage.getItem('upn')}`
+      }
+    })
       .then((res) => res.json())
       .then((res) => {
         setImplantations(res);
@@ -48,9 +64,11 @@ const Administration: React.FC = () => {
           console.log(err)
         }
       });
-
+  
     return () => controller.abort();
+  }
   }, []);
+  
 
   const handleChangeImplantation = (event: any) => {
     const selectedImplantation = event.target.value;

@@ -1,19 +1,15 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
-import { useHistory } from 'react-router-dom';
 import './SignOut.css';
-
-import config from "../../config.json";
+//hook pour check si il y a des données
+import useAuthentication from "../../hooks/checkAuthentication";
 
 const SignOut: React.FC = () => {
+  //check si l'utilisateur est connecté
+  useAuthentication();
 
-  const history = useHistory();
-  function redirectToRoom(){
-    history.push("/");
-  }
+  function signOut() {
+    localStorage.clear(); // clear all data in local storage
 
-
-  function SignOut (){
-    //code pour déconnexion 
   }
 
   return (
@@ -24,7 +20,7 @@ const SignOut: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
+        <button onClick={() => signOut()}>Déconnexion</button>
       </IonContent>
     </IonPage>
   );
