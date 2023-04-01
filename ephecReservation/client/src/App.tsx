@@ -20,6 +20,7 @@ import SignOut from './pages/SignOut/SignOut';
 import MyReservations from './pages/MyReservations/MyReservations';
 import Administration from './pages/Administration/Administration';
 
+
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -41,58 +42,76 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/implantation">
-            <Implantation />
-          </Route>
-          <Route exact path="/room/:nameImplantation">
-            <Room />
-          </Route>
-          <Route
-            exact
-            path="/schedule/:nameRoom"
-            render={({ match }) => (
-              <Schedule key={match.params.nameRoom} />
-            )}
-          />
-          <Route exact path="/signOut">
-            <SignOut />
-          </Route>
-          <Route exact path="/myReservations/:idUser">
-            <MyReservations />
-          </Route>
-          <Route exact path="/administration">
-            <Administration />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="implantation" href="/implantation">
-            <IonIcon icon={homeOutline} />
-          </IonTabButton>
-          <IonTabButton tab="myReservations" href="/myReservations/1">
-            <IonIcon icon={calendarOutline} />
-          </IonTabButton>
-          <IonTabButton tab="administration" href="/administration">
-            <IonIcon icon={settingsOutline} />
-          </IonTabButton>
-          <IonTabButton tab="signOut" href="/signOut">
-            <IonIcon icon={logOutOutline} />
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
+// Set up the timeout function
+let timeoutId = setTimeout(() => {
+  localStorage.clear(); // clear all data in local storage
+}, 1 * 60 * 1000); // 1 minute
 
-);
+// Reset the timeout function whenever the user interacts with the page
+document.addEventListener('mousemove', () => {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => {
+    localStorage.clear(); // clear all data in local storage
+  }, 1 * 60 * 1000); // 1 minute
+});
+
+
+
+const App: React.FC = () => {
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route exact path="/home">
+              <Home />
+            </Route>
+            <Route exact path="/implantation">
+              <Implantation />
+            </Route>
+            <Route exact path="/room/:nameImplantation">
+              <Room />
+            </Route>
+            <Route
+              exact
+              path="/schedule/:nameRoom"
+              render={({ match }) => (
+                <Schedule key={match.params.nameRoom} />
+              )}
+            />
+            <Route exact path="/signOut">
+              <SignOut />
+            </Route>
+            <Route exact path="/myReservations/:idUser">
+              <MyReservations />
+            </Route>
+            <Route exact path="/administration">
+              <Administration />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/home" />
+            </Route>
+          </IonRouterOutlet>
+          <IonTabBar slot="bottom" id="tabBar">
+            <IonTabButton tab="implantation" href="/implantation">
+              <IonIcon icon={homeOutline} />
+            </IonTabButton>
+            <IonTabButton tab="myReservations" href="/myReservations/1">
+              <IonIcon icon={calendarOutline} />
+            </IonTabButton>
+            <IonTabButton tab="administration" href="/administration">
+              <IonIcon icon={settingsOutline} />
+            </IonTabButton>
+            <IonTabButton tab="signOut" href="/signOut">
+              <IonIcon icon={logOutOutline} />
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </IonReactRouter>
+    </IonApp>
+
+  )
+};
 
 export default App;

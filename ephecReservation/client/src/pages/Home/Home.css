@@ -2,3 +2,7 @@
   margin-top: 80%;
   margin-left:35%;
 }
+
+#tabBar{
+  display: none;
+}
