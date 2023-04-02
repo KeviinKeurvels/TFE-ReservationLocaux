@@ -7,13 +7,35 @@ const router = express.Router();
 
 router.use(express.json());
 
+//to get all reservations
+router.get("/checkUpn", (req, res) => {
+  let upn=req.query.upn;
+  const query = `SELECT idTe FROM teacher WHERE upn=${upn}`
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+})
+
+// to add an user
+router.post("/registration", (req, res) => {
+  const query = `
+              INSERT INTO teacher (name,upn,password,isAdmin) 
+              VALUES("${req.body.name}",'${req.body.upn}','${req.body.password}',0)
+              `;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json("User added successfully.")
+  })
+})
+
+//to log in an user
 router.post('/login', async (req, res) => {
   const { upn, password } = req.body;
-  console.log(upn, password)
   try {
     const user = await new Promise((resolve, reject) => {
       db.query(`SELECT * FROM teacher WHERE upn='${upn}'`, (error, results) => {
-        console.log(results)
         if (error) {
           reject(error);
         } else if (results.length === 0) {
@@ -23,11 +45,9 @@ router.post('/login', async (req, res) => {
 
           bcrypt.compare(password, user.password, (error, isMatch) => {
             if (error) {
-              console.log(error)
               reject(error);
             } else if (!isMatch) {
               reject(new Error('Incorrect password'));
-              console.log("hhh")
             } else {
               const token = uuidv4();
 
@@ -37,7 +57,6 @@ router.post('/login', async (req, res) => {
                 [token, upn],
                 (error, results) => {
                   if (error) {
-                    console.error(error);
                     reject(error);
                   } else {
                     resolve({ user, token });

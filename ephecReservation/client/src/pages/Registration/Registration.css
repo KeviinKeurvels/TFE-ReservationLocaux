@@ -1,0 +1,13 @@
+#return_menu{
+              display: none;
+}
+
+#registration_button{
+              margin-top: 40px;
+}
+
+#password_policy{
+              color: gray;
+              font-size: small;
+              text-align: center;
+}

@@ -13,6 +13,7 @@ import { homeOutline, calendarOutline, logOutOutline, settingsOutline } from 'io
 
 /*pages*/
 import Home from './pages/Home/Home';
+import Registration from './pages/Registration/Registration'
 import Implantation from './pages/Implantation/Implantation';
 import Room from './pages/Room/Room';
 import Schedule from './pages/Schedule/Schedule';
@@ -64,8 +65,11 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
-            <Route exact path="/home">
+          <Route exact path="/home">
               <Home />
+            </Route>
+            <Route exact path="/registration">
+              <Registration />
             </Route>
             <Route exact path="/implantation">
               <Implantation />

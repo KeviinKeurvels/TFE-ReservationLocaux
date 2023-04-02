@@ -77,6 +77,28 @@ describe('allFieldsChecked', () => {
 
     expect(result).toBe(true);
   });
+  
+  it("returns false and displays correct error message when form fields are missing", () => {
+    const form = {
+      hourBegin: { value: "" },
+      hourEnd: { value: "13:00" },
+      nameReservation: { value: "Meeting" },
+      day: { value: "2023-04-03" },
+    };
+    const reservations = [];
+    const currentYear = 2023;
+
+    const responseBox = document.createElement("div");
+    responseBox.id = "callback_message";
+    document.body.appendChild(responseBox);
+
+    const result = allFieldsChecked(form, reservations, currentYear);
+
+    expect(result).toBe(false);
+    expect(responseBox.innerHTML).toContain("Problème au niveau du formulaire");
+
+    document.body.removeChild(responseBox);
+  });
 
   it('should return false when hourEnd field is empty', () => {
     const form = {
