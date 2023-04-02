@@ -16,6 +16,25 @@ describe('allFieldsChecked', () => {
                             expect(result).toBe(true);
               });
 
+              it('Returns false and displays error message when form fields are empty', () => {
+                const form = {
+                  hourBegin: { value: '' },
+                  hourEnd: { value: '' },
+                  nameReservation: { value: '' },
+                };
+                const idReservation = '123';
+                const dayReservation = '2023-04-02';
+                const Reservations = [
+                  { id: 'abc', day: '2023-04-02', hourBegin: '10:00', hourEnd: '11:00' },
+                  { id: 'def', day: '2023-04-02', hourBegin: '14:00', hourEnd: '15:00' },
+                ];
+
+                const result = allFieldsChecked(form, idReservation, dayReservation, Reservations);
+              
+                expect(result).toBe(false);
+              });
+              
+
               it('should return false when hourEnd field is empty', () => {
                             const form = {
                                           hourBegin: { value: '09:00' },

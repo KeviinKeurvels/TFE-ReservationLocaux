@@ -29,31 +29,31 @@ const Implantation: React.FC = () => {
     }
     else {
       const controller = new AbortController();
-    const signal = controller.signal;
-    setIsLoading(true);
-    
-    const headers = {
-      'Authorization': `${localStorage.getItem('token')}`,
-      'upn': `${localStorage.getItem('upn')}`
-    };
-    
-    fetch(config.API_URL + "/implantations", { headers, signal })
-      .then((res) => res.json())
-      .then((res) => {
-        setImplantations(res);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        if(err.name !== "AbortError"){
-          console.log(err)
-        }
-      });
-  
-    return () => controller.abort();
+      const signal = controller.signal;
+      setIsLoading(true);
+
+      const headers = {
+        'Authorization': `${localStorage.getItem('token')}`,
+        'upn': `${localStorage.getItem('upn')}`
+      };
+
+      fetch(config.API_URL + "/implantations", { headers, signal })
+        .then((res) => res.json())
+        .then((res) => {
+          setImplantations(res);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          if (err.name !== "AbortError") {
+            console.log(err)
+          }
+        });
+
+      return () => controller.abort();
     }
-    
+
   }, []);
-  
+
 
 
 
@@ -67,7 +67,7 @@ const Implantation: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-      <ModalLoading isLoading={isLoading} />
+        <ModalLoading isLoading={isLoading} />
         <CardImplantation Implantations={implantations} />
 
 

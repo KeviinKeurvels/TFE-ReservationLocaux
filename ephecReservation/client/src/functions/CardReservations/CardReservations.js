@@ -5,7 +5,10 @@ export function allFieldsChecked(form, idReservation, dayReservation, Reservatio
 
               //variable qui va contenir le message d'erreur
               let problem = undefined;
-              if (dayReservation === "" || form.hourBegin.value === "" || form.hourEnd.value === "") {
+              if(!form.hourBegin.value || !form.hourEnd.value || !form.nameReservation.value || !dayReservation || !idReservation || !Reservations){
+                problem = "Problème au niveau du formulaire";
+            }
+              else if (dayReservation === "" || form.hourBegin.value === "" || form.hourEnd.value === "") {
                             problem = "Un ou plusieurs champs sont vides";
               }
               else if (form.nameReservation.value.length < 2 || form.nameReservation.value.length > 40) {

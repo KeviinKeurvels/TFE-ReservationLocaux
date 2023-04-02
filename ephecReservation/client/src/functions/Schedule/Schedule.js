@@ -54,7 +54,10 @@ export function allFieldsChecked(form, reservations, currentYear) {
 
     //variable qui va contenir le message d'erreur
     let problem = undefined;
-    if (form.day.value < currentYear || form.day.value > currentYear + 2) {
+    if(!form.hourBegin.value || !form.hourEnd.value || !form.nameReservation.value || !reservations || !form.day.value || !currentYear){
+        problem = "Problème au niveau du formulaire";
+    }
+    else if (form.day.value < currentYear || form.day.value > currentYear + 2) {
         problem = "La date sélectionnée n'est pas bonne";
     }
     else if (form.day.value === "" || form.hourBegin.value === "" || form.hourEnd.value === "") {

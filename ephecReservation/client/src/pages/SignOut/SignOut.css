@@ -1,4 +1,12 @@
-.button_connexion{
-  margin-top: 80%;
-  margin-left:35%;
+#sign_out{
+              height: 85vh;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
 }
+
+#sign_out p{
+              font-weight: bold;
+}
+

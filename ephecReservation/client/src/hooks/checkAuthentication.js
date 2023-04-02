@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useEffect} from "react";
 import { useHistory } from "react-router-dom";
+
 
 function useAuthentication() {
   const history = useHistory();
   let isRedirected = false;
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -14,6 +16,7 @@ function useAuthentication() {
       ) {
         history.push("/home");
         document.getElementById("tabBar").style.display="none";
+        window.location.reload()
         isRedirected = true;
       } else if (window.location.href === "http://localhost:8800/home") {
         isRedirected = false;
@@ -23,7 +26,7 @@ function useAuthentication() {
     return () => clearInterval(interval);
   }, [history]);
 
-  return;
+
 }
 
 export default useAuthentication;

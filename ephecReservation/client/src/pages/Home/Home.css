@@ -1,8 +1,16 @@
 .button_connexion{
-  margin-top: 80%;
-  margin-left:35%;
+  margin-top: 10%;
 }
 
 #tabBar{
   display: none;
+}
+
+#inscription_box{
+  text-align: center;
+  margin-top: 40px;
+}
+
+#inscription_box p{
+  font-weight: bold;
 }

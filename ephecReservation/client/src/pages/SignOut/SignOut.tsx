@@ -20,7 +20,11 @@ const SignOut: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <button onClick={() => signOut()}>Déconnexion</button>
+        <div id="sign_out">
+          <p>Vous nous quittez déjà ?</p>
+          <IonButton color='danger' onClick={() => signOut()}>Déconnexion</IonButton>
+        </div>
+
       </IonContent>
     </IonPage>
   );
