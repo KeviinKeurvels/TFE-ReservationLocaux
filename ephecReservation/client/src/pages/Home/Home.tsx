@@ -41,8 +41,10 @@ const Home: React.FC = () => {
           if (tabBar != null && tabBar != undefined) {
             tabBar.style.display = "flex";
           }
-
-
+          if(data.isAdmin){
+            const adminTabButton = document.querySelector(".admin_button_tab_bar") as HTMLElement;
+            adminTabButton.style.display = "flex";
+          }
         } else {
           let responseBox = document.getElementById("callback_message_login");
           if (responseBox !== undefined && responseBox !== null) {
@@ -88,7 +90,7 @@ const Home: React.FC = () => {
         </form>
         <div id="callback_message_login"></div>
         <div id="inscription_box">
-          <p>Pas de compte ? Créez vous-en un !</p>
+          <p>Pas de compte ? Créez-vous en un !</p>
           <IonButton fill="outline" color="success" href='/registration'>Inscription</IonButton>
         </div>
 

@@ -95,7 +95,7 @@ router.delete("/deleteOne", (req, res) => {
 //////////////////FOR AN USER
 //to get all reservations for an user
 router.get("/forAnUser", (req, res) => {
-  let idTeacher = req.query.idTeacher;
+  let upnTeacher = req.query.upnTeacher;
   const query = `
   SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
   TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName,
@@ -106,7 +106,7 @@ router.get("/forAnUser", (req, res) => {
   inner join room on room.idRo=reservation.idRo 
   inner join implantation on room.idIm=implantation.idIm
 
-  WHERE teacher.idTe=${idTeacher} ORDER BY day, hourBegin, roomName
+  WHERE teacher.upn='${upnTeacher}' ORDER BY day, hourBegin, roomName
   `;
   db.query(query, (err, data) => {
     if (err) return res.json(err)

@@ -35,13 +35,14 @@ router.post('/login', async (req, res) => {
   const { upn, password } = req.body;
   try {
     const user = await new Promise((resolve, reject) => {
-      db.query(`SELECT * FROM teacher WHERE upn='${upn}'`, (error, results) => {
+      db.query(`SELECT upn, password, isAdmin FROM teacher WHERE upn='${upn}'`, (error, results) => {
         if (error) {
           reject(error);
         } else if (results.length === 0) {
           reject(new Error('User not found'));
         } else {
           const user = results[0];
+          const isAdmin = user.isAdmin;
 
           bcrypt.compare(password, user.password, (error, isMatch) => {
             if (error) {
@@ -59,7 +60,7 @@ router.post('/login', async (req, res) => {
                   if (error) {
                     reject(error);
                   } else {
-                    resolve({ user, token });
+                    resolve({ user, token, isAdmin});
                   }
                 }
               );
@@ -70,7 +71,7 @@ router.post('/login', async (req, res) => {
     });
 
     // Return token and user object
-    res.json({ token: user.token, upn: upn });
+    res.json({ token: user.token, upn: upn, isAdmin: user.isAdmin });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }

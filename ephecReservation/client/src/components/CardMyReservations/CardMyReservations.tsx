@@ -13,7 +13,7 @@ import { allFieldsChecked, convertDate } from '../../functions/CardReservations/
 
 type CardMyReservationsProps = {
   Reservations: any;
-  fetchAllReservationForOneUser : () => void;
+  fetchAllReservationForOneUser: () => void;
 }
 
 
@@ -30,7 +30,11 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
     if (typeof (reservationId) === "number") {
       fetch(config.API_URL + "/reservations/deleteOne", {
         method: 'DELETE',
-        headers: { 'Content-type': 'application/json' },
+        headers: { 
+          'Content-type': 'application/json',
+          'Authorization': `${localStorage.getItem('token')}`,
+          'upn': `${localStorage.getItem('upn')}`
+         },
         body: (
           JSON.stringify({
             id: reservationId,
@@ -58,18 +62,25 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
     }
   }
 
-  const fetchReservationForOneDay = async (dateChosen:any, nameRoom:any) => {
-    return fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + nameRoom + "'")
+  const fetchReservationForOneDay = async (dateChosen: any, nameRoom: any) => {
+    return fetch(
+      config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + nameRoom + "'",
+    {
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`,
+        'upn': `${localStorage.getItem('upn')}`
+      }
+    })
       .then((res) => res.json())
       .catch((err) => "InternalError");
   }
-  
 
 
 
 
 
-  function handleSubmit(event: any, idReservation: any, dayReservation : any, NameRoom : any) {
+
+  function handleSubmit(event: any, idReservation: any, dayReservation: any, NameRoom: any) {
     //cache le bouton
     let submitButton = document.getElementById("submit_button_modify");
     if (submitButton !== undefined && submitButton !== null) {
@@ -88,63 +99,67 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
     }
 
     fetchReservationForOneDay(dayReservation, NameRoom)
-    .then(reservationsForOneDayAndOneRoom => {
-      if (reservationsForOneDayAndOneRoom !== "InternalError") {
-        //s'il n'y a pas eu de problème pour lors du fetch
-        if (allFieldsChecked(event.target, idReservation, dayReservation, reservationsForOneDayAndOneRoom)) {
-          //si tous les champs respectent bien ce qu'il faut
-    
-          fetch(config.API_URL + "/reservations/updateOne", {
-            method: 'PUT',
-            headers: { 'Content-type': 'application/json' },
-            body: (
-              JSON.stringify({
-                idRe: idReservation,
-                title: event.target.nameReservation.value,
-                day: dayReservation,
-                hourBegin: event.target.hourBegin.value,
-                hourEnd: event.target.hourEnd.value,
-              }
-              )
-            ),
-          }).then(function (res) {
-            if (responseBox !== undefined && responseBox !== null) {
-              if (res.status === 200) {
-                if (formReservation !== undefined && formReservation !== null) {
-                  formReservation.innerHTML = "";
+      .then(reservationsForOneDayAndOneRoom => {
+        if (reservationsForOneDayAndOneRoom !== "InternalError") {
+          //s'il n'y a pas eu de problème pour lors du fetch
+          if (allFieldsChecked(event.target, idReservation, dayReservation, reservationsForOneDayAndOneRoom)) {
+            //si tous les champs respectent bien ce qu'il faut
+
+            fetch(config.API_URL + "/reservations/updateOne", {
+              method: 'PUT',
+              headers: {
+                'Content-type': 'application/json',
+                'Authorization': `${localStorage.getItem('token')}`,
+                'upn': `${localStorage.getItem('upn')}`
+              },
+              body: (
+                JSON.stringify({
+                  idRe: idReservation,
+                  title: event.target.nameReservation.value,
+                  day: dayReservation,
+                  hourBegin: event.target.hourBegin.value,
+                  hourEnd: event.target.hourEnd.value,
                 }
-    
-                responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été mise à jour.";
-                fetchAllReservationForOneUser();
-    
-              }
-              else {
-    
-                responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
-    
-              }
-    
-            }
-          })
-            .catch(function (res) {
+                )
+              ),
+            }).then(function (res) {
               if (responseBox !== undefined && responseBox !== null) {
-                responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+                if (res.status === 200) {
+                  if (formReservation !== undefined && formReservation !== null) {
+                    formReservation.innerHTML = "";
+                  }
+
+                  responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été mise à jour.";
+                  fetchAllReservationForOneUser();
+
+                }
+                else {
+
+                  responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+
+                }
+
               }
             })
-        }
-        else {
-          if (submitButton !== undefined && submitButton !== null) {
-            submitButton.style.display = "block";
+              .catch(function (res) {
+                if (responseBox !== undefined && responseBox !== null) {
+                  responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+                }
+              })
+          }
+          else {
+            if (submitButton !== undefined && submitButton !== null) {
+              submitButton.style.display = "block";
+            }
+          }
+
+        } else {
+          if (responseBox !== undefined && responseBox !== null) {
+            responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayer plus tard.</p>";
           }
         }
-      
-      } else {
-        if (responseBox !== undefined && responseBox !== null) {
-          responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayer plus tard.</p>";
-        }
-      }
-    });
-    }
+      });
+  }
 
 
   return (
@@ -152,7 +167,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
       {Reservations.length != 0 ? Reservations.map((reservation: any) => (
         <IonCard color="warning" key={reservation["idRe"]}>
           <IonCardHeader>
-            <IonCardTitle> {reservation["implantationName"]}<br/>{reservation["roomName"]}</IonCardTitle>
+            <IonCardTitle> {reservation["implantationName"]}<br />{reservation["roomName"]}</IonCardTitle>
             <IonCardSubtitle>
               {convertDate(reservation["day"])} | {reservation["hourBegin"]} - {reservation["hourEnd"]}
             </IonCardSubtitle>

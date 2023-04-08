@@ -36,7 +36,6 @@ const Regisration: React.FC = () => {
             });
           });
         });
-        console.log(passwordHashed);
   
         const response = await fetch(config.API_URL + '/auth/registration', {
           method: 'POST',
@@ -91,6 +90,8 @@ const Regisration: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <ModalLoading isLoading={isLoading} />
+        <IonButton id="return_menu" color='warning' fill='outline' href='/home'>Retourner au menu</IonButton>
+
         <form onSubmit={handleRegistration} id='form_registration'>
           <IonItem>
             <IonLabel position="floating">Nom d'utilisateur</IonLabel>
@@ -112,7 +113,6 @@ const Regisration: React.FC = () => {
           <IonButton id='registration_button' color="success" fill='outline' type="submit">S'inscrire</IonButton>
         </form>
         <div id="callback_message_registration"></div>
-        <IonButton id="return_menu" color='success' href='/home'>Retourner au menu</IonButton>
       </IonContent>
     </IonPage>
   );

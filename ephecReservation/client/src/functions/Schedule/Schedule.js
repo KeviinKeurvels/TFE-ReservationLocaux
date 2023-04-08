@@ -1,3 +1,5 @@
+import {hasSqlInjection} from '../Form/Form.js'
+
 export function formatDate(date) {
     //pour avoir la date dans le bon format pour la DB
     var d = new Date(date),
@@ -81,6 +83,9 @@ export function allFieldsChecked(form, reservations, currentYear) {
     //si déjà une réservation à ce moment-là
     else if (checkIfThereIsAlreadyAReservation(form.hourBegin.value, form.hourEnd.value, reservations, form.day.value)) {
         problem = "Il y a déjà une réservation à ce moment-là.";
+    }
+    else if (hasSqlInjection(form)) {
+        problem = "Injection SQL détectée.";
     }
 
     if (problem !== undefined) {

@@ -104,7 +104,7 @@ const App: React.FC = () => {
             <IonTabButton tab="myReservations" href="/myReservations/1">
               <IonIcon icon={calendarOutline} />
             </IonTabButton>
-            <IonTabButton tab="administration" href="/administration">
+            <IonTabButton className='admin_button_tab_bar' tab="administration" href="/administration">
               <IonIcon icon={settingsOutline} />
             </IonTabButton>
             <IonTabButton tab="signOut" href="/signOut">
