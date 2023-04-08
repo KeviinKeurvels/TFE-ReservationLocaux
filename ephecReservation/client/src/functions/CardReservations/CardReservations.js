@@ -1,3 +1,5 @@
+import {hasSqlInjection} from '../Form/Form.js'
+
 export function allFieldsChecked(form, idReservation, dayReservation, Reservations) {
               //cette fonction va regarder si tous les champs sont conformes
               //pour la box qui va afficher les messages lors de la réservation
@@ -30,6 +32,9 @@ export function allFieldsChecked(form, idReservation, dayReservation, Reservatio
               else if (checkIfThereIsAlreadyAReservation(form.hourBegin.value, form.hourEnd.value, dayReservation, idReservation, Reservations)) {
                             problem = "Il y a déjà une réservation à ce moment-là.";
               }
+              else if (hasSqlInjection(form)) {
+                problem = "Injection SQL détectée.";
+            }
 
               if (problem !== undefined) {
                             if (responseBox !== undefined && responseBox !== null) {

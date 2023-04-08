@@ -6,6 +6,10 @@
   display: none;
 }
 
+.admin_button_tab_bar{
+  display: none;
+}
+
 #inscription_box{
   text-align: center;
   margin-top: 40px;

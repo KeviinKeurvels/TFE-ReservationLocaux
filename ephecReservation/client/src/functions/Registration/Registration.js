@@ -1,4 +1,5 @@
 import config from "../../config.json"
+import {hasSqlInjection} from '../Form/Form.js'
 
 export async function allFieldsChecked(form) {
     //cette fonction va regarder si tous les champs sont conformes
@@ -35,6 +36,9 @@ export async function allFieldsChecked(form) {
     //si l'email existe déjà
     else if (await checkIfThereIsAlreadyThisUpn(form.upn.value)) {
         problem = "Cette adresse mail est déjà utilisée.";
+    }
+    else if (hasSqlInjection(form)) {
+        problem = "Injection SQL détectée.";
     }
 
     if (problem !== undefined) {

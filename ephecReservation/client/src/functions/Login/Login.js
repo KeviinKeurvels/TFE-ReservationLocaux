@@ -11,6 +11,9 @@ export function allFieldsChecked(upn, password) {
     else if (upn === "" || password === "" ) {
         problem = "Un ou plusieurs champs sont vides";
     }
+    else if (hasSqlInjection(upn, password)) {
+        problem = "Injection SQL détectée";
+    }
 
     if (problem !== undefined) {
         if (responseBox !== undefined && responseBox !== null) {
@@ -21,3 +24,13 @@ export function allFieldsChecked(upn, password) {
     return true;
 
 }
+
+export function hasSqlInjection(upn, password) {
+    // Check if the variables contain any SQL keywords or characters
+    if (/select|insert|update|delete|drop|union|truncate|(\-\-)/i.test(upn) ||
+        /select|insert|update|delete|drop|union|truncate|(\-\-)/i.test(password)) {
+      return true; // SQL injection found
+    }
+    return false; // No SQL injection found
+  }
+  

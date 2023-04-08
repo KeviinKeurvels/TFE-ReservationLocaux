@@ -45,7 +45,8 @@ const MyReservations: React.FC = () => {
     *   Récupère les informations d'une réservation pour un jour
     */
     setIsLoading(true);
-    fetch(config.API_URL + "/reservations/forAnUser?idTeacher=" + params["idUser"], {
+    let upn = localStorage.getItem("upn");
+    fetch(config.API_URL + "/reservations/forAnUser?upnTeacher=" + upn, {
       headers: {
         'Authorization': `${localStorage.getItem('token')}`,
         'upn': `${localStorage.getItem('upn')}`

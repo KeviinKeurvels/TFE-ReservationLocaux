@@ -27,7 +27,12 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
     if (typeof (reservationId) === "number") {
       fetch(config.API_URL + "/reservations/deleteOne", {
         method: 'DELETE',
-        headers: { 'Content-type': 'application/json' },
+        headers: { 
+          'Content-type': 'application/json',
+
+              'Authorization': `${localStorage.getItem('token')}`,
+              'upn': `${localStorage.getItem('upn')}`
+            },
         body: (
           JSON.stringify({
             id: reservationId,
@@ -83,7 +88,10 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
 
       fetch(config.API_URL + "/reservations/updateOne", {
         method: 'PUT',
-        headers: { 'Content-type': 'application/json' },
+        headers: { 'Content-type': 'application/json',
+            'Authorization': `${localStorage.getItem('token')}`,
+            'upn': `${localStorage.getItem('upn')}`
+           },
         body: (
           JSON.stringify({
             idRe: idReservation,
