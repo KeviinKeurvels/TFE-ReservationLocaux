@@ -27,10 +27,6 @@ import useAuthentication from "../../hooks/checkAuthentication";
 
 
 const MyReservations: React.FC = () => {
-  //récupération des paramètres
-  let params: any;
-  params = useParams();
-  
   //pour avoir les reservations d'un jour
   const [reservations, setReservations] = useState([]);
   //pour voir quand il va fetch les données

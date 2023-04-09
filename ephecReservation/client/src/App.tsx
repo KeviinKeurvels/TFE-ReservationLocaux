@@ -46,14 +46,14 @@ setupIonicReact();
 // Set up the timeout function
 let timeoutId = setTimeout(() => {
   localStorage.clear(); // clear all data in local storage
-}, 1 * 60 * 1000); // 1 minute
+}, 1 * 600 * 1000); // 1 minute
 
 // Reset the timeout function whenever the user interacts with the page
 document.addEventListener('mousemove', () => {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => {
     localStorage.clear(); // clear all data in local storage
-  }, 1 * 60 * 1000); // 1 minute
+  }, 1 * 600 * 1000); // 1 minute
 });
 
 

@@ -50,7 +50,7 @@ export function checkIfThereIsAlreadyAReservation(hourBegin, hourEnd, dateChosen
               //cette fonction va regarder s'il y a déjà une réservation à ce moment-là
               let alreadyReserved = false;
               Reservations.forEach((reservation) => {
-                            if (reservation.idRe != idReservation) {
+                            if (reservation.idRe !== idReservation) {
                                           // les heures de la réservation existante 
                                           //on ajout et enleve 60000 afin de pouvoir réserver à la minute où l'autre a fini (et vice versa)
                                           var x = new Date(dateChosen + " " + reservation["hourBegin"]).getTime() + 60000;

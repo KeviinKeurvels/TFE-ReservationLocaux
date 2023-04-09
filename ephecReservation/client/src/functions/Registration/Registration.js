@@ -20,7 +20,7 @@ export async function allFieldsChecked(form) {
     else if (form.upn.value.length < 6 || form.upn.value.length > 100) {
         problem = "L'email n'est pas de taille acceptable (entre 3-100 caractères)";
     }
-    else if (form.password1.value != form.password2.value) {
+    else if (form.password1.value !== form.password2.value) {
         problem = "Les deux mots de passes ne sont pas identiques";
     }
     else if (form.password1.value.length < 8 || form.password1.value.length > 20) {

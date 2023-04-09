@@ -11,7 +11,7 @@ import { allFieldsChecked } from '../../functions/Login/Login'
 
 const Home: React.FC = () => {
   // Affiche le UPN de l'utilisateur
-  const [upn, setUpn] = useState('a.dewulf@ephec.be');
+  const [upn, setUpn] = useState('py.gousenbourger@ephec.be');
   const [password, setPassword] = useState("MyPassword1234");
   //pour voir quand il va fetch les données
   const [isLoading, setIsLoading] = useState(false);
@@ -32,13 +32,13 @@ const Home: React.FC = () => {
             password: password
           })
         });
-        if (response.status == 200) {
+        if (response.status === 200) {
           const data = await response.json();
           localStorage.setItem('token', data.token);
           localStorage.setItem('upn', data.upn);
           history.push("/implantation");
           let tabBar = document.getElementById("tabBar");
-          if (tabBar != null && tabBar != undefined) {
+          if (tabBar !== null && tabBar !== undefined) {
             tabBar.style.display = "flex";
           }
           if(data.isAdmin){
