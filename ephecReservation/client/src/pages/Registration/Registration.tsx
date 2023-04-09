@@ -48,7 +48,7 @@ const Regisration: React.FC = () => {
             password: passwordHashed
           })
         });
-        if (response.status == 200) {
+        if (response.status === 200) {
           if (formRegistration !== undefined && formRegistration !== null) {
             formRegistration.innerHTML = "";
           };

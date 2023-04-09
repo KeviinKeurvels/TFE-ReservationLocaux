@@ -77,12 +77,6 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
     if (responseBox !== undefined && responseBox !== null) {
       responseBox.innerHTML = "<p id='waiting_response'>Veuillez patienter, nous traitons votre requête.</p>";
     }
-    const updatedReservation = {
-      ...Reservations,
-      // update reservation data
-    };
-
-
     if (allFieldsChecked(event.target, idReservation, dayReservation, Reservations)) {
       //si tous les champs respectent bien ce qu'il faut
 
@@ -136,7 +130,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
 
   return (
     <div className='content_reservation'>
-      {Reservations.length != 0 ? Reservations.map((reservation: any) => (
+      {Reservations.length !== 0 ? Reservations.map((reservation: any) => (
         <IonCard color={reservation["title"].includes("UNAVAILABLE:") ? "danger" : "warning"} key={reservation["idRe"]}>
           <IonCardHeader>
             <IonCardTitle>{reservation["title"].includes("UNAVAILABLE:") ? reservation["title"].substring(12) : reservation["teacherName"]}</IonCardTitle>

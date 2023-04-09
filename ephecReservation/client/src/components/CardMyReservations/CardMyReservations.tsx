@@ -164,7 +164,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
 
   return (
     <div className='content_reservation'>
-      {Reservations.length != 0 ? Reservations.map((reservation: any) => (
+      {Reservations.length !== 0 ? Reservations.map((reservation: any) => (
         <IonCard color="warning" key={reservation["idRe"]}>
           <IonCardHeader>
             <IonCardTitle> {reservation["implantationName"]}<br />{reservation["roomName"]}</IonCardTitle>

@@ -2,6 +2,21 @@
               margin-left: 20px;
 }
 
+
+#submit_button_add_room, #submit_button_unavailable, #submit_button_delete_room {
+              padding: 10px 15px;
+              background-color: rgb(241, 189, 15);
+              border: none;
+              color: white;
+              border-radius: 25px;
+            
+            }
+
 #form_unavailable{
 margin-top: 10px;
+}
+
+.form_text{
+              color: gray;
+              text-align: center;
 }
