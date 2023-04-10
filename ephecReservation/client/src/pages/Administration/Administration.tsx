@@ -11,6 +11,7 @@ import './Administration.css';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import { formatDate } from '../../functions/Schedule/Schedule';
 import { allFieldsCheckedUnavailable, allFieldsCheckedAddRoom, allFieldsCheckedDeleteRoom } from '../../functions/Administration/Administration'
+import {hasSqlInjection} from '../../functions/Login/Login'
 import config from "../../config.json";
 //hook pour check si il y a des données
 import useAuthentication from "../../hooks/checkAuthentication";
@@ -41,7 +42,8 @@ const Administration: React.FC = () => {
     /*
     *   Récupère les informations de toutes les implantations
     */
-    if (localStorage.length === 0) {
+    if (localStorage.length === 0 || hasSqlInjection(localStorage.getItem('upn'), localStorage.getItem('token'))) {
+      //si le localStorage est vide ou s'il il y a une injection SQL
       history.push("/");
     }
     else {

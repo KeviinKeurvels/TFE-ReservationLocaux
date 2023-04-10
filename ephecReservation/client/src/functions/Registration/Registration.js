@@ -18,7 +18,7 @@ export async function allFieldsChecked(form) {
         problem = "Le nom d'utilisateur n'est pas de taille acceptable (entre 2-100 caractères)";
     }
     else if (form.upn.value.length < 6 || form.upn.value.length > 100) {
-        problem = "L'email n'est pas de taille acceptable (entre 3-100 caractères)";
+        problem = "L'email n'est pas de taille acceptable (entre 6-100 caractères)";
     }
     else if (form.password1.value !== form.password2.value) {
         problem = "Les deux mots de passes ne sont pas identiques";
