@@ -12,19 +12,33 @@ describe('getInformationFromADate', () => {
   it('should set the chosen date when the date is valid', () => {
     const setDateChosen = jest.fn();
     const currentYear = 2023;
-    const date = new Date('2023-04-01');
+    const currentDate = '2023-04-01';
+    const date = new Date('2023-04-02');
 
-    getInformationFromADate(date, setDateChosen, currentYear);
+    getInformationFromADate(date, setDateChosen, currentYear, currentDate);
 
     expect(setDateChosen).toHaveBeenCalledWith(date);
   });
 
-  it('should return -1 when the date is invalid', () => {
+  it('should return -1 when the date is invalid (too late)', () => {
     const setDateChosen = jest.fn();
     const currentYear = 2023;
-    const date = new Date('2022-04-01');
+    const currentDate = '2023-04-02';
+    const date = new Date('2023-04-01');
 
-    const result = getInformationFromADate(date, setDateChosen, currentYear);
+    const result = getInformationFromADate(date, setDateChosen, currentYear, currentDate);
+
+    expect(result).toEqual(-1);
+    expect(setDateChosen).not.toHaveBeenCalled();
+  });
+
+  it('should return -1 when the date is invalid (too early)', () => {
+    const setDateChosen = jest.fn();
+    const currentYear = 2023;
+    const currentDate = '2023-04-02';
+    const date = new Date('2028-04-01');
+
+    const result = getInformationFromADate(date, setDateChosen, currentYear, currentDate);
 
     expect(result).toEqual(-1);
     expect(setDateChosen).not.toHaveBeenCalled();
@@ -62,18 +76,18 @@ describe('checkIfThereIsAlreadyAReservation', () => {
 describe('allFieldsChecked', () => {
   it('should return true when all fields are valid', () => {
     const form = {
-      day: { value: "2023-03-28" },
+      day: { value: "2023-04-03" },
       hourBegin: { value: "09:00" },
       hourEnd: { value: "11:00" },
       nameReservation: { value: "Réunion d'équipe" }
     };
-
+    const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
 
 
 
-    const result = allFieldsChecked(form, reservations, currentYear);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
 
     expect(result).toBe(true);
   });
@@ -85,6 +99,7 @@ describe('allFieldsChecked', () => {
       nameReservation: { value: "Meeting" },
       day: { value: "2023-04-03" },
     };
+    const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
 
@@ -92,7 +107,7 @@ describe('allFieldsChecked', () => {
     responseBox.id = "callback_message";
     document.body.appendChild(responseBox);
 
-    const result = allFieldsChecked(form, reservations, currentYear);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
 
     expect(result).toBe(false);
     expect(responseBox.innerHTML).toContain("Problème au niveau du formulaire");
@@ -102,48 +117,48 @@ describe('allFieldsChecked', () => {
 
   it('should return false when hourEnd field is empty', () => {
     const form = {
-      day: { value: "2023-03-28" },
+      day: { value: "2023-04-03" },
       hourBegin: { value: "09:00" },
       hourEnd: { value: "" },
       nameReservation: { value: "Réunion d'équipe" }
     };
-
+    const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
 
-    const result = allFieldsChecked(form, reservations, currentYear);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
 
     expect(result).toBe(false);
   });
 
   it('should return false when hourBegin field is empty', () => {
     const form = {
-      day: { value: "2023-03-28" },
+      day: { value: "2023-04-03" },
       hourBegin: { value: "" },
       hourEnd: { value: "11:00" },
       nameReservation: { value: "Réunion d'équipe" }
     };
-
+    const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
 
-    const result = allFieldsChecked(form, reservations, currentYear);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
 
     expect(result).toBe(false);
   });
 
   it('should return false when nameReservation field is empty', () => {
     const form = {
-      day: { value: "2023-03-28" },
+      day: { value: "2023-04-03" },
       hourBegin: { value: "09:00" },
       hourEnd: { value: "11:00" },
       nameReservation: { value: "" }
     };
-
+    const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
 
-    const result = allFieldsChecked(form, reservations, currentYear);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
 
     expect(result).toBe(false);
   });
@@ -155,11 +170,11 @@ describe('allFieldsChecked', () => {
       hourEnd: { value: "11:00" },
       nameReservation: { value: "Réunion d'équipe" }
     };
-
+    const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
 
-    const result = allFieldsChecked(form, reservations, currentYear);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
 
     expect(result).toBe(false);
   });

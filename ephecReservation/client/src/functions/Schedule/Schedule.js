@@ -15,8 +15,8 @@ export function formatDate(date) {
     return [year, month, day].join('-');
 }
 
-export function getInformationFromADate(date, setDateChosen, currentYear) {
-    if ([currentYear, currentYear + 1, currentYear + 2].includes(new Date(date).getFullYear())) {
+export function getInformationFromADate(date, setDateChosen, currentYear, currentDate) {
+    if (([currentYear, currentYear + 1, currentYear + 2].includes(new Date(date).getFullYear())) && (new Date(currentDate)<= new Date(date))) {
         setDateChosen(date);
     }
     else {
@@ -49,7 +49,7 @@ export function checkIfThereIsAlreadyAReservation(hourBegin, hourEnd, reservatio
 
 
 
-export function allFieldsChecked(form, reservations, currentYear) {
+export function allFieldsChecked(form, reservations, currentYear, currentDate) {
     //cette fonction va regarder si tous les champs sont conformes
     //pour la box qui va afficher les messages lors de la réservation
     let responseBox = document.getElementById("callback_message");
@@ -59,7 +59,7 @@ export function allFieldsChecked(form, reservations, currentYear) {
     if(!form.hourBegin.value || !form.hourEnd.value || !form.nameReservation.value || !reservations || !form.day.value || !currentYear){
         problem = "Problème au niveau du formulaire";
     }
-    else if (form.day.value < currentYear || form.day.value > currentYear + 2) {
+    else if (form.day.value < currentDate || form.day.value > currentYear + 2) {
         problem = "La date sélectionnée n'est pas bonne";
     }
     else if (form.day.value === "" || form.hourBegin.value === "" || form.hourEnd.value === "") {

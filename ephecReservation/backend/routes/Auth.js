@@ -22,9 +22,9 @@ router.get("/checkUpn", (req, res) => {
 // to add an user
 router.post("/registration", (req, res) => {
   // generate a 10-character password
-  const token = generatePassword(10);
+  const token = generateToken(10);
   // hash it with bcrypt
-  const hashedToken = hashPassword(token, 10);
+  const hashedToken = hashToken(token, 10);
   const query = `
               INSERT INTO teacher (name,upn,password,session_id, isAdmin) 
               VALUES("${req.body.name}",'${req.body.upn}','${req.body.password}','${hashedToken}',0)
