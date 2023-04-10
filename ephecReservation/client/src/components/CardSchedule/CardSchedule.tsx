@@ -141,7 +141,8 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
           {reservation["title"].includes("UNAVAILABLE:") ? "" :
           <IonCardContent>
             {reservation["title"]}
-
+            {reservation["upn"] === localStorage.getItem('upn') 
+            ? 
               <IonRow>
                 <IonCol>
                   <IonButton color="success" className="button_card" id={`modify_button_for${reservation['idRe']}`}>📝 Modifier</IonButton>
@@ -188,6 +189,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
                 </IonCol>
 
               </IonRow>
+              : null}
             
           </IonCardContent>
           }

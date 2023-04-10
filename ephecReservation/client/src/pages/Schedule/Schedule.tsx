@@ -111,7 +111,7 @@ const Schedule: React.FC = () => {
     }
 
 
-    if (allFieldsChecked(event.target, reservations, currentYear)) {
+    if (allFieldsChecked(event.target, reservations, currentYear, formatDate(currentDate))) {
       //si tous les champs respectent bien ce qu'il faut
 
       fetch(config.API_URL + "/reservations", {
@@ -127,7 +127,7 @@ const Schedule: React.FC = () => {
             day: event.target.day.value,
             hourBegin: event.target.hourBegin.value,
             hourEnd: event.target.hourEnd.value,
-            idTe: 1,
+            upn: localStorage.getItem('upn'),
             nameRoom: params["nameRoom"],
           }
           )
@@ -188,9 +188,9 @@ const Schedule: React.FC = () => {
           <IonDatetime
             presentation="date"
             value={dateChosen}
-            min={String(currentYear)}
+            min={String(formatDate(currentDate))}
             max={String(currentYear + 2)}
-            onIonChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear)}
+            onIonChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear, formatDate(currentDate))}
           >
           </IonDatetime>
         </IonItem>
@@ -214,7 +214,7 @@ const Schedule: React.FC = () => {
             <div id="formReservation">
               <form onSubmit={handleSubmit}>
                 <label htmlFor="day">Jour de la réservation:</label>
-                <input type="date" id="day" name="day" value={dateChosen} onChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear)} min={String(currentYear)} max={String(currentYear + 2)} required /><br />
+                <input type="date" id="day" name="day" defaultValue={dateChosen} onChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear, currentDate)} min={String(formatDate(currentDate))} max={String(currentYear + 2)} required /><br />
 
                 <table>
                   <tbody>

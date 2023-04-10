@@ -23,7 +23,7 @@ router.get("/byRoomAndDay", (req, res) => {
   let room = req.query.room;
   const query = `
     SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
-    TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName, day 
+    TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName, day, upn 
 
     FROM teacher  
     inner join reservation on teacher.idTe=reservation.idTe 
@@ -53,7 +53,7 @@ router.post("/", (req, res) => {
   const query = `
               INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo) 
               VALUES("${req.body.title}",'${req.body.day}','${req.body.hourBegin}','${req.body.hourEnd}',
-              '${req.body.idTe}',(SELECT idRo FROM ROOM WHERE name='${req.body.nameRoom}'))
+              (SELECT idTe FROM teacher WHERE upn='${req.body.upn}'),(SELECT idRo FROM room WHERE name='${req.body.nameRoom}'))
               `;
 
   db.query(query, (err, data) => {
