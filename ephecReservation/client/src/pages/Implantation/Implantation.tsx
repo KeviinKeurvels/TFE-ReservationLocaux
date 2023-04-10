@@ -7,6 +7,7 @@ import './Implantation.css';
 import CardImplantation from '../../components/CardImplantation/CardImplantation'
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json"
+import {hasSqlInjection} from '../../functions/Login/Login'
 //hook pour check si il y a des données
 import useAuthentication from "../../hooks/checkAuthentication";
 
@@ -24,7 +25,8 @@ const Implantation: React.FC = () => {
     /*
      *   Récupère les informations de toutes les implantations
      */
-    if (localStorage.length === 0) {
+    if (localStorage.length === 0 || hasSqlInjection(localStorage.getItem('upn'), localStorage.getItem('token'))) {
+      //si le localStorage est vide ou s'il il y a une injection SQL
       history.push("/home");
     }
     else {

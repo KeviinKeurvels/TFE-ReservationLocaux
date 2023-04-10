@@ -7,6 +7,7 @@ import './Room.css';
 import CardRoom from "../../components/CardRoom/CardRoom"
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json"
+import {hasSqlInjection} from '../../functions/Login/Login'
 //hook pour check si il y a des données
 import useAuthentication from "../../hooks/checkAuthentication";
 
@@ -26,7 +27,8 @@ const Room: React.FC = () => {
     /*
     *   Récupère les informations de tout les locaux
     */
-    if (localStorage.length === 0) {
+    if (localStorage.length === 0 || hasSqlInjection(localStorage.getItem('upn'), localStorage.getItem('token'))) {
+      //si le localStorage est vide ou s'il il y a une injection SQL
       history.push("/");
     }
     else{

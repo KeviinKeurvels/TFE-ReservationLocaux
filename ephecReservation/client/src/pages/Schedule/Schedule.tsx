@@ -24,6 +24,7 @@ import CardSchedule from '../../components/CardSchedule/CardSchedule';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
 import { getInformationFromADate, formatDate, allFieldsChecked } from '../../functions/Schedule/Schedule';
+import {hasSqlInjection} from '../../functions/Login/Login'
 //hook pour check si il y a des données
 import useAuthentication from "../../hooks/checkAuthentication";
 
@@ -80,7 +81,8 @@ const Schedule: React.FC = () => {
 
   //le useEffect de dateChosen qui fait que quand on change de date, il va re fetch
   useEffect(() => {
-    if (localStorage.length === 0) {
+    if (localStorage.length === 0 || hasSqlInjection(localStorage.getItem('upn'), localStorage.getItem('token'))) {
+      //si le localStorage est vide ou s'il il y a une injection SQL
       history.push("/");
     }
     else {
