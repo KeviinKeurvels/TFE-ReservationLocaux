@@ -2,8 +2,16 @@
               margin-left: 20px;
 }
 
+.button_admin{
+  display: flex;
+}
 
-#submit_button_add_room, #submit_button_unavailable, #submit_button_delete_room {
+.form_text{
+  color: gray;
+  text-align: center;
+}
+
+#submit_button_add_room, #submit_button_unavailable, #submit_button_delete_room, #submit_button_modify_room {
               padding: 10px 15px;
               background-color: rgb(241, 189, 15);
               border: none;
@@ -14,9 +22,4 @@
 
 #form_unavailable{
 margin-top: 10px;
-}
-
-.form_text{
-              color: gray;
-              text-align: center;
 }

@@ -24,7 +24,7 @@ router.delete("/deleteAllReservationsForAPeriod", (req, res) => {
     return res.json("Reservations have been deleted successfully.")
   });
 });
-
+//to delete all reservations for a room
 router.delete("/deleteAllReservationsForARoom", (req, res) => {
   const query = `
   DELETE FROM reservation 
@@ -38,7 +38,7 @@ router.delete("/deleteAllReservationsForARoom", (req, res) => {
 });
 
 ////////////////ROOMS
-// to add a new reservation
+// to add a new room
 router.post("/room", (req, res) => {
   const query = `
               INSERT INTO room (name,description,idIm) 
@@ -50,7 +50,7 @@ router.post("/room", (req, res) => {
     return res.json("Room added successfully.")
   });
 });
-
+// to delete a room
 router.delete("/room", (req, res) => {
   const query = `
   DELETE FROM room 
@@ -62,5 +62,18 @@ router.delete("/room", (req, res) => {
     return res.json("Room has been deleted successfully.")
   });
 });
+// to modify a room
+router.put("/room", (req, res) => {
+  const query = `
+              UPDATE room
+              SET name="${req.body.name}",description='${req.body.description}'
+              WHERE idRo = ${req.body.idRo}
+              `;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json("Room updated successfully.")
+  })
+})
 
 export default router;
