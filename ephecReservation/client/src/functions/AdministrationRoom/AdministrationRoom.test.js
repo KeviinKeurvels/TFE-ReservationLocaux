@@ -1,4 +1,4 @@
-import {allFieldsCheckedDeleteRoom, hasSqlInjectionUnavailable, hasSqlInjectionAddRoom, hasSqlInjectionDeleteRoom} from './Administration';
+import {allFieldsCheckedDeleteRoom, hasSqlInjectionUnavailable, hasSqlInjectionAddRoom, hasSqlInjectionDeleteRoom} from './AdministrationRoom';
 
 
 
