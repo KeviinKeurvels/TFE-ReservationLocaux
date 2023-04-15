@@ -19,6 +19,16 @@ router.get("/checkUpn", (req, res) => {
   })
 })
 
+//to check if the user is admin
+router.get("/checkAdmin", (req, res) => {
+  let upn=req.query.upn;
+  const query = `SELECT isAdmin = 1 AS isAdmin FROM teacher  WHERE upn = ${upn}`
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+})
+
 // to add an user
 router.post("/registration", (req, res) => {
   // generate a 10-character password
