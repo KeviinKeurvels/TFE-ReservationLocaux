@@ -209,18 +209,7 @@ const Administration: React.FC = () => {
                       </IonToolbar>
                       <div>
                         <form onSubmit={(e) => handleSubmitDeleteRoom(e, selectedRoom, config)} id="form_delete_room">
-                          <IonList>
-                            <IonItem>
-                              <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
-                                {implantations.map((implantation) => (
-                                  <IonSelectOption key={implantation["idIm"]} value={implantation["name"]}>
-                                    {implantation["name"]}
-                                  </IonSelectOption>
-                                ))}
-                              </IonSelect>
-                            </IonItem>
-                          </IonList>
-                          <br />
+
                           <IonList>
                             <IonItem>
                               <IonSelect placeholder="Choisissez un local :" onIonChange={(e) => setSelectedRoom(e.target.value)}>

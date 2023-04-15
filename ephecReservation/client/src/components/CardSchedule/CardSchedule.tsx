@@ -2,7 +2,7 @@ import {
   IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonCardSubtitle, IonButton, IonCol, IonRow,
   IonModal, IonContent, IonToolbar, IonTitle
 } from '@ionic/react';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 //importations des fichiers et fonctions
 import config from "../../config.json";
@@ -21,18 +21,44 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
   //pour le modal d'ajout d'une réservation
   const modal = useRef<HTMLIonModalElement>(null);
 
-  function deleteAReservation(reservationId: any, day: any) {
+  //if the user is admin
+  const [isAdmin, setIsAdmin] = useState(0);
+
+
+  //on refait ici pour ne pas le passer en props car c'est une faille de sécurité
+  const fetchIsAdmin = async () => {
+    /*
+    *   check si l'utilisateur est administrateur
+    */
+    fetch(config.API_URL + "/auth/checkAdmin?upn='" + localStorage.getItem('upn') + "'", {
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`,
+        'upn': `${localStorage.getItem('upn')}`
+      }
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setIsAdmin(res[0].isAdmin);
+      })
+      .catch((err) => console.log(err))
+
+  }
+  useEffect(() => {
+    fetchIsAdmin()
+  }, []);
+
+  function deleteAReservation(reservationId: any) {
     //pour supprimer une réservation
     let modalBox = document.getElementById("modal_for_" + reservationId);
     if (typeof (reservationId) === "number") {
-      fetch(config.API_URL + "/reservations/deleteOne", {
+      fetch(config.API_URL + (isAdmin ? "/admin/deleteOne" : "/reservations/deleteOne"), {
         method: 'DELETE',
-        headers: { 
+        headers: {
           'Content-type': 'application/json',
 
-              'Authorization': `${localStorage.getItem('token')}`,
-              'upn': `${localStorage.getItem('upn')}`
-            },
+          'Authorization': `${localStorage.getItem('token')}`,
+          'upn': `${localStorage.getItem('upn')}`
+        },
         body: (
           JSON.stringify({
             id: reservationId,
@@ -80,12 +106,13 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
     if (allFieldsChecked(event.target, idReservation, dayReservation, Reservations)) {
       //si tous les champs respectent bien ce qu'il faut
 
-      fetch(config.API_URL + "/reservations/updateOne", {
+      fetch(config.API_URL + (isAdmin ? "/admin/updateOne" : "/reservations/updateOne"), {
         method: 'PUT',
-        headers: { 'Content-type': 'application/json',
-            'Authorization': `${localStorage.getItem('token')}`,
-            'upn': `${localStorage.getItem('upn')}`
-           },
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': `${localStorage.getItem('token')}`,
+          'upn': `${localStorage.getItem('upn')}`
+        },
         body: (
           JSON.stringify({
             idRe: idReservation,
@@ -138,61 +165,60 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
               {reservation["hourBegin"]} - {reservation["hourEnd"]}
             </IonCardSubtitle>
           </IonCardHeader>
-          {reservation["title"].includes("UNAVAILABLE:") ? "" :
-          <IonCardContent>
-            {reservation["title"]}
-            {reservation["upn"] === localStorage.getItem('upn') 
-            ? 
-              <IonRow>
-                <IonCol>
-                  <IonButton color="success" className="button_card" id={`modify_button_for${reservation['idRe']}`}>📝 Modifier</IonButton>
-                  <IonModal id="example-modal" ref={modal} trigger={`modify_button_for${reservation['idRe']}`}>
-                    <IonContent>
-                      <IonToolbar color="warning">
-                        <IonTitle>Réservation {NameRoom}</IonTitle>
-                      </IonToolbar>
-                      <div id="form_reservation_modify">
-                        <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'])}>
-                          <label htmlFor="day">Jour de la réservation:</label>
-                          <input type="date" id="day" name="day" defaultValue={reservation.day} disabled required /><br />
-                          <table>
-                            <tbody>
-                              <tr><td><label htmlFor="hour_begin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hour_end" className='hour_end_field'>Fin:</label></td></tr>
-                              <tr>
-                                <td><input type="time" id="hour_begin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00" defaultValue={reservation.hourBegin}></input></td>
-                                <td><input type="time" id="hour_end" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00" defaultValue={reservation.hourEnd}></input></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                          <p id="message_schedule">Les horaires vont de 8:00 à 18:00</p>
-                          <br />
-                          <label htmlFor="name_reservation">Intitulé de la réservation:</label>
-                          <input type="text" id="name_reservation" name="nameReservation" required defaultValue={reservation.title}></input><br />
-                          <input id="submit_button_modify" type="submit" value="Modifier" />
-                        </form>
-                      </div>
-                      <div id="callback_message_modify">
-                      </div>
-                    </IonContent>
-                  </IonModal>
-                </IonCol>
 
-                <IonCol>
-                  <IonButton color="danger" className="button_card" id={`delete_button_for${reservation['idRe']}`}>❌Supprimer</IonButton>
-                  <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for${reservation['idRe']}`}>
-                    <div className='wrapper' id={`modal_for_${reservation['idRe']}`}>
-                      <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
-                        de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
-                      <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'], reservation['day'])}>Supprimer</IonButton>
-                    </div>
-                  </IonModal>
-                </IonCol>
+            <IonCardContent>
+              {reservation["title"].includes("UNAVAILABLE:") ? null :reservation["title"]}
+              {(reservation["upn"] === localStorage.getItem('upn')) || isAdmin
+                ?
+                <IonRow>
+                  <IonCol>
+                    <IonButton color="success" className="button_card" id={`modify_button_for${reservation['idRe']}`}>📝 Modifier</IonButton>
+                    <IonModal id="example-modal" ref={modal} trigger={`modify_button_for${reservation['idRe']}`}>
+                      <IonContent>
+                        <IonToolbar color="warning">
+                          <IonTitle>Réservation {NameRoom}</IonTitle>
+                        </IonToolbar>
+                        <div id="form_reservation_modify">
+                          <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'])}>
+                            <label htmlFor="day">Jour de la réservation:</label>
+                            <input type="date" id="day" name="day" defaultValue={reservation.day} disabled required /><br />
+                            <table>
+                              <tbody>
+                                <tr><td><label htmlFor="hour_begin" className='hour_begin_field'>Début:</label></td><td><label htmlFor="hour_end" className='hour_end_field'>Fin:</label></td></tr>
+                                <tr>
+                                  <td><input type="time" id="hour_begin" name="hourBegin" required className='hour_begin_field' min="08:00" max="18:00" defaultValue={reservation.hourBegin}></input></td>
+                                  <td><input type="time" id="hour_end" className='hour_end_field' name="hourEnd" placeholder='10:30' required min="08:00" max="18:00" defaultValue={reservation.hourEnd}></input></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <p id="message_schedule">Les horaires vont de 8:00 à 18:00</p>
+                            <br />
+                            <label htmlFor="name_reservation">Intitulé de la réservation:</label>
+                            <input type="text" id="name_reservation" name="nameReservation" required defaultValue={reservation.title}></input><br />
+                            <input id="submit_button_modify" type="submit" value="Modifier" />
+                          </form>
+                        </div>
+                        <div id="callback_message_modify">
+                        </div>
+                      </IonContent>
+                    </IonModal>
+                  </IonCol>
 
-              </IonRow>
-              : null}
-            
-          </IonCardContent>
-          }
+                  <IonCol>
+                    <IonButton color="danger" className="button_card" id={`delete_button_for${reservation['idRe']}`}>❌Supprimer</IonButton>
+                    <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for${reservation['idRe']}`}>
+                      <div className='wrapper' id={`modal_for_${reservation['idRe']}`}>
+                        <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"].includes("UNAVAILABLE:") ? reservation["title"].substring(12) : reservation["title"]}"
+                          de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
+                        <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'])}>Supprimer</IonButton>
+                      </div>
+                    </IonModal>
+                  </IonCol>
+
+                </IonRow>
+                : null}
+
+            </IonCardContent>
         </IonCard>
 
       ))

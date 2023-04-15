@@ -235,7 +235,9 @@ http://ionicframework.com/docs/theming/ */
   }
 }
 
-
+ion-modal{
+  --height: 60%;
+}
 
 
 

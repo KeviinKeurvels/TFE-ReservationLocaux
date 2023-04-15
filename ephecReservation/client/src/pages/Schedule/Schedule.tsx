@@ -1,21 +1,12 @@
 import {
-  IonCol,
-  IonDatetime, IonIcon, IonRow,
+  IonCol, IonDatetime, IonIcon, IonRow, IonList, IonSelect, IonButton,
+  IonModal, IonHeader, IonContent, IonToolbar, IonTitle, IonPage, IonItem,
+  IonSelectOption
 } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import React from 'react';
 import { addOutline, refreshOutline } from 'ionicons/icons';
-import {
-  IonButton,
-  IonModal,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  IonTitle,
-  IonPage,
-  IonItem,
-} from '@ionic/react';
 import { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 //importation des autres fichiers
@@ -24,7 +15,7 @@ import CardSchedule from '../../components/CardSchedule/CardSchedule';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
 import { getInformationFromADate, formatDate, allFieldsChecked } from '../../functions/Schedule/Schedule';
-import {hasSqlInjection} from '../../functions/Login/Login'
+import { hasSqlInjection } from '../../functions/Login/Login'
 //hook pour check si il y a des données
 import useAuthentication from "../../hooks/checkAuthentication";
 
@@ -52,11 +43,59 @@ const Schedule: React.FC = () => {
   //check si l'utilisateur est connecté
   useAuthentication();
   const history = useHistory();
+  //Si l'utilisateur est admin
+  const [isAdmin, setIsAdmin] = useState(0);
+  //Pour avoir tous les utilisateurs quand c'est un admin qui réserve
+  const [users, setUsers] = useState([]);
+  //Pour avoir l'utilisateur sélectionné par l'admin
+  const [userSelected, setUserSelected] = useState(null);
 
 
 
+  const fetchIsAdmin = async () => {
+    /*
+    *   check si l'utilisateur est administrateur
+    */
+    setIsLoading(true);
+    fetch(config.API_URL + "/auth/checkAdmin?upn='" + localStorage.getItem('upn') + "'", {
+      headers: {
+        'Authorization': `${localStorage.getItem('token')}`,
+        'upn': `${localStorage.getItem('upn')}`
+      }
+    })
+      .then((res) => res.json())
+      .then((res) => {
 
+        setIsAdmin(res[0].isAdmin);
+        setIsLoading(false);
+      })
+      .catch((err) => console.log(err))
 
+  }
+
+  const getAllUser = () => {
+    //récupére toutes les users et le met dans la variable users
+    const controller = new AbortController();
+    const signal = controller.signal;
+    setIsLoading(true);
+    const headers = {
+      'Authorization': `${localStorage.getItem('token')}`,
+      'upn': `${localStorage.getItem('upn')}`
+    };
+    fetch(`${config.API_URL}/admin/getAllUsers`, { headers, signal })
+      .then((res) => res.json())
+      .then((res) => {
+        setUsers(res);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          console.log(err)
+        }
+      });
+
+    return () => controller.abort();
+  }
 
   const fetchAllReservationForOneDay = async () => {
     /*
@@ -86,6 +125,7 @@ const Schedule: React.FC = () => {
       history.push("/");
     }
     else {
+      fetchIsAdmin()
       fetchAllReservationForOneDay()
     }
 
@@ -114,48 +154,108 @@ const Schedule: React.FC = () => {
     if (allFieldsChecked(event.target, reservations, currentYear, formatDate(currentDate))) {
       //si tous les champs respectent bien ce qu'il faut
 
-      fetch(config.API_URL + "/reservations", {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-          'Authorization': `${localStorage.getItem('token')}`,
-          'upn': `${localStorage.getItem('upn')}`
-        },
-        body: (
-          JSON.stringify({
-            title: event.target.nameReservation.value,
-            day: event.target.day.value,
-            hourBegin: event.target.hourBegin.value,
-            hourEnd: event.target.hourEnd.value,
-            upn: localStorage.getItem('upn'),
-            nameRoom: params["nameRoom"],
+      //si l'utilisateur est administrateur
+      if (isAdmin) {
+        if (userSelected !== null) {
+          fetch(config.API_URL + "/admin/addReservation", {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+              'Authorization': `${localStorage.getItem('token')}`,
+              'upn': `${localStorage.getItem('upn')}`
+            },
+            body: (
+              JSON.stringify({
+                title: event.target.nameReservation.value,
+                day: event.target.day.value,
+                hourBegin: event.target.hourBegin.value,
+                hourEnd: event.target.hourEnd.value,
+                idTe: userSelected,
+                nameRoom: params["nameRoom"],
+              }
+              )
+            ),
+          }).then(function (res) {
+            setUserSelected(null);
+            if (responseBox !== undefined && responseBox !== null) {
+              if (res.status === 200) {
+                if (formReservation !== undefined && formReservation !== null) {
+                  formReservation.innerHTML = "";
+                }
+
+                responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
+                fetchAllReservationForOneDay()
+
+              }
+              else {
+
+                responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+
+              }
+
+            }
+          })
+            .catch(function (res) {
+              if (responseBox !== undefined && responseBox !== null) {
+                responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+              }
+            })
+        }
+        else {
+          if (responseBox !== undefined && responseBox !== null) {
+            responseBox.innerHTML = "<p id='failed_response'>Aucun utilisateur sélectionné</p>";
           }
-          )
-        ),
-      }).then(function (res) {
-        if (responseBox !== undefined && responseBox !== null) {
-          if (res.status === 200) {
-            if (formReservation !== undefined && formReservation !== null) {
-              formReservation.innerHTML = "";
+          if (submitButton !== undefined && submitButton !== null) {
+            submitButton.style.display = "block";
+          }
+        }
+      }
+
+      //si l'utilisateur n'est pas administrateur
+      else {
+        fetch(config.API_URL + "/reservations", {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+            'Authorization': `${localStorage.getItem('token')}`,
+            'upn': `${localStorage.getItem('upn')}`
+          },
+          body: (
+            JSON.stringify({
+              title: event.target.nameReservation.value,
+              day: event.target.day.value,
+              hourBegin: event.target.hourBegin.value,
+              hourEnd: event.target.hourEnd.value,
+              upn: localStorage.getItem('upn'),
+              nameRoom: params["nameRoom"],
+            }
+            )
+          ),
+        }).then(function (res) {
+          if (responseBox !== undefined && responseBox !== null) {
+            if (res.status === 200) {
+              if (formReservation !== undefined && formReservation !== null) {
+                formReservation.innerHTML = "";
+              }
+
+              responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
+              fetchAllReservationForOneDay()
+
+            }
+            else {
+
+              responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+
             }
 
-            responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
-            fetchAllReservationForOneDay()
-
-          }
-          else {
-
-            responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
-
-          }
-
-        }
-      })
-        .catch(function (res) {
-          if (responseBox !== undefined && responseBox !== null) {
-            responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
           }
         })
+          .catch(function (res) {
+            if (responseBox !== undefined && responseBox !== null) {
+              responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+            }
+          })
+      }
     }
     else {
       if (submitButton !== undefined && submitButton !== null) {
@@ -197,6 +297,7 @@ const Schedule: React.FC = () => {
         <IonRow>
           <IonCol>
             <h1 id="title_schedule">Réservations</h1>
+
           </IonCol>
           <IonCol>
             <IonButton fill="outline" className='reservation_top_button' onClick={() => fetchAllReservationForOneDay()}><IonIcon icon={refreshOutline} /></IonButton>
@@ -213,6 +314,28 @@ const Schedule: React.FC = () => {
             </IonToolbar>
             <div id="formReservation">
               <form onSubmit={handleSubmit}>
+                {isAdmin ?
+                  <div>
+                    <IonList>
+                      <IonItem>
+                        <IonSelect placeholder="Choisissez un utilisateur :" onClick={getAllUser} onIonChange={(e) => setUserSelected(e.target.value)}>
+                          {users.length === 0 ?
+                            <IonSelectOption disabled>
+                              Chargement des utilisateurs en cours...
+                            </IonSelectOption>
+                            : null}
+                          {users.map((user) => (
+                            <IonSelectOption key={user["idTe"]} value={user["idTe"]} >
+                              {user["name"]}
+                            </IonSelectOption>
+                          ))}
+                        </IonSelect>
+                      </IonItem>
+                    </IonList>
+                    <br />
+                  </div>
+                  : null}
+
                 <label htmlFor="day">Jour de la réservation:</label>
                 <input type="date" id="day" name="day" defaultValue={dateChosen} onChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear, currentDate)} min={String(formatDate(currentDate))} max={String(currentYear + 2)} required /><br />
 
