@@ -1,4 +1,5 @@
-import {allFieldsCheckedDeleteRoom, hasSqlInjectionUnavailable, hasSqlInjectionAddRoom, hasSqlInjectionDeleteRoom} from './AdministrationRoom';
+import {allFieldsCheckedDeleteRoom, hasSqlInjectionUnavailable, hasSqlInjectionAddRoom, hasSqlInjectionDeleteRoom, 
+subtractDays, addDays} from './AdministrationRoom';
 
 
 
@@ -135,4 +136,27 @@ describe('hasSqlInjectionUnavailable', () => {
     expect(hasSqlInjectionUnavailable(selectedImplantation, selectedRoom, form)).toBe(true);
   });
 });
+
+describe('subtractDays', () => {
+  it('subtracts 7 days from the given date and updates the state', async () => {
+    const initialDate = new Date('2023-04-22');
+    const setDateForGraph = jest.fn();
+
+    await subtractDays(initialDate, setDateForGraph);
+
+    expect(setDateForGraph).toHaveBeenCalledWith(new Date('2023-04-15'));
+  });
+});
+
+describe('addDays', () => {
+  test('adds 7 days to the provided date and updates the state', async () => {
+    const dateForGraph = new Date('2022-01-01');
+    const setDateForGraph = jest.fn();
+    
+    await addDays(dateForGraph, setDateForGraph);
+    
+    expect(setDateForGraph).toHaveBeenCalledWith(new Date('2022-01-08'));
+  });
+});
+
 

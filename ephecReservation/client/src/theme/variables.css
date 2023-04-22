@@ -254,3 +254,8 @@ form{
   align-items: center;
 }
 
+.refresh_button{
+  display: flex;
+  flex-direction: column;
+   margin-top: 15px !important;
+}

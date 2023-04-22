@@ -1,4 +1,4 @@
-import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonContent} from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardContent, IonCardTitle} from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 
 
@@ -15,7 +15,7 @@ const CardRoom  = ({ Rooms }: CardRoomProps) => {
   }
 
   return (
-    <IonContent>
+    <div>
     {Rooms.map((room: any) => (
       <IonCard onClick={() => redirectToSchedule(room["name"])} key={room["idRo"]}>
         <IonCardHeader>
@@ -26,7 +26,7 @@ const CardRoom  = ({ Rooms }: CardRoomProps) => {
         </IonCardContent>
       </IonCard>
     ))}
-    </IonContent>
+    </div>
   );
 };
 

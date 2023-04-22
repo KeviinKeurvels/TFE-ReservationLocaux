@@ -2,7 +2,6 @@ import {
   IonCol, IonIcon, IonRow,
 } from '@ionic/react';
 import { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
 import React from 'react';
 import {refreshOutline } from 'ionicons/icons';
 import {
@@ -85,7 +84,7 @@ const MyReservations: React.FC = () => {
       <ModalLoading isLoading={isLoading} />
       <IonRow>
           <IonCol>
-          <IonButton fill="outline" className='reservation_top_button' onClick={()=>fetchAllReservationForOneUser()}><IonIcon icon={refreshOutline} /></IonButton>
+          <IonButton fill="outline" className='refresh_button' onClick={()=>fetchAllReservationForOneUser()}><IonIcon icon={refreshOutline} /></IonButton>
           </IonCol>
         </IonRow>
 
