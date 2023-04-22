@@ -1,0 +1,13 @@
+#graph_content{
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              margin-top: 5%;
+              max-height: 100%;
+              max-width: 100%;
+}
+
+#graph{
+              min-height: 300px;
+              max-width: 100%;
+}

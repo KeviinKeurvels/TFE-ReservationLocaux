@@ -539,6 +539,75 @@ export function handleSubmitModifyRoom(event, selectedRoom, config) {
               }
 }
 
+//////////////////////////////////////POUR LE GRAPHIQUE
+export function hasSqlInjectionStatistics(idRoom, dateForGraph) {
+              // Check if the variables contain any SQL keywords or characters
+              if (/select|insert|update|delete|drop|union|truncate|(\-\-)/i.test(idRoom)) {
+                            return true; // SQL injection found
+              }
+              else if(/select|insert|update|delete|drop|union|truncate|(\-\-)/i.test(dateForGraph)) {
+                            return true; // SQL injection found
+              }
+
+              return false; // No SQL injection found
+}
+
+export function loadDataGraph(idRoom, setIsLoading, config, setDataGraph, setSelectedRoomForGraph, dateForGraph) {
+              /*
+              *   Récupère les informations pour le graphique
+              */
+              if (!hasSqlInjectionStatistics(idRoom, dateForGraph)) {
+                            setSelectedRoomForGraph(idRoom);
+                            let callback = document.getElementById("callback_message_graph");
+                            if (callback != null && callback != undefined) {
+                                          callback.innerHTML = ""
+                            }
+                            const controller = new AbortController();
+                            const signal = controller.signal;
+                            setIsLoading(true);
+                            fetch(config.API_URL + "/admin/getCountReservation?idRo=" + idRoom + "&date='" + dateForGraph + "'", {
+                                          signal,
+                                          headers: {
+                                                        'Authorization': `${localStorage.getItem('token')}`,
+                                                        'upn': `${localStorage.getItem('upn')}`
+                                          }
+                            })
+                                          .then((res) => res.json())
+                                          .then((res) => {
+                                                        setDataGraph(res);
+                                                        setIsLoading(false);
+                                          })
+                                          .catch((err) => {
+                                                        if (err.name !== "AbortError") {
+                                                                      console.log(err)
+                                                        }
+                                          });
+
+                            return () => controller.abort();
+              }
+              else {
+                            let callback = document.getElementById("callback_message_graph");
+                            if (callback != null && callback != undefined) {
+                                          callback.innerHTML = "<p id='failed_response'>Injection SQL détectée</p>"
+                            }
+              }
+
+
+};
+
+export async function subtractDays(dateForGraph, setDateForGraph) {
+              //enleve 7 jours à la date choisie pour le graphique
+              const newDate = new Date(dateForGraph);
+              newDate.setDate(dateForGraph.getDate() - 7);
+              setDateForGraph(newDate);
+}
+export async function addDays(dateForGraph, setDateForGraph) {
+              //rajoute 7 jours à la date choisie pour le graphique
+              const newDate = new Date(dateForGraph);
+              newDate.setDate(dateForGraph.getDate() + 7);
+              setDateForGraph(newDate);
+}
+
 //////////////////////////////////////SELECTION DANS UN FORM
 export const handleChangeImplantation = (event, setSelectedImplantation, setRooms, setIsLoading, config) => {
               const selectedImplantation = event.target.value;
@@ -590,6 +659,8 @@ export const handleChangeRoom = (event, setSelectedRoom, rooms, setIsLoading) =>
 
               setIsLoading(false);
 };
+
+
 
 
 

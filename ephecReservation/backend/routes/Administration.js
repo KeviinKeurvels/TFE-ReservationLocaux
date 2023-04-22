@@ -89,6 +89,31 @@ router.delete("/deleteAllReservationsForARoom", (req, res) => {
   });
 });
 
+//to get the count of reservations per day
+router.get("/getCountReservation", (req, res) => {
+  let idRo=req.query.idRo;
+  let date=req.query.date;
+  const query = `
+  SELECT d.day, COUNT(r.idRo) AS count
+  FROM (
+    SELECT DATE_SUB(${date}, INTERVAL n DAY) AS day
+    FROM (
+      SELECT a.N + b.N * 10 + 1 AS n
+      FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS a
+      CROSS JOIN (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS b
+    ) AS numbers
+    WHERE n < 8
+  ) AS d
+  LEFT JOIN reservation_deleted AS r ON d.day = r.day AND r.idRo = ${idRo}
+  GROUP BY d.day
+  ORDER BY d.day;
+  ;`
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+})
+
 ////////////////ROOMS
 // to add a new room
 router.post("/room", (req, res) => {

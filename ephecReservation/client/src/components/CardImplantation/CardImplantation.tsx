@@ -1,4 +1,4 @@
-import { IonCard, IonCardHeader, IonCardContent, IonCardTitle, IonContent} from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardContent, IonCardTitle} from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 
 
@@ -15,7 +15,7 @@ const CardImplantation  = ({ Implantations }: CardImplantationProps) => {
   }
 
   return (
-    <IonContent>
+    <div>
     {Implantations.map((implantation: any) => (
       <IonCard onClick={() => redirectToRooms(implantation["name"])} key={implantation["idIm"]}>
         <IonCardHeader>
@@ -26,7 +26,7 @@ const CardImplantation  = ({ Implantations }: CardImplantationProps) => {
         </IonCardContent>
       </IonCard>
     ))}
-    </IonContent>
+    </div>
   );
 };
 
