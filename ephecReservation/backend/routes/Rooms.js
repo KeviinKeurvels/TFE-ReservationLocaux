@@ -14,7 +14,7 @@ router.get("/byImplantation", (req,res)=>{
 
               FROM ephecreservation.implantation  
               inner join ephecreservation.room on room.idIm=implantation.idIm 
-              WHERE implantation.name=${implantation}
+              WHERE implantation.idIm=${implantation}
 
               `;
               db.query(query,(err,data)=>{

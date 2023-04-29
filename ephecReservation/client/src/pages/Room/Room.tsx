@@ -14,7 +14,7 @@ import useAuthentication from "../../hooks/checkAuthentication";
 
 const Room: React.FC = () => {
   //récupération des paramètres
-  const { nameImplantation: implantation }: any = useParams();
+  const { idImplantation: implantation }: any = useParams();
   //pour voir quand il va fetch les données
   const [isLoading, setIsLoading] = useState(false);
   //pour avoir tout les locaux

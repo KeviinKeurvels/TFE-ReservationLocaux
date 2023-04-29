@@ -23,9 +23,9 @@ router.get("/getAllUsers", (req, res) => {
 // to add a new reservation for a user
 router.post("/addReservation", (req, res) => {
   const query = `
-              INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo) 
+              INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo, room_unavailable) 
               VALUES("${req.body.title}",'${req.body.day}','${req.body.hourBegin}','${req.body.hourEnd}',
-              ${req.body.idTe},(SELECT idRo FROM room WHERE name='${req.body.nameRoom}'))
+              ${req.body.idTe},(SELECT idRo FROM room WHERE name='${req.body.nameRoom}'),0)
               `;
 
   db.query(query, (err, data) => {
@@ -113,6 +113,50 @@ router.get("/getCountReservation", (req, res) => {
     return res.json(data)
   })
 })
+
+
+////////////////IMPLANTATIONS
+// to add a new implantation
+router.post("/implantation", (req, res) => {
+  const query = `
+              INSERT INTO implantation (name) 
+              VALUES('${req.body.name}')
+              `;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json("Implantation added successfully.")
+  });
+});
+
+// to delete an implantation
+router.delete("/implantation", (req, res) => {
+  const query = `
+  DELETE FROM implantation 
+  WHERE idIm = '${req.body.idIm}';
+  `;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json("Implantation has been deleted successfully.")
+  });
+});
+
+// to modify an implantation
+router.put("/implantation", (req, res) => {
+  const query = `
+              UPDATE implantation
+              SET name="${req.body.name}"
+              WHERE idIm = ${req.body.idIm}
+              `;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json("Implantation updated successfully.")
+  })
+})
+
+
 
 ////////////////ROOMS
 // to add a new room

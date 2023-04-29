@@ -25,7 +25,6 @@ const GraphRooms = ({ data }: Props) => {
             data: counts,
             borderColor: 'orange',
             fill: false,
-
           }],
         },
         options: {
@@ -66,10 +65,26 @@ const GraphRooms = ({ data }: Props) => {
     const updateChart = () => {
       if (chartRef && chartRef.current) {
         chartRef.current.update();
-        requestAnimationFrame(updateChart);
       }
     };
-    requestAnimationFrame(updateChart);
+
+    let animationFrameId: number;
+    const startAnimation = () => {
+      animationFrameId = requestAnimationFrame(function animate() {
+        updateChart();
+        animationFrameId = requestAnimationFrame(animate);
+      });
+    };
+
+    const stopAnimation = () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+
+    startAnimation();
+
+    return () => {
+      stopAnimation();
+    };
   }, []);
 
   return (

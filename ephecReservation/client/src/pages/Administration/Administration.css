@@ -18,7 +18,7 @@
   font-weight: bold;
 }
 
-#submit_button_add_room, #submit_button_unavailable, #submit_button_delete_room, #submit_button_modify_room {
+#submit_button_add_room, #submit_button_unavailable, #submit_button_delete_room, #submit_button_modify_room, #submit_button_add_implantation, #submit_button_delete_implantation, #submit_button_modify_implantation  {
               padding: 10px 15px;
               background-color: rgb(241, 189, 15);
               border: none;

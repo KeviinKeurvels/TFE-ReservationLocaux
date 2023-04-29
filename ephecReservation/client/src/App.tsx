@@ -74,7 +74,7 @@ const App: React.FC = () => {
             <Route exact path="/implantation">
               <Implantation />
             </Route>
-            <Route exact path="/room/:nameImplantation">
+            <Route exact path="/room/:idImplantation">
               <Room />
             </Route>
             <Route
