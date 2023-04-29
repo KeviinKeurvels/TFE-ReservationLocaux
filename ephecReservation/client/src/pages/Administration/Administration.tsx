@@ -12,8 +12,12 @@ import GraphRooms from '../../components/GraphRooms/GraphRooms';
 import { formatDate } from '../../functions/Schedule/Schedule';
 import {
   handleSubmitUnavailable, handleSubmitAddRoom, handleSubmitDeleteRoom, handleSubmitModifyRoom,
-  handleChangeImplantation, handleChangeRoom, loadDataGraph, subtractDays, addDays
+  handleChangeImplantationToGetRooms, handleChangeRoom, loadDataGraph, subtractDays, addDays
 } from '../../functions/AdministrationRoom/AdministrationRoom'
+
+import {handleSubmitAddImplantation, handleSubmitDeleteImplantation, handleSubmitModifyImplantation,
+  handleChangeImplantation, loadImplantations
+} from '../../functions/AdministrationImplantation/AdministrationImplantation'
 import { hasSqlInjection } from '../../functions/Login/Login'
 import config from "../../config.json";
 //hook pour check si il y a des données
@@ -54,28 +58,7 @@ const Administration: React.FC = () => {
       history.push("/");
     }
     else {
-      const controller = new AbortController();
-      const signal = controller.signal;
-      setIsLoading(true);
-      fetch(config.API_URL + "/implantations", {
-        signal,
-        headers: {
-          'Authorization': `${localStorage.getItem('token')}`,
-          'upn': `${localStorage.getItem('upn')}`
-        }
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          setImplantations(res);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          if (err.name !== "AbortError") {
-            console.log(err)
-          }
-        });
-
-      return () => controller.abort();
+      loadImplantations(setImplantations, setIsLoading, config)
     }
   }, []);
 
@@ -112,12 +95,107 @@ const Administration: React.FC = () => {
 
         {segment === "implantations" && (
           <div id='content_implantations'>
-            <div>
-              <h1 className='title_administration'>Actions</h1>
-              <p>Ici c'est pour l'implantation</p>
-            </div>
+            <h1 className='title_administration'>Actions</h1>
+            <IonRow>
+              <IonCol>
+                <IonButton className='button_admin' color="success" id="add_implantation_button">Ajouter une implantation</IonButton>
+                <IonModal id="example-modal" ref={modal} trigger="add_implantation_button">
+                  <IonContent>
+                    <IonToolbar color="warning">
+                      <IonTitle>Ajout implantation</IonTitle>
+                    </IonToolbar>
+                    <div>
+                      <form onSubmit={(e) => handleSubmitAddImplantation(e, config)} id="form_add_implantation">
+                        <br />
+                        <label htmlFor="name">Nom de l'implantation:</label>
+                        <input type="text" id="name" name="name" required minLength={2} maxLength={40}></input><br />
+                        <input id="submit_button_add_implantation" type="submit" value="Ajouter" />
+                      </form>
+                    </div>
+                    <div id="callback_message_add_implantation">
+                    </div>
+                  </IonContent>
+                </IonModal>
+              </IonCol>
+            </IonRow>
+
+
+            <IonRow>
+              <IonCol>
+                <IonButton className='button_admin' color="secondary" id="modify_implantation_button">Modifier une implantation</IonButton>
+                <IonModal id="example-modal" ref={modal} trigger="modify_implantation_button">
+                  <IonContent>
+                    <IonToolbar color="warning">
+                      <IonTitle>Modification implantation</IonTitle>
+                    </IonToolbar>
+                    <div>
+                      <form onSubmit={(e) => handleSubmitModifyImplantation(e, selectedImplantation, config)} id="form_modify_implantation">
+                        <IonList>
+                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                            <IonSelect placeholder="Choisissez une implantation :"  onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setImplantations, setIsLoading, config)}>
+                              {isLoading ? 
+                              <IonSelectOption className='form_text' disabled>Chargement en cours...</IonSelectOption>
+                              :
+                              implantations.map((implantation) => (
+                                <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
+                                  {implantation["name"]}
+                                </IonSelectOption>
+                              ))}
+                            </IonSelect>
+                          </IonItem>
+                        </IonList>
+                        <br />
+                        <label htmlFor="name">Nom de l'implantation:</label>
+                        <input type="text" id="name" name="name" required minLength={2} maxLength={40}></input><br />
+                        <input id="submit_button_modify_implantation" type="submit" value="Modifier" />
+                      </form>
+                    </div>
+                    <div id="callback_message_modify_implantation">
+                    </div>
+                  </IonContent>
+                </IonModal>
+              </IonCol>
+            </IonRow>
+
+
+            <IonRow>
+              <IonCol>
+                <IonButton className='button_admin' color="danger" id="delete_implantation_button">Supprimer une implantation</IonButton>
+                <IonModal id="example-modal" ref={modal} trigger="delete_implantation_button">
+                  <IonContent>
+                    <IonToolbar color="warning">
+                      <IonTitle>Suppression implantation</IonTitle>
+                    </IonToolbar>
+                    <div>
+                      <form onSubmit={(e) => {handleSubmitDeleteImplantation(e, rooms.map(room => room["idRo"]), selectedImplantation, config);}} id="form_delete_room">
+                      <IonList>
+                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
+                              {implantations.map((implantation) => (
+                                <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
+                                  {implantation["name"]}
+                                </IonSelectOption>
+                              ))}
+                            </IonSelect>
+                          </IonItem>
+                        </IonList>
+                        <br />
+                        <p className='form_text'>Tous les locaux et toutes leurs réservations vont être automatiquement supprimées</p>
+                        <input id="submit_button_delete_implantation" type="submit" value="Supprimer" />
+                      </form>
+                    </div>
+                    <div id="callback_message_delete_implantation">
+                    </div>
+                  </IonContent>
+                </IonModal>
+              </IonCol>
+            </IonRow>
           </div>
         )}
+
+
+
+
 
         {segment === "rooms" && (
           <div id='content_rooms'>
@@ -133,7 +211,7 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitAddRoom(e, selectedImplantation, config)} id="form_add_room">
                         <IonList>
-                          <IonItem>
+                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
                             <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => { setSelectedImplantation(e.target.value); }}>
                               {implantations.map((implantation) => (
                                 <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
@@ -170,10 +248,10 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitModifyRoom(e, selectedRoom, config)} id="form_modify_room">
                         <IonList>
-                          <IonItem>
-                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
+                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
                               {implantations.map((implantation) => (
-                                <IonSelectOption key={implantation["idIm"]} value={implantation["name"]}>
+                                <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
                                   {implantation["name"]}
                                 </IonSelectOption>
                               ))}
@@ -219,10 +297,10 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitDeleteRoom(e, selectedRoom, config)} id="form_delete_room">
                         <IonList>
-                          <IonItem>
-                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
+                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
                               {implantations.map((implantation) => (
-                                <IonSelectOption key={implantation["idIm"]} value={implantation["name"]}>
+                                <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
                                   {implantation["name"]}
                                 </IonSelectOption>
                               ))}
@@ -264,10 +342,10 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitUnavailable(e, selectedImplantation, selectedRoom, config)} id="form_unavailable">
                         <IonList>
-                          <IonItem>
-                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
+                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                            <IonSelect  placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
                               {implantations.map((implantation) => (
-                                <IonSelectOption key={implantation["idIm"]} value={implantation["name"]}>
+                                <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
                                   {implantation["name"]}
                                 </IonSelectOption>
                               ))}
@@ -317,9 +395,9 @@ const Administration: React.FC = () => {
             <div id="statistics_content">
               <IonList className='fields_statistics'>
                 <IonItem>
-                  <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
+                  <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
                     {implantations.map((implantation) => (
-                      <IonSelectOption key={implantation["idIm"]} value={implantation["name"]}>
+                      <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
                         {implantation["name"]}
                       </IonSelectOption>
                     ))}

@@ -390,7 +390,7 @@ export function handleSubmitDeleteRoom(event, selectedRoom, config) {
 
               if (allFieldsCheckedDeleteRoom(selectedRoom)) {
                             //si tous les champs respectent bien ce qu'il faut
-                            //on supprime le local
+                            //on supprime les réservations du local supprimé
                             fetch(config.API_URL + "/admin/deleteAllReservationsForARoom", {
                                           method: 'DELETE',
                                           headers: {
@@ -407,7 +407,7 @@ export function handleSubmitDeleteRoom(event, selectedRoom, config) {
                             }).then(function (res) {
                                           if (responseBox !== undefined && responseBox !== null) {
                                                         if (res.status === 200) {
-                                                                      //on supprime les réservations du local supprimé
+                                                                      //on supprime le local
                                                                       fetch(config.API_URL + "/admin/room", {
                                                                                     method: 'DELETE',
                                                                                     headers: {
@@ -559,7 +559,7 @@ export function loadDataGraph(idRoom, setIsLoading, config, setDataGraph, setSel
               if (!hasSqlInjectionStatistics(idRoom, dateForGraph)) {
                             setSelectedRoomForGraph(idRoom);
                             let callback = document.getElementById("callback_message_graph");
-                            if (callback != null && callback != undefined) {
+                            if (callback !== null && callback !== undefined) {
                                           callback.innerHTML = ""
                             }
                             const controller = new AbortController();
@@ -587,7 +587,7 @@ export function loadDataGraph(idRoom, setIsLoading, config, setDataGraph, setSel
               }
               else {
                             let callback = document.getElementById("callback_message_graph");
-                            if (callback != null && callback != undefined) {
+                            if (callback !== null && callback !== undefined) {
                                           callback.innerHTML = "<p id='failed_response'>Injection SQL détectée</p>"
                             }
               }
@@ -609,7 +609,7 @@ export async function addDays(dateForGraph, setDateForGraph) {
 }
 
 //////////////////////////////////////SELECTION DANS UN FORM
-export const handleChangeImplantation = (event, setSelectedImplantation, setRooms, setIsLoading, config) => {
+export const handleChangeImplantationToGetRooms = (event, setSelectedImplantation, setRooms, setIsLoading, config) => {
               const selectedImplantation = event.target.value;
               setSelectedImplantation(selectedImplantation);
               const controller = new AbortController();
@@ -622,6 +622,7 @@ export const handleChangeImplantation = (event, setSelectedImplantation, setRoom
               fetch(`${config.API_URL}/rooms/byImplantation?implantation='${selectedImplantation}'`, { headers, signal })
                             .then((res) => res.json())
                             .then((res) => {
+                                          
                                           setRooms(res);
                                           setIsLoading(false);
                             })

@@ -9,15 +9,15 @@ type CardImplantationProps = {
 const CardImplantation  = ({ Implantations }: CardImplantationProps) => {
   const history = useHistory();
 
-  function redirectToRooms(nameImplantation : number) {
+  function redirectToRooms(idImplantation : number) {
     //va rediriger vers la page room de l'implantation
-    history.push("/room/"+nameImplantation);
+    history.push("/room/"+idImplantation);
   }
 
   return (
     <div>
     {Implantations.map((implantation: any) => (
-      <IonCard onClick={() => redirectToRooms(implantation["name"])} key={implantation["idIm"]}>
+      <IonCard onClick={() => redirectToRooms(implantation["idIm"])} key={implantation["idIm"]}>
         <IonCardHeader>
           <IonCardTitle>{implantation["name"]}</IonCardTitle>
         </IonCardHeader>

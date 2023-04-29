@@ -51,9 +51,9 @@ router.get("/getOne", (req, res) => {
 // to add a new reservation
 router.post("/", (req, res) => {
   const query = `
-              INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo) 
+              INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo, room_unavailable) 
               VALUES("${req.body.title}",'${req.body.day}','${req.body.hourBegin}','${req.body.hourEnd}',
-              (SELECT idTe FROM teacher WHERE upn='${req.body.upn}'),(SELECT idRo FROM room WHERE name='${req.body.nameRoom}'))
+              (SELECT idTe FROM teacher WHERE upn='${req.body.upn}'),(SELECT idRo FROM room WHERE name='${req.body.nameRoom}'), 0)
               `;
 
   db.query(query, (err, data) => {
