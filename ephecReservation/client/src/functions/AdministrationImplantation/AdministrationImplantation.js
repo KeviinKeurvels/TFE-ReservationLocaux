@@ -382,12 +382,12 @@ export async function handleSubmitDeleteImplantation(event, roomsIds, selectedIm
                                                     if (response3.status === 200) {
                                                         //si la troisième requête se passe bien
                                                         if (responseBox !== undefined && responseBox !== null) {
-                                                                      responseBox.innerHTML += "<p id='success_response'>L'implantation est bien supprimée.</p>";
+                                                                      responseBox.innerHTML = "<p id='success_response'>L'implantation est bien supprimée.</p>";
                                                         }
                                                     } else {
                                                         //si la troisième requête se passe pas bien
                                                         if (responseBox !== undefined && responseBox !== null) {
-                                                                      responseBox.innerHTML += "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+                                                                      responseBox.innerHTML += "<p id='failed_response'>Un problème est survenu.<br/>L'implantation n'a apas été supprimée.</p>";
                                                         }
                                                     }
                                           

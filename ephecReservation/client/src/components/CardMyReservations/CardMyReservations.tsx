@@ -178,8 +178,8 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
             <IonRow>
 
               <IonCol>
-                <IonButton color="success" className="button_card" id={`modify_button_for${reservation['idRe']}`}>📝 Modifier</IonButton>
-                <IonModal id="example-modal" ref={modal} trigger={`modify_button_for${reservation['idRe']}`}>
+                <IonButton color="success" className="button_card" id={`modify_button_for_${reservation['idRe']}`}>📝 Modifier</IonButton>
+                <IonModal id="example-modal" ref={modal} trigger={`modify_button_for_${reservation['idRe']}`}>
                   <IonContent>
                     <IonToolbar color="warning">
                       <IonTitle>Réservation {reservation["roomName"]}</IonTitle>
@@ -211,8 +211,8 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
               </IonCol>
 
               <IonCol>
-                <IonButton color="danger" className="button_card" id={`delete_button_for${reservation['idRe']}`}>❌Supprimer</IonButton>
-                <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for${reservation['idRe']}`}>
+                <IonButton color="danger" className="button_card" id={`delete_button_for_${reservation['idRe']}`}>❌Supprimer</IonButton>
+                <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for_${reservation['idRe']}`}>
                   <div className='wrapper' id={`modal_for_${reservation['idRe']}`}>
                     <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
                       de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>

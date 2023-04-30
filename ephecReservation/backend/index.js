@@ -26,6 +26,4 @@ app.use('/rooms', isAuthenticated, roomsRouter);
 app.use('/implantations', isAuthenticated, implantationsRouter);
 app.use('/admin', isAuthenticatedAsAdmin, administrationRouter);
 
-isAuthenticatedAsAdmin
-
 

@@ -9,15 +9,15 @@ type CardRoomProps = {
 const CardRoom  = ({ Rooms }: CardRoomProps) => {
   const history = useHistory();
 
-  function redirectToSchedule(nameRoom : number) {
+  function redirectToSchedule(idRoom : number) {
     //va rediriger vers la page schedule du local
-    history.push("/schedule/"+nameRoom);
+    history.push("/schedule/"+idRoom);
   }
 
   return (
     <div>
     {Rooms.map((room: any) => (
-      <IonCard onClick={() => redirectToSchedule(room["name"])} key={room["idRo"]}>
+      <IonCard onClick={() => redirectToSchedule(room["idRo"])} key={room["idRo"]}>
         <IonCardHeader>
           <IonCardTitle>{room["name"]}</IonCardTitle>
         </IonCardHeader>
