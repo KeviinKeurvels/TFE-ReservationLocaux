@@ -20,6 +20,7 @@ import Schedule from './pages/Schedule/Schedule';
 import SignOut from './pages/SignOut/SignOut';
 import MyReservations from './pages/MyReservations/MyReservations';
 import Administration from './pages/Administration/Administration';
+import NotFound from './components/NotFound/NotFound'
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -79,9 +80,9 @@ const App: React.FC = () => {
             </Route>
             <Route
               exact
-              path="/schedule/:nameRoom"
+              path="/schedule/:idRoom"
               render={({ match }) => (
-                <Schedule key={match.params.nameRoom} />
+                <Schedule key={match.params.idRoom} />
               )}
             />
             <Route exact path="/signOut">
@@ -96,7 +97,10 @@ const App: React.FC = () => {
             <Route exact path="/">
               <Redirect to="/home" />
             </Route>
+            <Route component={NotFound} />
           </IonRouterOutlet>
+
+          
           <IonTabBar slot="bottom" id="tabBar">
             <IonTabButton tab="implantation" href="/implantation">
               <IonIcon icon={homeOutline} />

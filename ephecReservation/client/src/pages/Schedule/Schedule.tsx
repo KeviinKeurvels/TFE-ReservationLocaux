@@ -49,6 +49,34 @@ const Schedule: React.FC = () => {
   const [users, setUsers] = useState([]);
   //Pour avoir l'utilisateur sélectionné par l'admin
   const [userSelected, setUserSelected] = useState(null);
+  //Pour avoir le nom du local
+  const [nameRoom, setNameRoom] = useState(null);
+
+  //le useEffect de nameRoom qui fait qu'il va aller chercher le nom d'un local
+  useEffect(() => {
+    if (localStorage.length === 0 || hasSqlInjection(localStorage.getItem('upn'), localStorage.getItem('token'))) {
+      //si le localStorage est vide ou s'il il y a une injection SQL
+      history.push("/");
+    }
+    else {
+      setIsLoading(true);
+      fetch(config.API_URL + "/rooms?idRo=" + params["idRoom"], {
+        headers: {
+          'Authorization': `${localStorage.getItem('token')}`,
+          'upn': `${localStorage.getItem('upn')}`
+        }
+      })
+        .then((res) => res.json())
+        .then((res) => {
+  
+          setNameRoom(res[0].name);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err))
+    }
+
+  }, [nameRoom]);
+
 
 
 
@@ -102,7 +130,7 @@ const Schedule: React.FC = () => {
     *   Récupère les informations d'une réservation pour un jour
     */
     setIsLoading(true);
-    fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["nameRoom"] + "'", {
+    fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["idRoom"] + "'", {
       headers: {
         'Authorization': `${localStorage.getItem('token')}`,
         'upn': `${localStorage.getItem('upn')}`
@@ -171,7 +199,7 @@ const Schedule: React.FC = () => {
                 hourBegin: event.target.hourBegin.value,
                 hourEnd: event.target.hourEnd.value,
                 idTe: userSelected,
-                nameRoom: params["nameRoom"],
+                idRo: params["idRoom"],
               }
               )
             ),
@@ -227,7 +255,7 @@ const Schedule: React.FC = () => {
               hourBegin: event.target.hourBegin.value,
               hourEnd: event.target.hourEnd.value,
               upn: localStorage.getItem('upn'),
-              nameRoom: params["nameRoom"],
+              idRo: params["idRoom"],
             }
             )
           ),
@@ -278,7 +306,7 @@ const Schedule: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar id="top_bar">
-          <IonTitle>Horaire {params["nameRoom"]}</IonTitle>
+          <IonTitle>Horaire {nameRoom}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -310,7 +338,7 @@ const Schedule: React.FC = () => {
         <IonModal id="example-modal" ref={modal} trigger="open-modal">
           <IonContent>
             <IonToolbar color="warning">
-              <IonTitle>Réservation {params["nameRoom"]}</IonTitle>
+              <IonTitle>Réservation {nameRoom}</IonTitle>
             </IonToolbar>
             <div id="formReservation">
               <form onSubmit={handleSubmit}>
@@ -362,7 +390,7 @@ const Schedule: React.FC = () => {
 
 
         <IonItem>
-          <CardSchedule Reservations={reservations} NameRoom={params["nameRoom"]} fetchAllReservationForOneDay={fetchAllReservationForOneDay} />
+          <CardSchedule Reservations={reservations} NameRoom={nameRoom} fetchAllReservationForOneDay={fetchAllReservationForOneDay} />
         </IonItem>
 
 

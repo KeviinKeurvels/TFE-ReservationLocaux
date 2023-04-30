@@ -29,7 +29,7 @@ router.get("/byRoomAndDay", (req, res) => {
     inner join reservation on teacher.idTe=reservation.idTe 
     inner join room on room.idRo=reservation.idRo 
 
-    WHERE day=${day} AND room.name=${room} ORDER BY hourBegin
+    WHERE day=${day} AND room.idRo=${room} ORDER BY hourBegin
   `;
 
   db.query(query, (err, data) => {
@@ -53,7 +53,7 @@ router.post("/", (req, res) => {
   const query = `
               INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo, room_unavailable) 
               VALUES("${req.body.title}",'${req.body.day}','${req.body.hourBegin}','${req.body.hourEnd}',
-              (SELECT idTe FROM teacher WHERE upn='${req.body.upn}'),(SELECT idRo FROM room WHERE name='${req.body.nameRoom}'), 0)
+              (SELECT idTe FROM teacher WHERE upn='${req.body.upn}'),${req.body.idRo}, 0)
               `;
 
   db.query(query, (err, data) => {

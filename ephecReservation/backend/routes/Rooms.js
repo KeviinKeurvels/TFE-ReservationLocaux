@@ -23,4 +23,20 @@ router.get("/byImplantation", (req,res)=>{
               })
 })
 
+//to get the name of a room
+router.get("/", (req,res)=>{
+              let idRo = req.query.idRo;
+              const query = `
+              SELECT DISTINCT room.name
+
+              FROM ephecreservation.room  
+              WHERE room.idRo=${idRo}
+
+              `;
+              db.query(query,(err,data)=>{
+                            if(err) return res.json(err)
+                            return res.json(data)
+              })
+})
+
 export default router;

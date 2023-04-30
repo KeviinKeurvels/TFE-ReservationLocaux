@@ -25,7 +25,7 @@ router.post("/addReservation", (req, res) => {
   const query = `
               INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo, room_unavailable) 
               VALUES("${req.body.title}",'${req.body.day}','${req.body.hourBegin}','${req.body.hourEnd}',
-              ${req.body.idTe},(SELECT idRo FROM room WHERE name='${req.body.nameRoom}'),0)
+              ${req.body.idTe},${req.body.idRo},0)
               `;
 
   db.query(query, (err, data) => {
