@@ -38,6 +38,26 @@ router.get("/byRoomAndDay", (req, res) => {
   })
 })
 
+//to get all reservations for a day
+router.get("/byRoomAndDayAndHours", (req, res) => {
+  let day = req.query.day;
+  let room = req.query.room;
+  let hourBegin = req.query.hourBegin;
+  let hourEnd = req.query.hourEnd;
+  const query = `
+    SELECT idRe
+    FROM reservation 
+    inner join room on room.idRo=reservation.idRo 
+    WHERE day=${day} AND room.idRo=${room} AND hourBegin<=${hourEnd} AND hourEnd >=${hourBegin}
+  `;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+})
+
+
 //to get information about one reservations
 router.get("/getOne", (req, res) => {
   let id = req.query.id;

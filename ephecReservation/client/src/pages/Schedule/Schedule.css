@@ -8,6 +8,15 @@
     margin-left:10%!important;
 }
 
+#days_impossible{
+  color: red;
+  text-align: center;
+}
+
+#recurrence_field{
+  text-align: center;
+}
+
 #title_schedule {
   margin-top: 20px;
   margin-left: 10px;
