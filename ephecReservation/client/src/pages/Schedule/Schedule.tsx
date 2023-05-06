@@ -14,7 +14,7 @@ import './Schedule.css';
 import CardSchedule from '../../components/CardSchedule/CardSchedule';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
-import { getInformationFromADate, formatDate, allFieldsChecked } from '../../functions/Schedule/Schedule';
+import { getInformationFromADate, formatDate, allFieldsChecked} from '../../functions/Schedule/Schedule';
 import { hasSqlInjection } from '../../functions/Login/Login'
 //hook pour check si il y a des données
 import useAuthentication from "../../hooks/checkAuthentication";
@@ -51,6 +51,8 @@ const Schedule: React.FC = () => {
   const [userSelected, setUserSelected] = useState(null);
   //Pour avoir le nom du local
   const [nameRoom, setNameRoom] = useState(null);
+  //Pour le champs récurrence dans l'ajout d'une réservations
+  const [isRecurrent, setIsRecurrent] = useState(false);
 
   //le useEffect de nameRoom qui fait qu'il va aller chercher le nom d'un local
   useEffect(() => {
@@ -68,7 +70,7 @@ const Schedule: React.FC = () => {
       })
         .then((res) => res.json())
         .then((res) => {
-  
+
           setNameRoom(res[0].name);
           setIsLoading(false);
         })
@@ -129,38 +131,72 @@ const Schedule: React.FC = () => {
     /*
     *   Récupère les informations d'une réservation pour un jour
     */
-    setIsLoading(true);
-    fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["idRoom"] + "'", {
-      headers: {
-        'Authorization': `${localStorage.getItem('token')}`,
-        'upn': `${localStorage.getItem('upn')}`
-      }
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setReservations(res);
-        setIsLoading(false);
-      })
-      .catch((err) => console.log(err))
-
+    try {
+      setIsLoading(true);
+      const response = await fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["idRoom"] + "'", {
+        headers: {
+          'Authorization': `${localStorage.getItem('token')}`,
+          'upn': `${localStorage.getItem('upn')}`
+        }
+      });
+      const data = await response.json();
+      setReservations(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   }
+
 
 
   //le useEffect de dateChosen qui fait que quand on change de date, il va re fetch
   useEffect(() => {
-    if (localStorage.length === 0 || hasSqlInjection(localStorage.getItem('upn'), localStorage.getItem('token'))) {
-      //si le localStorage est vide ou s'il il y a une injection SQL
-      history.push("/");
-    }
-    else {
-      fetchIsAdmin()
-      fetchAllReservationForOneDay()
-    }
-
+    (async () => {
+      if (localStorage.length === 0 || hasSqlInjection(localStorage.getItem('upn'), localStorage.getItem('token'))) {
+        //si le localStorage est vide ou s'il il y a une injection SQL
+        history.push("/");
+      } else {
+        setIsLoading(true);
+        await fetchAllReservationForOneDay();
+        await fetchIsAdmin();
+        setIsLoading(false);
+      }
+    })();
   }, [dateChosen]);
+  
+  
 
+  async function knowIfThereReservationForFuturDay(dayReservation: any, hourBegin: any, hourEnd: any) {
+        /*
+    *   Récupère les informations d'une réservation pour un jour
+    */
+        try {
+          setIsLoading(true);
+          const response = await fetch(config.API_URL + "/reservations/byRoomAndDayAndHours?day='" + dayReservation + "'&room='" + params["idRoom"] + "'&hourBegin='"+hourBegin+"'&hourEnd='"+hourEnd+"'", {
+            headers: {
+              'Authorization': `${localStorage.getItem('token')}`,
+              'upn': `${localStorage.getItem('upn')}`
+            }
+          });
+          const data = await response.json();
+          setIsLoading(false);
+          if(data.length === 0){
+            return true;
+          }
+          else{
+            return false;
+          }
+          
+          
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      
+  }
+  
 
-  function handleSubmit(event: any) {
+  async function handleSubmit(event: any) {
     //cache le bouton
     let submitButton = document.getElementById("submit_button");
     if (submitButton !== undefined && submitButton !== null) {
@@ -179,110 +215,138 @@ const Schedule: React.FC = () => {
     }
 
 
-    if (allFieldsChecked(event.target, reservations, currentYear, formatDate(currentDate))) {
+
+    if (allFieldsChecked(event.target, reservations, currentYear, formatDate(currentDate), isRecurrent)) {
       //si tous les champs respectent bien ce qu'il faut
 
-      //si l'utilisateur est administrateur
-      if (isAdmin) {
-        if (userSelected !== null) {
-          fetch(config.API_URL + "/admin/addReservation", {
-            method: 'POST',
-            headers: {
-              'Content-type': 'application/json',
-              'Authorization': `${localStorage.getItem('token')}`,
-              'upn': `${localStorage.getItem('upn')}`
-            },
-            body: (
-              JSON.stringify({
-                title: event.target.nameReservation.value,
-                day: event.target.day.value,
-                hourBegin: event.target.hourBegin.value,
-                hourEnd: event.target.hourEnd.value,
-                idTe: userSelected,
-                idRo: params["idRoom"],
-              }
-              )
-            ),
-          }).then(function (res) {
-            setUserSelected(null);
-            if (responseBox !== undefined && responseBox !== null) {
-              if (res.status === 200) {
-                if (formReservation !== undefined && formReservation !== null) {
-                  formReservation.innerHTML = "";
+      //on set up pour la récurrence
+      let weekRecurrent = isRecurrent ? Number(event.target.recurrence.value) : 1;
+      let dateReservation = new Date(event.target.day.value);
+      let dayReservation=formatDate(dateReservation);
+      //d'office vrai car est déjà passée dans allFieldsChecked donc c'est bon
+      let noReservationThatDay = true;
+      for (let i = 0; i < weekRecurrent; i++) {
+        //on prend pour l'avoir en string
+        if (noReservationThatDay) {
+          //si il n'y a bien toujours pas de réservations ce jour-là
+
+          //si l'utilisateur est administrateur
+          if (isAdmin) {
+            if (userSelected !== null) {
+              fetch(config.API_URL + "/admin/addReservation", {
+                method: 'POST',
+                headers: {
+                  'Content-type': 'application/json',
+                  'Authorization': `${localStorage.getItem('token')}`,
+                  'upn': `${localStorage.getItem('upn')}`
+                },
+                body: (
+                  JSON.stringify({
+                    title: event.target.nameReservation.value,
+                    day: dayReservation,
+                    hourBegin: event.target.hourBegin.value,
+                    hourEnd: event.target.hourEnd.value,
+                    idTe: userSelected,
+                    idRo: params["idRoom"],
+                  }
+                  )
+                ),
+              }).then(function (res) {
+                setUserSelected(null);
+                if (responseBox !== undefined && responseBox !== null) {
+                  if (res.status === 200) {
+                    if (formReservation !== undefined && formReservation !== null) {
+                      formReservation.innerHTML = "";
+                    }
+
+                    responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
+
+                  }
+                  else {
+
+                    responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+
+                  }
+
                 }
-
-                responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
-                fetchAllReservationForOneDay()
-
-              }
-              else {
-
-                responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
-
-              }
-
-            }
-          })
-            .catch(function (res) {
-              if (responseBox !== undefined && responseBox !== null) {
-                responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
-              }
-            })
-        }
-        else {
-          if (responseBox !== undefined && responseBox !== null) {
-            responseBox.innerHTML = "<p id='failed_response'>Aucun utilisateur sélectionné</p>";
-          }
-          if (submitButton !== undefined && submitButton !== null) {
-            submitButton.style.display = "block";
-          }
-        }
-      }
-
-      //si l'utilisateur n'est pas administrateur
-      else {
-        fetch(config.API_URL + "/reservations", {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-            'Authorization': `${localStorage.getItem('token')}`,
-            'upn': `${localStorage.getItem('upn')}`
-          },
-          body: (
-            JSON.stringify({
-              title: event.target.nameReservation.value,
-              day: event.target.day.value,
-              hourBegin: event.target.hourBegin.value,
-              hourEnd: event.target.hourEnd.value,
-              upn: localStorage.getItem('upn'),
-              idRo: params["idRoom"],
-            }
-            )
-          ),
-        }).then(function (res) {
-          if (responseBox !== undefined && responseBox !== null) {
-            if (res.status === 200) {
-              if (formReservation !== undefined && formReservation !== null) {
-                formReservation.innerHTML = "";
-              }
-
-              responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
-              fetchAllReservationForOneDay()
-
+              })
+                .catch(function (res) {
+                  if (responseBox !== undefined && responseBox !== null) {
+                    responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+                  }
+                })
             }
             else {
-
-              responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
-
+              if (responseBox !== undefined && responseBox !== null) {
+                responseBox.innerHTML = "<p id='failed_response'>Aucun utilisateur sélectionné</p>";
+              }
+              if (submitButton !== undefined && submitButton !== null) {
+                submitButton.style.display = "block";
+              }
             }
-
           }
-        })
-          .catch(function (res) {
-            if (responseBox !== undefined && responseBox !== null) {
-              responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
-            }
-          })
+
+          //si l'utilisateur n'est pas administrateur
+          else {
+            fetch(config.API_URL + "/reservations", {
+              method: 'POST',
+              headers: {
+                'Content-type': 'application/json',
+                'Authorization': `${localStorage.getItem('token')}`,
+                'upn': `${localStorage.getItem('upn')}`
+              },
+              body: (
+                JSON.stringify({
+                  title: event.target.nameReservation.value,
+                  day: dayReservation,
+                  hourBegin: event.target.hourBegin.value,
+                  hourEnd: event.target.hourEnd.value,
+                  upn: localStorage.getItem('upn'),
+                  idRo: params["idRoom"],
+                }
+                )
+
+              ),
+            }).then(function (res) {
+              if (responseBox !== undefined && responseBox !== null) {
+                if (res.status === 200) {
+                  if (formReservation !== undefined && formReservation !== null) {
+                    formReservation.innerHTML = "";
+                  }
+
+                  responseBox.innerHTML = "<p id='success_response'>Votre réservation a bien été enregistrée.</p>";
+
+                }
+                else {
+
+                  responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+
+                }
+
+              }
+            })
+              .catch(function (res) {
+                if (responseBox !== undefined && responseBox !== null) {
+                  responseBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+                }
+              })
+          }
+        }
+        else {
+          //si il y a une réservation à ce moment-là
+          let daysImpossible = document.getElementById("days_impossible");
+          if (daysImpossible !== null && daysImpossible !== undefined) {
+            daysImpossible.innerHTML += "La réservation pour le jour " + dayReservation + " n'est pas possible.";
+          }
+        }
+
+        if (isRecurrent) {
+          //si il y a de la récurence
+          dateReservation.setDate(dateReservation.getDate() + 7);
+          dayReservation = formatDate(dateReservation);
+          noReservationThatDay = await knowIfThereReservationForFuturDay(dayReservation, event.target.hourBegin.value, event.target.hourEnd.value);
+        }
+
       }
     }
     else {
@@ -291,13 +355,19 @@ const Schedule: React.FC = () => {
       }
     }
 
-
-
-
+    setIsRecurrent(false);
+    fetchAllReservationForOneDay();
   }
 
 
-
+  function changeDisplayReccurenceField() {
+    if (isRecurrent) {
+      setIsRecurrent(false)
+    }
+    else {
+      setIsRecurrent(true)
+    }
+  }
 
 
 
@@ -340,7 +410,7 @@ const Schedule: React.FC = () => {
             <IonToolbar color="warning">
               <IonTitle>Réservation {nameRoom}</IonTitle>
             </IonToolbar>
-            <div id="formReservation">
+            <div id="form_reservation">
               <form onSubmit={handleSubmit}>
                 {isAdmin ?
                   <div>
@@ -366,6 +436,10 @@ const Schedule: React.FC = () => {
 
                 <label htmlFor="day">Jour de la réservation:</label>
                 <input type="date" id="day" name="day" defaultValue={dateChosen} onChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear, currentDate)} min={String(formatDate(currentDate))} max={String(currentYear + 2)} required /><br />
+                <label htmlFor="activate_reccurence">Activer la récurrence</label>
+                <input onChange={changeDisplayReccurenceField} type="checkbox" id="activate_reccurence" name="activate_reccurence" value="activate_reccurence" />
+
+                <p id="recurrence_field" hidden={!isRecurrent}>Mettre la réservation le même jour pendant <input type="number" id="recurrence" name="recurrence" disabled={!isRecurrent} defaultValue="1" min="2" max="52" required /> semaines d'affilées</p><br />
 
                 <table>
                   <tbody>
@@ -384,6 +458,8 @@ const Schedule: React.FC = () => {
               </form>
             </div>
             <div id="callback_message">
+            </div>
+            <div id="days_impossible">
             </div>
           </IonContent>
         </IonModal>

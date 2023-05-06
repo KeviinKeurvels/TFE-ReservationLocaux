@@ -49,20 +49,20 @@ export function checkIfThereIsAlreadyAReservation(hourBegin, hourEnd, reservatio
 
 
 
-export function allFieldsChecked(form, reservations, currentYear, currentDate) {
+export function allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent) {
     //cette fonction va regarder si tous les champs sont conformes
     //pour la box qui va afficher les messages lors de la réservation
     let responseBox = document.getElementById("callback_message");
 
     //variable qui va contenir le message d'erreur
     let problem = undefined;
-    if(!form.hourBegin.value || !form.hourEnd.value || !form.nameReservation.value || !reservations || !form.day.value || !currentYear){
+    if(!form.hourBegin.value || !form.hourEnd.value || !form.nameReservation.value || !reservations || !form.day.value || !currentYear || !form.recurrence.value){
         problem = "Problème au niveau du formulaire";
     }
     else if (form.day.value < currentDate || form.day.value > currentYear + 2) {
         problem = "La date sélectionnée n'est pas bonne";
     }
-    else if (form.day.value === "" || form.hourBegin.value === "" || form.hourEnd.value === "") {
+    else if (form.day.value === "" || form.hourBegin.value === "" || form.hourEnd.value === "" || isRecurrent === ""  || form.recurrence.value  === "" ) {
         problem = "Un ou plusieurs champs sont vides";
     }
     else if (form.nameReservation.value.length < 2 || form.nameReservation.value.length > 40) {
@@ -79,6 +79,13 @@ export function allFieldsChecked(form, reservations, currentYear, currentDate) {
     }
     else if (form.hourBegin.value === form.hourEnd.value) {
         problem = "L'heure de début ne peut pas être égale à l'heure de fin";
+    }
+    
+    else if (isRecurrent){
+        //si la récurrence est activée
+        if(Number(form.recurrence.value<2) || Number(form.recurrence.value>52)){
+            problem = "La durée de la récurrence n'est pas dans les valeurs possibles (entre 2 et 52 semaines)";
+        }
     }
     //si déjà une réservation à ce moment-là
     else if (checkIfThereIsAlreadyAReservation(form.hourBegin.value, form.hourEnd.value, reservations, form.day.value)) {

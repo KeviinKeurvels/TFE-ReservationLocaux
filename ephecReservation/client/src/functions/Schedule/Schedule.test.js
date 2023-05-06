@@ -74,40 +74,66 @@ describe('checkIfThereIsAlreadyAReservation', () => {
 
 
 describe('allFieldsChecked', () => {
-  it('should return true when all fields are valid', () => {
+  it('should return true when all fields are valid and isRecurrent is false', () => {
     const form = {
       day: { value: "2023-04-03" },
       hourBegin: { value: "09:00" },
       hourEnd: { value: "11:00" },
-      nameReservation: { value: "Réunion d'équipe" }
+      nameReservation: { value: "Réunion d'équipe" },
+      recurrence: { value: "1" }
+
     };
     const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
+    const isRecurrent = false;
 
 
 
-    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
 
     expect(result).toBe(true);
   });
-  
+
+  it('should return true when all fields are valid and isRecurrent is true', () => {
+    const form = {
+      day: { value: "2023-04-03" },
+      hourBegin: { value: "09:00" },
+      hourEnd: { value: "11:00" },
+      nameReservation: { value: "Réunion d'équipe" },
+      recurrence: { value: "2" }
+
+    };
+    const currentDate = '2023-04-02';
+    const reservations = [];
+    const currentYear = 2023;
+    const isRecurrent = true;
+
+
+
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
+
+    expect(result).toBe(true);
+  });
+
   it("returns false and displays correct error message when form fields are missing", () => {
     const form = {
       hourBegin: { value: "" },
       hourEnd: { value: "13:00" },
       nameReservation: { value: "Meeting" },
       day: { value: "2023-04-03" },
+      recurrence: { value: "1" }
     };
     const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
+    const isRecurrent = false;
 
     const responseBox = document.createElement("div");
     responseBox.id = "callback_message";
     document.body.appendChild(responseBox);
 
-    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
 
     expect(result).toBe(false);
     expect(responseBox.innerHTML).toContain("Problème au niveau du formulaire");
@@ -120,13 +146,15 @@ describe('allFieldsChecked', () => {
       day: { value: "2023-04-03" },
       hourBegin: { value: "09:00" },
       hourEnd: { value: "" },
-      nameReservation: { value: "Réunion d'équipe" }
+      nameReservation: { value: "Réunion d'équipe" },
+      recurrence: { value: "1" }
     };
     const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
+    const isRecurrent = false;
 
-    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
 
     expect(result).toBe(false);
   });
@@ -136,13 +164,15 @@ describe('allFieldsChecked', () => {
       day: { value: "2023-04-03" },
       hourBegin: { value: "" },
       hourEnd: { value: "11:00" },
-      nameReservation: { value: "Réunion d'équipe" }
+      nameReservation: { value: "Réunion d'équipe" },
+      recurrence: { value: "1" }
     };
     const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
+    const isRecurrent = false;
 
-    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
 
     expect(result).toBe(false);
   });
@@ -152,13 +182,15 @@ describe('allFieldsChecked', () => {
       day: { value: "2023-04-03" },
       hourBegin: { value: "09:00" },
       hourEnd: { value: "11:00" },
-      nameReservation: { value: "" }
+      nameReservation: { value: "" },
+      recurrence: { value: "1" }
     };
     const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
+    const isRecurrent = false;
 
-    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
 
     expect(result).toBe(false);
   });
@@ -168,13 +200,69 @@ describe('allFieldsChecked', () => {
       day: { value: "" },
       hourBegin: { value: "09:00" },
       hourEnd: { value: "11:00" },
-      nameReservation: { value: "Réunion d'équipe" }
+      nameReservation: { value: "Réunion d'équipe" },
+      recurrence: { value: "1" }
     };
     const currentDate = '2023-04-02';
     const reservations = [];
     const currentYear = 2023;
+    const isRecurrent = false;
 
-    const result = allFieldsChecked(form, reservations, currentYear, currentDate);
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false when recurrence field is empty', () => {
+    const form = {
+      day: { value: "" },
+      hourBegin: { value: "09:00" },
+      hourEnd: { value: "11:00" },
+      nameReservation: { value: "Réunion d'équipe" },
+      recurrence: { value: "" }
+    };
+    const currentDate = '2023-04-02';
+    const reservations = [];
+    const currentYear = 2023;
+    const isRecurrent = false;
+
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false when isRecurrent is true but recurrence field is below 2', () => {
+    const form = {
+      day: { value: "" },
+      hourBegin: { value: "09:00" },
+      hourEnd: { value: "11:00" },
+      nameReservation: { value: "Réunion d'équipe" },
+      recurrence: { value: "2" }
+    };
+    const currentDate = '2023-04-02';
+    const reservations = [];
+    const currentYear = 2023;
+    const isRecurrent = true;
+
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false when isRecurrent is true but recurrence field is above 52', () => {
+    const form = {
+      day: { value: "" },
+      hourBegin: { value: "09:00" },
+      hourEnd: { value: "11:00" },
+      nameReservation: { value: "Réunion d'équipe" },
+      recurrence: { value: "53" }
+    };
+    const currentDate = '2023-04-02';
+    const reservations = [];
+    const currentYear = 2023;
+    const isRecurrent = true;
+
+    const result = allFieldsChecked(form, reservations, currentYear, currentDate, isRecurrent);
 
     expect(result).toBe(false);
   });
