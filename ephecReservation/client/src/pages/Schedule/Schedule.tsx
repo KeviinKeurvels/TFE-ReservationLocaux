@@ -336,7 +336,7 @@ const Schedule: React.FC = () => {
           //si il y a une réservation à ce moment-là
           let daysImpossible = document.getElementById("days_impossible");
           if (daysImpossible !== null && daysImpossible !== undefined) {
-            daysImpossible.innerHTML += "La réservation pour le jour " + dayReservation + " n'est pas possible.";
+            daysImpossible.innerHTML += "<p>La réservation pour le jour " + dayReservation + " n'est pas possible.</p>";
           }
         }
 
