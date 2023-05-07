@@ -236,7 +236,7 @@ export function handleSubmitUnavailable(event, selectedImplantation, selectedRoo
                             }).then(function (res) {
                                           if (res.status === 200) {
                                                         //on met la réservation d'indisponibilité
-                                                        fetch(config.API_URL + "/reservations", {
+                                                        fetch(config.API_URL + "/admin/addAnUnavailability", {
                                                                       method: 'POST',
                                                                       headers: {
                                                                                     'Content-type': 'application/json',
@@ -245,12 +245,13 @@ export function handleSubmitUnavailable(event, selectedImplantation, selectedRoo
                                                                       },
                                                                       body: (
                                                                                     JSON.stringify({
-                                                                                                  title: "UNAVAILABLE:" + event.target.reason_unavailability.value,
+                                                                                                  title: event.target.reason_unavailability.value,
                                                                                                   day: event.target.day.value,
                                                                                                   hourBegin: event.target.hourBegin.value,
                                                                                                   hourEnd: event.target.hourEnd.value,
                                                                                                   upn: localStorage.getItem('upn'),
                                                                                                   idRo: selectedRoom,
+                                                                                                  
                                                                                     }
                                                                                     )
                                                                       ),

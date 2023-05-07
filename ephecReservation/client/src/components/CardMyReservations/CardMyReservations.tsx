@@ -24,7 +24,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
 
 
 
-  function deleteAReservation(reservationId: any, title: any, day : any, hourBegin : any, hourEnd : any, idRo : any) {
+  function deleteAReservation(reservationId: any, isAnUnavailability: any, day : any, hourBegin : any, hourEnd : any, idRo : any) {
     //pour supprimer une réservation
     let modalBox = document.getElementById("modal_for_" + reservationId);
     if (typeof (reservationId) === "number") {
@@ -47,7 +47,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
           if (modalBox !== undefined && modalBox !== null) {
             modalBox.innerHTML = "<p id='success_response'>Votre réservation a bien été supprimée.";
           }
-          if(title.includes("UNAVAILABLE:")){
+          if(isAnUnavailability === 1){
             //pour ré-activer les réservations qui étaient pendant ce moment-là
             fetch(config.API_URL + "/admin/enableAllReservationsForAPeriod", {
               method: 'PUT',
@@ -207,7 +207,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
       {Reservations.length !== 0 ? Reservations.map((reservation: any) => (
         <IonCard
           color={
-            reservation["title"].includes("UNAVAILABLE:") ? "danger" :
+            reservation["isAnUnavailability"]===1 ? "danger" :
               reservation["room_unavailable"] === 1 ? "light" :
                 "warning"
           }
@@ -221,9 +221,8 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
           </IonCardHeader>
 
           <IonCardContent>
-            {reservation["title"].includes("UNAVAILABLE:") ? reservation["title"].substring(12) : reservation["title"]}
             {reservation["room_unavailable"] === 1 ? <p className='text_unavailable'><br />Cette réservation est suspendu car le local est indisponible pendant cette période <br /><br /></p> : null}
-
+            <h2>{reservation["title"]}</h2>
             <IonRow>
 
               <IonCol>
@@ -265,7 +264,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
                   <div className='wrapper' id={`modal_for_${reservation['idRe']}`}>
                     <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
                       de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
-                    <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'], reservation['title'], reservation['day'], reservation['hourBegin'], reservation['hourEnd'], reservation['idRo'])}>Supprimer</IonButton>
+                    <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'], reservation['isAnUnavailability'], reservation['day'], reservation['hourBegin'], reservation['hourEnd'], reservation['idRo'])}>Supprimer</IonButton>
                   </div>
                 </IonModal>
               </IonCol>
