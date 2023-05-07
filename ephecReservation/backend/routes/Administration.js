@@ -33,6 +33,19 @@ router.post("/addReservation", (req, res) => {
     return res.json("Reservation added successfully.")
   })
 })
+// to add a new reservation for a user
+router.post("/addAnUnavailability", (req, res) => {
+  const query = `
+              INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo, room_unavailable, isAnUnavailability) 
+              VALUES("${req.body.title}",'${req.body.day}','${req.body.hourBegin}','${req.body.hourEnd}',
+              (SELECT idTe FROM teacher WHERE upn='${req.body.upn}'),${req.body.idRo},0,1)
+              `;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json("Unavailability added successfully.")
+  })
+})
 //to update a reservation
 router.put("/updateOne", (req, res) => {
   const query = `

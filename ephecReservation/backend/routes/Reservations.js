@@ -24,7 +24,8 @@ router.get("/byRoomAndDay", (req, res) => {
   const query = `
     SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
     TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title,
-    teacher.name as teacherName, day, upn, room_unavailable, reservation.idRo as idRo
+    teacher.name as teacherName, day, upn, room_unavailable, reservation.idRo as idRo,
+    isAnUnavailability
 
     FROM teacher  
     inner join reservation on teacher.idTe=reservation.idTe 
@@ -120,7 +121,8 @@ router.get("/forAnUser", (req, res) => {
   const query = `
   SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
   TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName,
-   day, room.name as roomName, implantation.name as implantationName, room_unavailable, reservation.idRo as idRo
+   day, room.name as roomName, implantation.name as implantationName, room_unavailable, reservation.idRo as idRo,
+   isAnUnavailability
 
   FROM teacher  
   inner join reservation on teacher.idTe=reservation.idTe 
