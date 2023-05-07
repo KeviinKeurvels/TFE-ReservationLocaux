@@ -357,7 +357,7 @@ const Administration: React.FC = () => {
                           <IonItem>
                             <IonSelect placeholder="Choisissez un local :" onIonChange={(e) => setSelectedRoom(e.target.value)}>
                               {rooms.map((room) => (
-                                <IonSelectOption key={room["idRo"]} value={room["name"]}>
+                                <IonSelectOption key={room["idRo"]} value={room["idRo"]}>
                                   {room["name"]}
                                 </IonSelectOption>
                               ))}

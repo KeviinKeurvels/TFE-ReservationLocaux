@@ -24,17 +24,17 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
 
 
 
-  function deleteAReservation(reservationId: any) {
+  function deleteAReservation(reservationId: any, title: any, day : any, hourBegin : any, hourEnd : any, idRo : any) {
     //pour supprimer une réservation
     let modalBox = document.getElementById("modal_for_" + reservationId);
     if (typeof (reservationId) === "number") {
       fetch(config.API_URL + "/reservations/deleteOne", {
         method: 'DELETE',
-        headers: { 
+        headers: {
           'Content-type': 'application/json',
           'Authorization': `${localStorage.getItem('token')}`,
           'upn': `${localStorage.getItem('upn')}`
-         },
+        },
         body: (
           JSON.stringify({
             id: reservationId,
@@ -43,10 +43,50 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
         ),
       }).then(function (res) {
         if (res.status === 200) {
+        //pour la première requête
           if (modalBox !== undefined && modalBox !== null) {
             modalBox.innerHTML = "<p id='success_response'>Votre réservation a bien été supprimée.";
-            fetchAllReservationForOneUser();
           }
+          if(title.includes("UNAVAILABLE:")){
+            //pour ré-activer les réservations qui étaient pendant ce moment-là
+            fetch(config.API_URL + "/admin/enableAllReservationsForAPeriod", {
+              method: 'PUT',
+              headers: {
+                'Content-type': 'application/json',
+                'Authorization': `${localStorage.getItem('token')}`,
+                'upn': `${localStorage.getItem('upn')}`
+              },
+              body: (
+                JSON.stringify({
+                  idRo: idRo,
+                  day: day,
+                  hourBegin: hourBegin,
+                  hourEnd: hourEnd,
+                }
+                )
+              ),
+            }).then(function (res) {
+              if (modalBox !== undefined && modalBox !== null) {
+                if (res.status === 200) {
+                  //pour la deuxième requête
+                  modalBox.innerHTML = "<p id='success_response'>L'indisponibilité a bien été supprimée et les réservations ré-activées.</p>";
+                }
+                else {
+                  //pour la deuxième requête
+                  modalBox.innerHTML = "<p id='failed_response'>L'indisponibilité a bien été supprimée mais les réservations n'ont pas été ré-activées.</p>";
+      
+                }
+      
+              }
+            })
+              .catch(function (res) {
+                if (modalBox !== undefined && modalBox !== null) {
+                  //pour la deuxième requête
+                  modalBox.innerHTML = "<p id='failed_response'>Un problème est survenu.<br/>Veuillez réessayez plus tard.</p>";
+                }
+              })
+          }
+          fetchAllReservationForOneUser();
         }
         else {
           if (modalBox !== undefined && modalBox !== null) {
@@ -65,12 +105,12 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
   const fetchReservationForOneDay = async (dateChosen: any, nameRoom: any) => {
     return fetch(
       config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + nameRoom + "'",
-    {
-      headers: {
-        'Authorization': `${localStorage.getItem('token')}`,
-        'upn': `${localStorage.getItem('upn')}`
-      }
-    })
+      {
+        headers: {
+          'Authorization': `${localStorage.getItem('token')}`,
+          'upn': `${localStorage.getItem('upn')}`
+        }
+      })
       .then((res) => res.json())
       .catch((err) => "InternalError");
   }
@@ -165,7 +205,14 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
   return (
     <div className='content_reservation'>
       {Reservations.length !== 0 ? Reservations.map((reservation: any) => (
-        <IonCard color="warning" key={reservation["idRe"]}>
+        <IonCard
+          color={
+            reservation["title"].includes("UNAVAILABLE:") ? "danger" :
+              reservation["room_unavailable"] === 1 ? "light" :
+                "warning"
+          }
+          key={reservation["idRe"]}
+        >
           <IonCardHeader>
             <IonCardTitle> {reservation["implantationName"]}<br />{reservation["roomName"]}</IonCardTitle>
             <IonCardSubtitle>
@@ -174,7 +221,9 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
           </IonCardHeader>
 
           <IonCardContent>
-            {reservation["title"]}
+            {reservation["title"].includes("UNAVAILABLE:") ? reservation["title"].substring(12) : reservation["title"]}
+            {reservation["room_unavailable"] === 1 ? <p className='text_unavailable'><br />Cette réservation est suspendu car le local est indisponible pendant cette période <br /><br /></p> : null}
+
             <IonRow>
 
               <IonCol>
@@ -216,7 +265,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
                   <div className='wrapper' id={`modal_for_${reservation['idRe']}`}>
                     <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
                       de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
-                    <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'])}>Supprimer</IonButton>
+                    <IonButton color="danger" onClick={() => deleteAReservation(reservation['idRe'], reservation['title'], reservation['day'], reservation['hourBegin'], reservation['hourEnd'], reservation['idRo'])}>Supprimer</IonButton>
                   </div>
                 </IonModal>
               </IonCol>

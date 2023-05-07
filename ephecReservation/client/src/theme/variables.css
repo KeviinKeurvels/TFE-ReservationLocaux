@@ -259,3 +259,9 @@ form{
   flex-direction: column;
    margin-top: 15px !important;
 }
+
+.text_unavailable{
+  text-align: center;
+  font-weight: bold;
+  font-size: 120% !important;
+}

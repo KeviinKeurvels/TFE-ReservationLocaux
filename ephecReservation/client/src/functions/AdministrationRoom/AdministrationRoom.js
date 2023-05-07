@@ -217,8 +217,8 @@ export function handleSubmitUnavailable(event, selectedImplantation, selectedRoo
               if (allFieldsCheckedUnavailable(event.target, selectedImplantation, selectedRoom)) {
                             //si tous les champs respectent bien ce qu'il faut
                             //on supprime les réservations qui sont pendant la période de temps
-                            fetch(config.API_URL + "/admin/deleteAllReservationsForAPeriod", {
-                                          method: 'DELETE',
+                            fetch(config.API_URL + "/admin/suspendAllReservationsForAPeriod", {
+                                          method: 'PUT',
                                           headers: {
                                                         'Content-type': 'application/json',
                                                         'Authorization': `${localStorage.getItem('token')}`,
@@ -229,7 +229,7 @@ export function handleSubmitUnavailable(event, selectedImplantation, selectedRoo
                                                                       day: event.target.day.value,
                                                                       hourBegin: event.target.hourBegin.value,
                                                                       hourEnd: event.target.hourEnd.value,
-                                                                      nameRoom: selectedRoom
+                                                                      idRo: selectedRoom
                                                         }
                                                         )
                                           ),
@@ -250,7 +250,7 @@ export function handleSubmitUnavailable(event, selectedImplantation, selectedRoo
                                                                                                   hourBegin: event.target.hourBegin.value,
                                                                                                   hourEnd: event.target.hourEnd.value,
                                                                                                   upn: localStorage.getItem('upn'),
-                                                                                                  nameRoom: selectedRoom,
+                                                                                                  idRo: selectedRoom,
                                                                                     }
                                                                                     )
                                                                       ),
