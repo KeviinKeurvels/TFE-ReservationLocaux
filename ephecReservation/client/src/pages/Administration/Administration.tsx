@@ -18,6 +18,8 @@ import {
 import {handleSubmitAddImplantation, handleSubmitDeleteImplantation, handleSubmitModifyImplantation,
   handleChangeImplantation, loadImplantations
 } from '../../functions/AdministrationImplantation/AdministrationImplantation'
+
+import {handleSubmitAddAdmin, handleSubmitDeleteAdmin, getUsersThatAreNotAdmin, getUsersThatAreAdmin} from '../../functions/AdministrationUser/AdministrationUser'
 import { hasSqlInjection } from '../../functions/Login/Login'
 import config from "../../config.json";
 //hook pour check si il y a des données
@@ -32,7 +34,9 @@ const Administration: React.FC = () => {
   //pour faire la distinction entre les différentes pages
   const [segment, setSegment] = useState("implantations");
   const [implantations, setImplantations] = useState([]);
+  const [users, setUsers] = useState([]);
   const [selectedImplantation, setSelectedImplantation] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [dataGraph, setDataGraph] = useState([]);
@@ -90,6 +94,9 @@ const Administration: React.FC = () => {
           </IonSegmentButton>
           <IonSegmentButton value="rooms">
             <IonLabel>Locaux</IonLabel>
+          </IonSegmentButton>
+          <IonSegmentButton value="users">
+            <IonLabel>Utilisateurs</IonLabel>
           </IonSegmentButton>
         </IonSegment>
 
@@ -434,6 +441,83 @@ const Administration: React.FC = () => {
               <GraphRooms data={dataGraph} />
             </div>
 
+          </div>
+        )}
+        
+
+
+
+
+        {segment === "users" && (
+          <div id='content_users'>
+            <h1 className='title_administration'>Actions</h1>
+            <IonRow>
+              <IonCol>
+                <IonButton className='button_admin' color="success" id="add_admin_button">Ajouter un administrateur</IonButton>
+                <IonModal id="example-modal" ref={modal} trigger="add_admin_button">
+                  <IonContent>
+                    <IonToolbar color="warning">
+                      <IonTitle>Ajout administrateur</IonTitle>
+                    </IonToolbar>
+                    <div>
+                      <form onSubmit={(e) => handleSubmitAddAdmin(e, selectedUser, config)} id="form_add_admin">
+                        <IonList>
+                          <IonItem onClick={(e) => getUsersThatAreNotAdmin(setUsers, setIsLoading, config)}>
+                            <IonSelect placeholder="Choisissez un utilisateur :" onIonChange={(e) => { setSelectedUser(e.target.value); }}>
+                              {users.map((user) => (
+                                <IonSelectOption key={user["idTe"]} value={user["idTe"]}>
+                                  {user["name"]}
+                                </IonSelectOption>
+                              ))}
+                            </IonSelect>
+                          </IonItem>
+                        </IonList>
+                        <br />
+                        <input id="submit_button_add_admin" type="submit" value="Ajouter" />
+                      </form>
+                    </div>
+                    <div id="callback_message_add_admin">
+                    </div>
+                  </IonContent>
+                </IonModal>
+              </IonCol>
+            </IonRow>
+
+
+            <IonRow>
+              <IonCol>
+                <IonButton className='button_admin' color="danger" id="delete_admin_button">Supprimer un administrateur</IonButton>
+                <IonModal id="example-modal" ref={modal} trigger="delete_admin_button">
+                  <IonContent>
+                    <IonToolbar color="warning">
+                      <IonTitle>Suppression administrateur</IonTitle>
+                    </IonToolbar>
+                    <div>
+                      <form onSubmit={(e) => handleSubmitDeleteAdmin(e, selectedUser, config)} id="form_delete_admin">
+                        <IonList>
+                          <IonItem onClick={(e) => getUsersThatAreAdmin(setUsers, setIsLoading, config)}>
+                            <IonSelect placeholder="Choisissez un utilisateur :" onIonChange={(e) => { setSelectedUser(e.target.value); }}>
+                              {users.map((user) => (
+                                <IonSelectOption key={user["idTe"]} value={user["idTe"]}>
+                                  {user["name"]}
+                                </IonSelectOption>
+                              ))}
+                            </IonSelect>
+                          </IonItem>
+                        </IonList>
+                        <br />
+                        <input id="submit_button_delete_admin" type="submit" value="Supprimer" />
+                      </form>
+                    </div>
+                    <div id="callback_message_delete_admin">
+                    </div>
+                  </IonContent>
+                </IonModal>
+              </IonCol>
+            </IonRow>
+
+
+ 
           </div>
         )}
 

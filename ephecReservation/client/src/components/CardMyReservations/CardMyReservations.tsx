@@ -221,7 +221,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
           </IonCardHeader>
 
           <IonCardContent>
-            {reservation["room_unavailable"] === 1 ? <p className='text_unavailable'><br />Cette réservation est suspendu car le local est indisponible pendant cette période <br /><br /></p> : null}
+            {reservation["room_unavailable"] === 1 ? <p className='text_unavailable'><br />Cette réservation est suspendue car le local est indisponible pendant cette période <br /><br /></p> : null}
             <h2>{reservation["title"]}</h2>
             <IonRow>
 
