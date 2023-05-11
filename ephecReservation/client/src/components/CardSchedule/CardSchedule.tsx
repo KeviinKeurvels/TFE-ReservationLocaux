@@ -217,7 +217,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
 
           <IonCardContent>
             {reservation["isAnUnavailability"]===1 ? null : reservation["title"]}
-            {reservation["room_unavailable"]===1 ? <p className='text_unavailable'><br />Cette réservation est suspendu car le local est indisponible pendant cette période <br /><br /></p>  :null}
+            {reservation["room_unavailable"]===1 ? <p className='text_unavailable'><br />Cette réservation est suspendue car le local est indisponible pendant cette période <br /><br /></p>  :null}
             {(reservation["upn"] === localStorage.getItem('upn')) || isAdmin
               ?
               <IonRow>

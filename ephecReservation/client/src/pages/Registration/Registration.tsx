@@ -24,7 +24,24 @@ const Regisration: React.FC = () => {
     if (registration_button !== undefined && registration_button !== null) {
       registration_button.style.display = "none";
     };
-    if (await allFieldsChecked(form)) {
+    let codeIsGood=false;
+    bcrypt.compare(form.fixed_password.value, '$2y$10$g69MNZx6a/jrQKc3qb1e/eDRh4R8KSrUR1Tv7LtCcDCXP5cK0kH2u', (error, isMatch) => {
+      if (error) {
+        //s'il y a une erreur lors de la comparaison
+        if (responseBox !== undefined && responseBox !== null) {
+          responseBox.innerHTML = "<p id='failed_response'>Problème interne.</p>";
+        };
+      } else if (!isMatch) {
+        //si le code n'est pas le bon
+        if (responseBox !== undefined && responseBox !== null) {
+          responseBox.innerHTML = "<p id='failed_response'>Le code d'activation n'est pas le bon.<br />Si vous ne connaissez pas le code, demandez à un administrateur.</p>";
+        };
+      } else {
+        //si le code est le bon
+        codeIsGood=true;
+      }
+    });
+    if (await allFieldsChecked(form) && codeIsGood) {
       const password = form.password1.value;
       const saltRounds = 10;
       try {
@@ -93,6 +110,11 @@ const Regisration: React.FC = () => {
         <IonButton id="return_menu" color='warning' fill='outline' href='/home'>Retourner au menu</IonButton>
 
         <form onSubmit={handleRegistration} id='form_registration'>
+        <IonItem>
+            <IonLabel position="floating">Code d'inscription</IonLabel>
+            <IonInput type="password" min="2" max="10" name='fixed_password' required></IonInput>
+          </IonItem>
+          <p id="password_policy">Ceci est le code qui vous est donné par l'EPHEC pour vous permettre de vous inscrire sur l'application</p>
           <IonItem>
             <IonLabel position="floating">Nom d'utilisateur</IonLabel>
             <IonInput type="text" min="2" max="100" name='name' required></IonInput>

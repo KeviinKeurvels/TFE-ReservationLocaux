@@ -18,6 +18,35 @@ router.get("/getAllUsers", (req, res) => {
     return res.json(data)
   })
 })
+//to get all users that are not admin
+router.get("/getAllUsersThatAreNotAdmin", (req, res) => {
+  const query = "SELECT idTe, name FROM teacher WHERE isAdmin=0";
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+})
+//to get all users that are admin
+router.get("/getAllUsersThatAreAdmin", (req, res) => {
+  const query = "SELECT idTe, name FROM teacher WHERE isAdmin=1";
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json(data)
+  })
+})
+//to change the value of isAdmin for a user
+router.put("/changeIsAdminForAUser", (req, res) => {
+  const query = `
+              UPDATE teacher
+              SET isAdmin=${req.body.isAdmin}
+              WHERE idTe = ${req.body.idTe}
+              `;
+
+  db.query(query, (err, data) => {
+    if (err) return res.json(err)
+    return res.json("User updated successfully.")
+  })
+})
 
 ////////////////RESERVATIONS
 // to add a new reservation for a user
