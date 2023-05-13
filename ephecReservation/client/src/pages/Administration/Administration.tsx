@@ -15,11 +15,12 @@ import {
   handleChangeImplantationToGetRooms, handleChangeRoom, loadDataGraph, subtractDays, addDays
 } from '../../functions/AdministrationRoom/AdministrationRoom'
 
-import {handleSubmitAddImplantation, handleSubmitDeleteImplantation, handleSubmitModifyImplantation,
+import {
+  handleSubmitAddImplantation, handleSubmitDeleteImplantation, handleSubmitModifyImplantation,
   handleChangeImplantation, loadImplantations
 } from '../../functions/AdministrationImplantation/AdministrationImplantation'
 
-import {handleSubmitAddAdmin, handleSubmitDeleteAdmin, getUsersThatAreNotAdmin, getUsersThatAreAdmin} from '../../functions/AdministrationUser/AdministrationUser'
+import { handleSubmitAddAdmin, handleSubmitDeleteAdmin, getUsersThatAreNotAdmin, getUsersThatAreAdmin } from '../../functions/AdministrationUser/AdministrationUser'
 import { hasSqlInjection } from '../../functions/Login/Login'
 import config from "../../config.json";
 //hook pour check si il y a des données
@@ -129,7 +130,7 @@ const Administration: React.FC = () => {
 
             <IonRow>
               <IonCol>
-                <IonButton className='button_admin' color="secondary" id="modify_implantation_button">Modifier une implantation</IonButton>
+                <IonButton className='button_admin' color="secondary" id="modify_implantation_button"  onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>Modifier une implantation</IonButton>
                 <IonModal id="example-modal" ref={modal} trigger="modify_implantation_button">
                   <IonContent>
                     <IonToolbar color="warning">
@@ -138,16 +139,16 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitModifyImplantation(e, selectedImplantation, config)} id="form_modify_implantation">
                         <IonList>
-                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
-                            <IonSelect placeholder="Choisissez une implantation :"  onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setImplantations, setIsLoading, config)}>
-                              {isLoading ? 
-                              <IonSelectOption className='form_text' disabled>Chargement en cours...</IonSelectOption>
-                              :
-                              implantations.map((implantation) => (
-                                <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
-                                  {implantation["name"]}
-                                </IonSelectOption>
-                              ))}
+                          <IonItem>
+                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setImplantations, setIsLoading, config)}>
+                              {isLoading ?
+                                <IonSelectOption className='form_text' disabled>Chargement en cours...</IonSelectOption>
+                                :
+                                implantations.map((implantation) => (
+                                  <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
+                                    {implantation["name"]}
+                                  </IonSelectOption>
+                                ))}
                             </IonSelect>
                           </IonItem>
                         </IonList>
@@ -167,16 +168,16 @@ const Administration: React.FC = () => {
 
             <IonRow>
               <IonCol>
-                <IonButton className='button_admin' color="danger" id="delete_implantation_button">Supprimer une implantation</IonButton>
+                <IonButton className='button_admin' color="danger" id="delete_implantation_button" onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>Supprimer une implantation</IonButton>
                 <IonModal id="example-modal" ref={modal} trigger="delete_implantation_button">
                   <IonContent>
                     <IonToolbar color="warning">
                       <IonTitle>Suppression implantation</IonTitle>
                     </IonToolbar>
                     <div>
-                      <form onSubmit={(e) => {handleSubmitDeleteImplantation(e, rooms.map(room => room["idRo"]), selectedImplantation, config);}} id="form_delete_room">
-                      <IonList>
-                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                      <form onSubmit={(e) => { handleSubmitDeleteImplantation(e, rooms.map(room => room["idRo"]), selectedImplantation, config); }} id="form_delete_room">
+                        <IonList>
+                          <IonItem>
                             <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
                               {implantations.map((implantation) => (
                                 <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
@@ -209,7 +210,7 @@ const Administration: React.FC = () => {
             <h1 className='title_administration'>Actions</h1>
             <IonRow>
               <IonCol>
-                <IonButton className='button_admin' color="success" id="add_room_button">Ajouter un local</IonButton>
+                <IonButton className='button_admin' color="success" id="add_room_button"  onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>Ajouter un local</IonButton>
                 <IonModal id="example-modal" ref={modal} trigger="add_room_button">
                   <IonContent>
                     <IonToolbar color="warning">
@@ -218,7 +219,7 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitAddRoom(e, selectedImplantation, config)} id="form_add_room">
                         <IonList>
-                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                          <IonItem>
                             <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => { setSelectedImplantation(e.target.value); }}>
                               {implantations.map((implantation) => (
                                 <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
@@ -246,7 +247,7 @@ const Administration: React.FC = () => {
 
             <IonRow>
               <IonCol>
-                <IonButton className='button_admin' color="secondary" id="modify_room_button">Modifier un local</IonButton>
+                <IonButton className='button_admin' color="secondary" id="modify_room_button" onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>Modifier un local</IonButton>
                 <IonModal id="example-modal" ref={modal} trigger="modify_room_button">
                   <IonContent>
                     <IonToolbar color="warning">
@@ -255,7 +256,7 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitModifyRoom(e, selectedRoom, config)} id="form_modify_room">
                         <IonList>
-                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                          <IonItem>
                             <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
                               {implantations.map((implantation) => (
                                 <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
@@ -295,7 +296,7 @@ const Administration: React.FC = () => {
 
             <IonRow>
               <IonCol>
-                <IonButton className='button_admin' color="danger" id="delete_room_button">Supprimer un local</IonButton>
+                <IonButton className='button_admin' color="danger" id="delete_room_button"  onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>Supprimer un local</IonButton>
                 <IonModal id="example-modal" ref={modal} trigger="delete_room_button">
                   <IonContent>
                     <IonToolbar color="warning">
@@ -304,7 +305,7 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitDeleteRoom(e, selectedRoom, config)} id="form_delete_room">
                         <IonList>
-                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
+                          <IonItem>
                             <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
                               {implantations.map((implantation) => (
                                 <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
@@ -340,7 +341,7 @@ const Administration: React.FC = () => {
 
             <IonRow>
               <IonCol>
-                <IonButton className='button_admin' color="warning" id="unavailable_room_button">Rendre un local indisponible</IonButton>
+                <IonButton className='button_admin' color="warning" id="unavailable_room_button" onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>Rendre un local indisponible</IonButton>
                 <IonModal id="example-modal" ref={modal} trigger="unavailable_room_button">
                   <IonContent>
                     <IonToolbar color="warning">
@@ -349,8 +350,8 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitUnavailable(e, selectedImplantation, selectedRoom, config)} id="form_unavailable">
                         <IonList>
-                          <IonItem onClick={(e) => loadImplantations(setImplantations, setIsLoading, config)}>
-                            <IonSelect  placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
+                          <IonItem>
+                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantationToGetRooms(e, setSelectedImplantation, setRooms, setIsLoading, config)}>
                               {implantations.map((implantation) => (
                                 <IonSelectOption key={implantation["idIm"]} value={implantation["idIm"]}>
                                   {implantation["name"]}
@@ -443,7 +444,7 @@ const Administration: React.FC = () => {
 
           </div>
         )}
-        
+
 
 
 
@@ -453,7 +454,7 @@ const Administration: React.FC = () => {
             <h1 className='title_administration'>Actions</h1>
             <IonRow>
               <IonCol>
-                <IonButton className='button_admin' color="success" id="add_admin_button">Ajouter un administrateur</IonButton>
+                <IonButton className='button_admin' color="success" id="add_admin_button" onClick={(e) => getUsersThatAreNotAdmin(setUsers, setIsLoading, config)}>Ajouter un administrateur</IonButton>
                 <IonModal id="example-modal" ref={modal} trigger="add_admin_button">
                   <IonContent>
                     <IonToolbar color="warning">
@@ -462,7 +463,7 @@ const Administration: React.FC = () => {
                     <div>
                       <form onSubmit={(e) => handleSubmitAddAdmin(e, selectedUser, config)} id="form_add_admin">
                         <IonList>
-                          <IonItem onClick={(e) => getUsersThatAreNotAdmin(setUsers, setIsLoading, config)}>
+                          <IonItem>
                             <IonSelect placeholder="Choisissez un utilisateur :" onIonChange={(e) => { setSelectedUser(e.target.value); }}>
                               {users.map((user) => (
                                 <IonSelectOption key={user["idTe"]} value={user["idTe"]}>
@@ -486,29 +487,35 @@ const Administration: React.FC = () => {
 
             <IonRow>
               <IonCol>
-                <IonButton className='button_admin' color="danger" id="delete_admin_button">Supprimer un administrateur</IonButton>
+                <IonButton className='button_admin' color="danger" id="delete_admin_button" onClick={(e) => getUsersThatAreAdmin(setUsers, setIsLoading, config)}>Supprimer un administrateur</IonButton>
                 <IonModal id="example-modal" ref={modal} trigger="delete_admin_button">
                   <IonContent>
                     <IonToolbar color="warning">
                       <IonTitle>Suppression administrateur</IonTitle>
                     </IonToolbar>
-                    <div>
-                      <form onSubmit={(e) => handleSubmitDeleteAdmin(e, selectedUser, config)} id="form_delete_admin">
-                        <IonList>
-                          <IonItem onClick={(e) => getUsersThatAreAdmin(setUsers, setIsLoading, config)}>
-                            <IonSelect placeholder="Choisissez un utilisateur :" onIonChange={(e) => { setSelectedUser(e.target.value); }}>
-                              {users.map((user) => (
-                                <IonSelectOption key={user["idTe"]} value={user["idTe"]}>
-                                  {user["name"]}
-                                </IonSelectOption>
-                              ))}
-                            </IonSelect>
-                          </IonItem>
-                        </IonList>
-                        <br />
-                        <input id="submit_button_delete_admin" type="submit" value="Supprimer" />
-                      </form>
-                    </div>
+                    {
+                      users.length === 1 ? <p id='failed_response'>Vous ne pouvez pas supprimer un administrateur car il doit en rester au minimum 1<br /><br />Le dernier administrateur est : <br />{users[0]["name"]}</p>
+                        :
+                        <div>
+                          <form onSubmit={(e) => handleSubmitDeleteAdmin(e, selectedUser, config)} id="form_delete_admin">
+                            <IonList>
+                              <IonItem>
+
+                                <IonSelect placeholder="Choisissez un utilisateur :" onIonChange={(e) => { setSelectedUser(e.target.value); }}>
+                                  {users.map((user) => (
+                                    <IonSelectOption key={user["idTe"]} value={user["idTe"]}>
+                                      {user["name"]}
+                                    </IonSelectOption>
+                                  ))}
+                                </IonSelect>
+                              </IonItem>
+                            </IonList>
+                            <br />
+                            <input id="submit_button_delete_admin" type="submit" value="Supprimer" />
+
+                          </form>
+                        </div>
+                    }
                     <div id="callback_message_delete_admin">
                     </div>
                   </IonContent>
@@ -517,7 +524,7 @@ const Administration: React.FC = () => {
             </IonRow>
 
 
- 
+
           </div>
         )}
 
