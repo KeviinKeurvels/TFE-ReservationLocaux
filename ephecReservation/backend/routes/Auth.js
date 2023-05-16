@@ -59,7 +59,6 @@ router.post('/login', async (req, res) => {
         } else {
           const user = results[0];
           const isAdmin = user.isAdmin;
-
           bcrypt.compare(password, user.password, (error, isMatch) => {
             if (error) {
               reject(error);
@@ -67,7 +66,6 @@ router.post('/login', async (req, res) => {
               reject(new Error('Incorrect password'));
             } else {
               const token = uuidv4();
-
               // Store token in the user's database record
               db.query(
                 'UPDATE teacher SET session_id = ? WHERE upn = ?',
