@@ -437,7 +437,7 @@ const Schedule: React.FC = () => {
                 <label htmlFor="day">Jour de la réservation:</label>
                 <input type="date" id="day" name="day" defaultValue={dateChosen} onChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear, currentDate)} min={String(formatDate(currentDate))} max={String(currentYear + 2)} required /><br />
                 <label htmlFor="activate_reccurence">Activer la récurrence</label>
-                <input onChange={changeDisplayReccurenceField} type="checkbox" id="activate_reccurence" name="activate_reccurence" value="activate_reccurence" />
+                <input onChange={changeDisplayReccurenceField} checked={isRecurrent} type="checkbox" id="activate_reccurence" name="activate_reccurence" value="activate_reccurence" />
 
                 <p id="recurrence_field" hidden={!isRecurrent}>Mettre la réservation le même jour pendant <input type="number" id="recurrence" name="recurrence" disabled={!isRecurrent} defaultValue="1" min="2" max="52" required /> semaines d'affilées</p><br />
 
