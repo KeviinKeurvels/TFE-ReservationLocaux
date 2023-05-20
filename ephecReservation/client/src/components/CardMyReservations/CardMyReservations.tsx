@@ -102,9 +102,9 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
     }
   }
 
-  const fetchReservationForOneDay = async (dateChosen: any, nameRoom: any) => {
+  const fetchReservationForOneDay = async (dateChosen: any, idRo: any) => {
     return fetch(
-      config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + nameRoom + "'",
+      config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + idRo + "'",
       {
         headers: {
           'Authorization': `${localStorage.getItem('token')}`,
@@ -120,7 +120,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
 
 
 
-  function handleSubmit(event: any, idReservation: any, dayReservation: any, NameRoom: any) {
+  function handleSubmit(event: any, idReservation: any, dayReservation: any, idRo: any) {
     //cache le bouton
     let submitButton = document.getElementById("submit_button_modify");
     if (submitButton !== undefined && submitButton !== null) {
@@ -138,7 +138,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
       responseBox.innerHTML = "<p id='waiting_response'>Veuillez patienter, nous traitons votre requête.</p>";
     }
 
-    fetchReservationForOneDay(dayReservation, NameRoom)
+    fetchReservationForOneDay(dayReservation, idRo)
       .then(reservationsForOneDayAndOneRoom => {
         if (reservationsForOneDayAndOneRoom !== "InternalError") {
           //s'il n'y a pas eu de problème pour lors du fetch
@@ -233,7 +233,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
                       <IonTitle>Réservation {reservation["roomName"]}</IonTitle>
                     </IonToolbar>
                     <div id="form_reservation_modify">
-                      <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'], reservation["roomName"])}>
+                      <form onSubmit={(e) => handleSubmit(e, reservation['idRe'], reservation['day'], reservation["idRo"])}>
                         <label htmlFor="day">Jour de la réservation:</label>
                         <input type="date" id="day" name="day" defaultValue={reservation.day} disabled required /><br />
                         <table>
