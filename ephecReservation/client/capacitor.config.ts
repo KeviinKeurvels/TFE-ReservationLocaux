@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'be.getgive.ereserve',
   appName: 'E-Reserve',
   webDir: 'build',
   bundledWebRuntime: false

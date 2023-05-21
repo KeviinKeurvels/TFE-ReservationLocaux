@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from 'uuid';
 import db from "../database.js";
+import fetch from 'node-fetch';
 //functions
 import { generateToken, hashToken } from '../functions/Token.js'
 
@@ -29,24 +30,48 @@ router.get("/checkAdmin", (req, res) => {
   })
 })
 
-// to add an user
-router.post("/registration", (req, res) => {
-  // generate a 10-character token
+// To add a user
+router.post("/registration", async (req, res) => {
+  const recaptchaResponse = req.body.recaptchaResponse;
+  // Verify reCAPTCHA response
+  try {
+    const verificationUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    const secretKey = '6LeKvCgmAAAAAC74RqgKMsynbnMxi5pVayVerd1s';
+
+    const response = await fetch(verificationUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `secret=${secretKey}&response=${recaptchaResponse}`
+    });
+
+    const data = await response.json();
+    const { success } = data;
+
+
+    if (!success) {
+      return res.status(400).json({ error: 'reCAPTCHA verification failed.' });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Failed to verify reCAPTCHA.' });
+
+  }
+
+  // Generate a 10-character token
   const token = generateToken(10);
-  // hash it with bcrypt
+  // Hash it with bcrypt
   const hashedToken = hashToken(token, 10);
 
-  // Début de la transaction
+  // Begin the transaction
   db.beginTransaction(err => {
     if (err) {
       return res.json(err);
     }
 
-    // Requête INSERT INTO pour la table connection
+    // Query INSERT INTO for the connection table
     const query1 = `INSERT INTO connection (upn, password) VALUES (?, ?)`;
     const values1 = [req.body.upn, req.body.password];
 
-    // Exécution de la première requête
+    // Execute the first query
     db.query(query1, values1, (err, result1) => {
       if (err) {
         db.rollback(() => {
@@ -54,11 +79,11 @@ router.post("/registration", (req, res) => {
         });
       }
 
-      // Requête INSERT INTO pour la table teacher
+      // Query INSERT INTO for the teacher table
       const query2 = `INSERT INTO teacher (name, upn, session_id, isAdmin) VALUES (?, ?, ?, ?)`;
       const values2 = [req.body.name, req.body.upn, hashedToken, 0];
 
-      // Exécution de la deuxième requête
+      // Execute the second query
       db.query(query2, values2, (err, result2) => {
         if (err) {
           db.rollback(() => {
@@ -66,7 +91,7 @@ router.post("/registration", (req, res) => {
           });
         }
 
-        // Validation de la transaction
+        // Commit the transaction
         db.commit(err => {
           if (err) {
             db.rollback(() => {
@@ -85,6 +110,29 @@ router.post("/registration", (req, res) => {
 
 //to log in an user
 router.post('/login', async (req, res) => {
+  const recaptchaResponse = req.body.recaptchaResponse;
+  // Verify reCAPTCHA response
+  try {
+    const verificationUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    const secretKey = '6LeKvCgmAAAAAC74RqgKMsynbnMxi5pVayVerd1s';
+
+    const response = await fetch(verificationUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `secret=${secretKey}&response=${recaptchaResponse}`
+    });
+
+    const data = await response.json();
+    const { success } = data;
+
+
+    if (!success) {
+      return res.status(400).json({ error: 'reCAPTCHA verification failed.' });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Failed to verify reCAPTCHA.' });
+
+  }
   const { upn, password } = req.body;
   try {
     const user = await new Promise((resolve, reject) => {
