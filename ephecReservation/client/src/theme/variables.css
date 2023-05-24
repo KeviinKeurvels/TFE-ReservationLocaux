@@ -239,11 +239,8 @@ ion-modal{
   --height: 60%;
 }
 
-
-
-#top_bar {
-  --background: orange;
-  color: white;
+ion-title{
+  text-align: center;
 }
 
 form{
@@ -253,6 +250,13 @@ form{
   justify-content: center;
   align-items: center;
 }
+
+
+#top_bar {
+  --background: orange;
+  color: white;
+}
+
 
 .refresh_button{
   display: flex;
@@ -264,4 +268,35 @@ form{
   text-align: center;
   font-weight: bold;
   font-size: 120% !important;
+}
+
+@media (min-width: 600px) {
+  /*Pour les écrans larges */
+  ion-button, ion-item, ion-title, form p, h2, h3, h4, ion-segment-button{
+    font-size: 100% !important;
+  }
+  h1{
+    font-size: 150% !important;
+  }
+  body{
+    font-size: 175%;
+  }
+  ion-card-content, ion-card-subtitle{
+    font-size: 200% !important; 
+  }
+  ion-card-title{
+    font-size: 250%;
+  }
+
+  .captcha, ion-tab-button{
+    transform: scale(1.5) !important;
+  }
+  .alert-wrapper{
+    transform: scale(1.2) !important;
+  }
+
+  ion-button, ion-segment{
+    min-height: 50px;
+  }
+
 }

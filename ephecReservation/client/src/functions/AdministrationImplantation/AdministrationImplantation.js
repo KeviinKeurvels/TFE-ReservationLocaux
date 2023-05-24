@@ -408,29 +408,26 @@ export async function handleSubmitDeleteImplantation(event, roomsIds, selectedIm
 
 
 //////////////////////////////////////SELECTION DANS UN FORM
-export const handleChangeImplantation = (event, setSelectedImplantation, setImplantations, setIsLoading, config) => {
+export const handleChangeImplantation = (event, setSelectedImplantation, implantations, setIsLoading) => {
               const selectedImplantation = event.target.value;
               setSelectedImplantation(selectedImplantation);
-              const controller = new AbortController();
-              const signal = controller.signal;
               setIsLoading(true);
-              const headers = {
-                            'Authorization': `${localStorage.getItem('token')}`,
-                            'upn': `${localStorage.getItem('upn')}`
-              };
-              fetch(`${config.API_URL}/implantations`, { headers, signal })
-                            .then((res) => res.json())
-                            .then((res) => {
-                                          setImplantations(res);
-                                          setIsLoading(false);
-                            })
-                            .catch((err) => {
-                                          if (err.name !== "AbortError") {
-                                                        console.log(err)
+              let formModify = document.getElementById("form_modify_implantation");
+              implantations.map((implantation) => {
+                            if (implantation["idIm"] === event.target.value) {
+                                          if (formModify !== null && formModify !== undefined) {
+                                                        const nameInput = formModify.elements.namedItem("name");
+                                                        if (nameInput !== null) {
+                                                                      nameInput.value = implantation["name"];
+                                                        }
                                           }
-                            });
+                            }
+              });
 
-              return () => controller.abort();
+
+
+              setIsLoading(false);
+
 
 };
 

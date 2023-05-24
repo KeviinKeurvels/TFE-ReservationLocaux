@@ -140,7 +140,7 @@ const Administration: React.FC = () => {
                       <form onSubmit={(e) => handleSubmitModifyImplantation(e, selectedImplantation, config)} id="form_modify_implantation">
                         <IonList>
                           <IonItem>
-                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, setImplantations, setIsLoading, config)}>
+                            <IonSelect placeholder="Choisissez une implantation :" onIonChange={(e) => handleChangeImplantation(e, setSelectedImplantation, implantations, setIsLoading)}>
                               {isLoading ?
                                 <IonSelectOption className='form_text' disabled>Chargement en cours...</IonSelectOption>
                                 :
@@ -188,7 +188,7 @@ const Administration: React.FC = () => {
                           </IonItem>
                         </IonList>
                         <br />
-                        <p className='form_text'>Tous les locaux et toutes leurs réservations vont être automatiquement supprimées</p>
+                        <p className='form_text'>Tous les locaux et toutes leurs réservations vont être automatiquement supprimés</p>
                         <input id="submit_button_delete_implantation" type="submit" value="Supprimer" />
                       </form>
                     </div>
@@ -412,6 +412,7 @@ const Administration: React.FC = () => {
                   </IonSelect>
                 </IonItem>
               </IonList>
+              <br />
               <IonList className='fields_statistics'>
                 <IonItem>
                   <IonSelect placeholder="Choisissez un local :" onIonChange={(e) => { loadDataGraph(e.target.value, setIsLoading, config, setDataGraph, setSelectedRoomForGraph, formatDate(dateForGraph)) }}>

@@ -8,6 +8,17 @@
     margin-left:10%!important;
 }
 
+#date_picker_div{
+  display: flex; 
+  justify-content: center;
+  width: 100%;
+}
+
+#date_picker{
+  min-width: max-content;
+  min-width: 100%;
+}
+
 #days_impossible{
   color: red;
   text-align: center;
