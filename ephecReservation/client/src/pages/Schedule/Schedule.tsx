@@ -14,7 +14,7 @@ import './Schedule.css';
 import CardSchedule from '../../components/CardSchedule/CardSchedule';
 import ModalLoading from '../../components/ModalLoading/ModalLoading';
 import config from "../../config.json";
-import { getInformationFromADate, formatDate, allFieldsChecked} from '../../functions/Schedule/Schedule';
+import { getInformationFromADate, formatDate, allFieldsChecked } from '../../functions/Schedule/Schedule';
 import { hasSqlInjection } from '../../functions/Login/Login'
 //hook pour check si il y a des données
 import useAuthentication from "../../hooks/checkAuthentication";
@@ -163,38 +163,38 @@ const Schedule: React.FC = () => {
       }
     })();
   }, [dateChosen]);
-  
-  
+
+
 
   async function knowIfThereReservationForFuturDay(dayReservation: any, hourBegin: any, hourEnd: any) {
-        /*
-    *   Récupère les informations d'une réservation pour un jour
-    */
-        try {
-          setIsLoading(true);
-          const response = await fetch(config.API_URL + "/reservations/byRoomAndDayAndHours?day='" + dayReservation + "'&room='" + params["idRoom"] + "'&hourBegin='"+hourBegin+"'&hourEnd='"+hourEnd+"'", {
-            headers: {
-              'Authorization': `${localStorage.getItem('token')}`,
-              'upn': `${localStorage.getItem('upn')}`
-            }
-          });
-          const data = await response.json();
-          setIsLoading(false);
-          if(data.length === 0){
-            return true;
-          }
-          else{
-            return false;
-          }
-          
-          
-        } catch (error) {
-          console.log(error);
-          return false;
+    /*
+*   Récupère les informations d'une réservation pour un jour
+*/
+    try {
+      setIsLoading(true);
+      const response = await fetch(config.API_URL + "/reservations/byRoomAndDayAndHours?day='" + dayReservation + "'&room='" + params["idRoom"] + "'&hourBegin='" + hourBegin + "'&hourEnd='" + hourEnd + "'", {
+        headers: {
+          'Authorization': `${localStorage.getItem('token')}`,
+          'upn': `${localStorage.getItem('upn')}`
         }
-      
+      });
+      const data = await response.json();
+      setIsLoading(false);
+      if (data.length === 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
+
+
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+
   }
-  
+
 
   async function handleSubmit(event: any) {
     //cache le bouton
@@ -222,7 +222,7 @@ const Schedule: React.FC = () => {
       //on set up pour la récurrence
       let weekRecurrent = isRecurrent ? Number(event.target.recurrence.value) : 1;
       let dateReservation = new Date(event.target.day.value);
-      let dayReservation=formatDate(dateReservation);
+      let dayReservation = formatDate(dateReservation);
       //d'office vrai car est déjà passée dans allFieldsChecked donc c'est bon
       let noReservationThatDay = true;
       for (let i = 0; i < weekRecurrent; i++) {
@@ -382,16 +382,18 @@ const Schedule: React.FC = () => {
       <IonContent fullscreen>
         <ModalLoading isLoading={isLoading} />
         <h1 id="title_schedule">Choisissez un jour</h1>
-        <IonItem>
-          <IonDatetime
-            presentation="date"
-            value={dateChosen}
-            min={String(formatDate(currentDate))}
-            max={String(currentYear + 2)}
-            onIonChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear, formatDate(currentDate))}
-          >
-          </IonDatetime>
-        </IonItem>
+        <div id="date_picker_div">
+            <IonDatetime
+              presentation="date"
+              value={dateChosen}
+              min={String(formatDate(currentDate))}
+              max={String(currentYear + 2)}
+              onIonChange={(e) => getInformationFromADate(e.target.value, setDateChosen, currentYear, formatDate(currentDate))}
+              id="date_picker"
+            >
+            </IonDatetime>
+
+        </div>
         <IonRow>
           <IonCol>
             <h1 id="title_schedule">Réservations</h1>
@@ -439,7 +441,7 @@ const Schedule: React.FC = () => {
                 <label htmlFor="activate_reccurence">Activer la récurrence</label>
                 <input onChange={changeDisplayReccurenceField} checked={isRecurrent} type="checkbox" id="activate_reccurence" name="activate_reccurence" value="activate_reccurence" />
 
-                <p id="recurrence_field" hidden={!isRecurrent}>Mettre la réservation le même jour pendant <input type="number" id="recurrence" name="recurrence" disabled={!isRecurrent} defaultValue="1" min="2" max="52" required /> semaines d'affilées</p><br />
+                <p id="recurrence_field" hidden={!isRecurrent}>Mettre la réservation le même jour pendant <input type="number" id="recurrence" name="recurrence" disabled={!isRecurrent} defaultValue="2" min="2" max="52" required /> semaines d'affilées</p><br />
 
                 <table>
                   <tbody>

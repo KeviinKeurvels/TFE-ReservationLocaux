@@ -222,8 +222,8 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
               ?
               <IonRow>
                 <IonCol>
-                  <IonButton color="success" className="button_card" id={`modify_button_for_${reservation['idRe']}`}>📝 Modifier</IonButton>
-                  <IonModal id="example-modal" ref={modal} trigger={`modify_button_for_${reservation['idRe']}`}>
+                  <IonButton color="success" className="button_card" id={`modify_button_for_${reservation['idRe']}_schedule`}>📝 Modifier</IonButton>
+                  <IonModal id="example-modal" ref={modal} trigger={`modify_button_for_${reservation['idRe']}_schedule`}>
                     <IonContent>
                       <IonToolbar color="warning">
                         <IonTitle>Réservation {NameRoom}</IonTitle>
@@ -255,8 +255,8 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
                 </IonCol>
 
                 <IonCol>
-                  <IonButton color="danger" className="button_card" id={`delete_button_for_${reservation['idRe']}`}>❌Supprimer</IonButton>
-                  <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for_${reservation['idRe']}`}>
+                  <IonButton color="danger" className="button_card" id={`delete_button_for_${reservation['idRe']}_schedule`}>❌Supprimer</IonButton>
+                  <IonModal id="delete_reservationmodal" ref={modal} trigger={`delete_button_for_${reservation['idRe']}_schedule`}>
                     <div className='wrapper' id={`modal_for_${reservation['idRe']}`}>
                       <h4>Voulez-vous vraiment supprimer définitivement la réservation "{reservation["title"]}"
                         de {reservation["hourBegin"]} à {reservation["hourEnd"]} ? </h4>
@@ -273,7 +273,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
 
       ))
         :
-        <h3 className='no_reservation'>Aucune réservations pour le moment.</h3>
+        <h3 className='no_reservation'>Aucune réservation pour le moment.</h3>
       }
     </div>
   );

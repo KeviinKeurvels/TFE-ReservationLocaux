@@ -24,7 +24,6 @@ const Regisration: React.FC = () => {
       let formRegistration = document.getElementById('form_registration');
       let responseBox = document.getElementById('callback_message_registration');
       let registration_button = document.getElementById('registration_button');
-      let buttonReturn = document.getElementById('return_menu');
 
       if (registration_button !== undefined && registration_button !== null) {
         registration_button.style.display = 'none';
@@ -84,14 +83,14 @@ const Regisration: React.FC = () => {
               recaptchaResponse: token, // Pass the reCAPTCHA token to the server
             }),
           });
-
+          console.log(response.status)
           if (response.status === 200) {
             if (formRegistration !== undefined && formRegistration !== null) {
               formRegistration.innerHTML = '';
             }
-            if (responseBox !== undefined && responseBox !== null && buttonReturn !== undefined && buttonReturn !== null) {
-              responseBox.innerHTML = `<p id='success_response'>Vous êtes inscrit !</p><br />`;
-              buttonReturn.style.display = 'block';
+            let responseBoxSuccess=document.getElementById("callback_message_success_registration");
+            if (responseBoxSuccess !== undefined && responseBoxSuccess !== null) {
+              responseBoxSuccess.innerHTML = `<p id='success_response'>Vous êtes inscrit !</p><br />`;
             }
           } else {
             if (response.status === 400) {
@@ -148,7 +147,7 @@ const Regisration: React.FC = () => {
           <p id="password_policy">Ceci est le code qui vous est donné par l'EPHEC pour vous permettre de vous inscrire sur l'application</p>
           <IonItem>
             <IonLabel position="floating">Nom d'utilisateur</IonLabel>
-            <IonInput type="text" min="2" max="100" name='name' required value={"eeeeeee"}></IonInput>
+            <IonInput type="text" min="2" max="100" name='name' required></IonInput>
           </IonItem>
           <IonItem>
             <IonLabel position="floating">E-mail</IonLabel>
@@ -158,7 +157,7 @@ const Regisration: React.FC = () => {
             <IonLabel position="floating">Mot de passe</IonLabel>
             <IonInput type="password" name='password1' min="5" max="20" required></IonInput>
           </IonItem>
-          <p id="password_policy">Le mot de passe doit, au minimum, avoir: <br /> 8 caractères<br />1 minuscule<br />1 majuscule<br /> 1 chiffre<br />un caractère alpha non numériques</p>
+          <p id="password_policy">Le mot de passe doit, au minimum, avoir: <br /> 8 caractères<br />1 minuscule<br />1 majuscule<br /> 1 chiffre<br />un caractère alpha non-numérique</p>
           <IonItem>
             <IonLabel position="floating" >Confirmer le mot de passe</IonLabel>
             <IonInput type="password" name='password2' min="8" max="20" required></IonInput>
@@ -168,6 +167,7 @@ const Regisration: React.FC = () => {
           <div id="callback_message_registration"></div>
           <IonButton id='registration_button' color="success" fill='outline' type="submit">S'inscrire</IonButton>
         </form>
+        <div id="callback_message_success_registration"></div>
 
       </IonContent>
     </IonPage>
