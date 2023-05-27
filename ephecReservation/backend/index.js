@@ -13,8 +13,8 @@ import isAuthenticatedAsAdmin from './middlewares/authMiddlewareAdmin.js';
 const app = express()
 app.use(cors()); // Enable CORS for all origins
 
-app.listen(8800, ()=>{
-              console.log('Server ready on port 8800')
+app.listen(443, ()=>{
+              console.log('Server ready on port 443')
 })
 
 app.use(express.json())
