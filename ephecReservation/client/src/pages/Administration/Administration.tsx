@@ -315,6 +315,7 @@ const Administration: React.FC = () => {
                             </IonSelect>
                           </IonItem>
                         </IonList>
+                        <br />
                         <IonList>
                           <IonItem>
                             <IonSelect placeholder="Choisissez un local :" onIonChange={(e) => setSelectedRoom(e.target.value)}>
