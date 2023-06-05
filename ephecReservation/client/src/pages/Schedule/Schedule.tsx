@@ -87,7 +87,7 @@ const Schedule: React.FC = () => {
     *   check si l'utilisateur est administrateur
     */
     setIsLoading(true);
-    fetch(config.API_URL + "/auth/checkAdmin?upn='" + localStorage.getItem('upn') + "'", {
+    fetch(config.API_URL + "/auth/checkAdmin?upn=" + localStorage.getItem('upn'), {
       headers: {
         'Authorization': `${localStorage.getItem('token')}`,
         'upn': `${localStorage.getItem('upn')}`
@@ -133,7 +133,7 @@ const Schedule: React.FC = () => {
     */
     try {
       setIsLoading(true);
-      const response = await fetch(config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + params["idRoom"] + "'", {
+      const response = await fetch(config.API_URL + "/reservations/byRoomAndDay?day=" + dateChosen + "&room=" + params["idRoom"], {
         headers: {
           'Authorization': `${localStorage.getItem('token')}`,
           'upn': `${localStorage.getItem('upn')}`
@@ -172,7 +172,7 @@ const Schedule: React.FC = () => {
 */
     try {
       setIsLoading(true);
-      const response = await fetch(config.API_URL + "/reservations/byRoomAndDayAndHours?day='" + dayReservation + "'&room='" + params["idRoom"] + "'&hourBegin='" + hourBegin + "'&hourEnd='" + hourEnd + "'", {
+      const response = await fetch(config.API_URL + "/reservations/byRoomAndDayAndHours?day=" + dayReservation + "&room=" + params["idRoom"] + "&hourBegin=" + hourBegin + "&hourEnd=" + hourEnd , {
         headers: {
           'Authorization': `${localStorage.getItem('token')}`,
           'upn': `${localStorage.getItem('upn')}`

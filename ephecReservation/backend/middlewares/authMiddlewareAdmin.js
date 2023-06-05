@@ -6,7 +6,7 @@ const isAuthenticated = async (req, res, next) => {
 
   try {
     // Retrieve user from the database
-    db.query(`SELECT * FROM teacher WHERE upn='${upn}'`, (error, results) => {
+    db.query('SELECT * FROM teacher WHERE upn = ?', [upn], (error, results) => {
       if (error) {
         console.error(error);
         return res.status(500).send("Erreur lors de l'authentification");
@@ -23,7 +23,7 @@ const isAuthenticated = async (req, res, next) => {
         return res.status(401).json({ message: 'Session invalide' });
       }
 
-      // Check if session id matches
+      // Check if user is admin
       if (!user.isAdmin) {
         return res.status(401).json({ message: 'Utilisateur non admin' });
       }

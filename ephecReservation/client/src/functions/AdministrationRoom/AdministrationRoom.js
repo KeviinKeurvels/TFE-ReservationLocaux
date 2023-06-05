@@ -566,7 +566,7 @@ export function loadDataGraph(idRoom, setIsLoading, config, setDataGraph, setSel
                             const controller = new AbortController();
                             const signal = controller.signal;
                             setIsLoading(true);
-                            fetch(config.API_URL + "/admin/getCountReservation?idRo=" + idRoom + "&date='" + dateForGraph + "'", {
+                            fetch(config.API_URL + "/admin/getCountReservation?idRo=" + idRoom + "&date=" + dateForGraph, {
                                           signal,
                                           headers: {
                                                         'Authorization': `${localStorage.getItem('token')}`,
@@ -620,7 +620,7 @@ export const handleChangeImplantationToGetRooms = (event, setSelectedImplantatio
                             'Authorization': `${localStorage.getItem('token')}`,
                             'upn': `${localStorage.getItem('upn')}`
               };
-              fetch(`${config.API_URL}/rooms/byImplantation?implantation='${selectedImplantation}'`, { headers, signal })
+              fetch(`${config.API_URL}/rooms/byImplantation?implantation=${selectedImplantation}`, { headers, signal })
                             .then((res) => res.json())
                             .then((res) => {
                                           

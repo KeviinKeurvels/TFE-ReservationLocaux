@@ -30,7 +30,7 @@ const CardSchedule = ({ Reservations, NameRoom, fetchAllReservationForOneDay }: 
     /*
     *   check si l'utilisateur est administrateur
     */
-    fetch(config.API_URL + "/auth/checkAdmin?upn='" + localStorage.getItem('upn') + "'", {
+    fetch(config.API_URL + "/auth/checkAdmin?upn=" + localStorage.getItem('upn'), {
       headers: {
         'Authorization': `${localStorage.getItem('token')}`,
         'upn': `${localStorage.getItem('upn')}`
