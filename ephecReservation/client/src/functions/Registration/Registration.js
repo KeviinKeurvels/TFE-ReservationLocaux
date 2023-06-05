@@ -54,7 +54,7 @@ export async function allFieldsChecked(form) {
 
 export async function checkIfThereIsAlreadyThisUpn(upn) {
     //cette fonction va regarder s'il l'email est déjà enregistrée
-    return fetch(config.API_URL + "/auth/checkUpn?upn='" + upn + "'")
+    return fetch(config.API_URL + "/auth/checkUpn?upn=" + upn)
         .then((res) => res.json())
         .then((res) => {
             return res.length > 0;

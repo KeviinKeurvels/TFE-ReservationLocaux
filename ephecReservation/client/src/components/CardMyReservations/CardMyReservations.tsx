@@ -104,7 +104,7 @@ const CardMyReservation = ({ Reservations, fetchAllReservationForOneUser }: Card
 
   const fetchReservationForOneDay = async (dateChosen: any, idRo: any) => {
     return fetch(
-      config.API_URL + "/reservations/byRoomAndDay?day='" + dateChosen + "'&room='" + idRo + "'",
+      config.API_URL + "/reservations/byRoomAndDay?day=" + dateChosen + "&room=" + idRo,
       {
         headers: {
           'Authorization': `${localStorage.getItem('token')}`,

@@ -31,14 +31,15 @@ router.get("/byRoomAndDay", (req, res) => {
     inner join reservation on teacher.idTe=reservation.idTe 
     inner join room on room.idRo=reservation.idRo 
 
-    WHERE day=${day} AND room.idRo=${room} ORDER BY hourBegin
+    WHERE day=? AND room.idRo=? ORDER BY hourBegin
   `;
 
-  db.query(query, (err, data) => {
-    if (err) return res.json(err)
-    return res.json(data)
-  })
-})
+  db.query(query, [day, room], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
 
 //to get all reservations for a day
 router.get("/byRoomAndDayAndHours", (req, res) => {
@@ -49,22 +50,22 @@ router.get("/byRoomAndDayAndHours", (req, res) => {
   const query = `
     SELECT idRe
     FROM reservation 
-    inner join room on room.idRo=reservation.idRo 
-    WHERE day=${day} AND room.idRo=${room} AND hourBegin<=${hourEnd} AND hourEnd >=${hourBegin}
+    INNER JOIN room ON room.idRo = reservation.idRo 
+    WHERE day = ? AND room.idRo = ? AND hourBegin <= ? AND hourEnd >= ?
   `;
 
-  db.query(query, (err, data) => {
+  db.query(query, [day, room, hourEnd, hourBegin], (err, data) => {
     if (err) return res.json(err)
     return res.json(data)
   })
 })
 
 
-//to get information about one reservations
+// to get information about one reservation
 router.get("/getOne", (req, res) => {
   let id = req.query.id;
-  const query = "SELECT * FROM reservation WHERE idRe=" + id;
-  db.query(query, (err, data) => {
+  const query = "SELECT * FROM reservation WHERE idRe = ?";
+  db.query(query, [id], (err, data) => {
     if (err) return res.json(err)
     return res.json(data)
   })
@@ -73,84 +74,108 @@ router.get("/getOne", (req, res) => {
 // to add a new reservation
 router.post("/", (req, res) => {
   const query = `
-              INSERT INTO reservation (title,day,hourBegin,hourEnd,idTe, idRo, room_unavailable) 
-              VALUES("${req.body.title}",'${req.body.day}','${req.body.hourBegin}','${req.body.hourEnd}',
-              (SELECT idTe FROM teacher WHERE upn='${req.body.upn}'),${req.body.idRo}, 0)
-              `;
+    INSERT INTO reservation (title, day, hourBegin, hourEnd, idTe, idRo, room_unavailable) 
+    VALUES (?, ?, ?, ?, (SELECT idTe FROM teacher WHERE upn = ?), ?, 0)
+  `;
 
-  db.query(query, (err, data) => {
+  const values = [
+    req.body.title,
+    req.body.day,
+    req.body.hourBegin,
+    req.body.hourEnd,
+    req.body.upn,
+    req.body.idRo
+  ];
+
+  db.query(query, values, (err, data) => {
     if (err) return res.json(err)
     return res.json("Reservation added successfully.")
   })
 })
 
-//to update a reservation
+// to update a reservation
 router.put("/updateOne", (req, res) => {
   const query = `
-              UPDATE reservation
-              SET title="${req.body.title}",day='${req.body.day}',hourBegin='${req.body.hourBegin}',
-              hourEnd='${req.body.hourEnd}'
-              WHERE idRe = ${req.body.idRe}
-              `;
+    UPDATE reservation
+    SET title = ?, day = ?, hourBegin = ?, hourEnd = ?
+    WHERE idRe = ?
+  `;
 
-  db.query(query, (err, data) => {
+  const values = [
+    req.body.title,
+    req.body.day,
+    req.body.hourBegin,
+    req.body.hourEnd,
+    req.body.idRe
+  ];
+
+  db.query(query, values, (err, data) => {
     if (err) return res.json(err)
     return res.json("Reservation updated successfully.")
   })
 })
 
-//to delete a reservation
+
+// to delete a reservation
 router.delete("/deleteOne", (req, res) => {
   const reservationId = req.body.id;
   const query = `
-              DELETE FROM reservation WHERE idRe = ${reservationId}
-              `;
+    DELETE FROM reservation WHERE idRe = ?
+  `;
 
-  db.query(query, (err, data) => {
+  db.query(query, [reservationId], (err, data) => {
     if (err) return res.json(err)
     return res.json("Reservation has been deleted successfully.")
   });
 });
 
-
-
 //////////////////FOR AN USER
-//to get all reservations for an user
+// to get all reservations for a user
 router.get("/forAnUser", (req, res) => {
   let upnTeacher = req.query.upnTeacher;
   const query = `
-  SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
-  TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName,
-   day, room.name as roomName, implantation.name as implantationName, room_unavailable, reservation.idRo as idRo,
-   isAnUnavailability
+    SELECT DISTINCT TIME_FORMAT(hourBegin, '%H:%i') as hourBegin,
+    TIME_FORMAT(hourEnd, '%H:%i') as hourEnd, reservation.idRe, title, teacher.name as teacherName,
+    day, room.name as roomName, implantation.name as implantationName, room_unavailable, reservation.idRo as idRo,
+    isAnUnavailability
 
-  FROM teacher  
-  inner join reservation on teacher.idTe=reservation.idTe 
-  inner join room on room.idRo=reservation.idRo 
-  inner join implantation on room.idIm=implantation.idIm
+    FROM teacher  
+    INNER JOIN reservation ON teacher.idTe = reservation.idTe 
+    INNER JOIN room ON room.idRo = reservation.idRo 
+    INNER JOIN implantation ON room.idIm = implantation.idIm
 
-  WHERE teacher.upn='${upnTeacher}' ORDER BY day, hourBegin, roomName
+    WHERE teacher.upn = ? ORDER BY day, hourBegin, roomName
   `;
-  db.query(query, (err, data) => {
+
+  db.query(query, [upnTeacher], (err, data) => {
     if (err) return res.json(err)
     return res.json(data)
   })
 })
 
 /////////////////FOR ADMINISTRATOR
-//to delete all reservations for a day and a period
+// to delete all reservations for a day and a period
 router.delete("/deleteAllReservationsForAPeriod", (req, res) => {
   const query = `
-  DELETE FROM reservation 
-  WHERE day = '${req.body.day}' 
-  AND ((hourBegin >= '${req.body.hourBegin}' AND hourBegin<'${req.body.hourEnd}') 
-  OR (hourEnd > '${req.body.hourBegin}' AND hourEnd<='${req.body.hourEnd}'));       
+    DELETE FROM reservation 
+    WHERE day = ? 
+    AND ((hourBegin >= ? AND hourBegin < ?) 
+    OR (hourEnd > ? AND hourEnd <= ?))
   `;
 
-  db.query(query, (err, data) => {
+  const values = [
+    req.body.day,
+    req.body.hourBegin,
+    req.body.hourEnd,
+    req.body.hourBegin,
+    req.body.hourEnd
+  ];
+
+  db.query(query, values, (err, data) => {
     if (err) return res.json(err)
     return res.json("Reservations have been deleted successfully.")
   });
 });
+
 
 export default router;

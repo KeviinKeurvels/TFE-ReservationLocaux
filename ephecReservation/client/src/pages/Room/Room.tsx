@@ -37,7 +37,7 @@ const Room: React.FC = () => {
       'upn': `${localStorage.getItem('upn')}`
     };
   
-    fetch(`${config.API_URL}/rooms/byImplantation?implantation='${implantation}'`, { headers, signal })
+    fetch(`${config.API_URL}/rooms/byImplantation?implantation=${implantation}`, { headers, signal })
       .then((res) => res.json())
       .then((res) => {
         setRooms(res);

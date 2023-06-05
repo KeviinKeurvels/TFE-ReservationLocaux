@@ -13,7 +13,7 @@ import { allFieldsChecked } from '../../functions/Login/Login'
 const Home: React.FC = () => {
   // Affiche le UPN de l'utilisateur
   const [upn, setUpn] = useState('py.gousenbourger@ephec.be');
-  const [password, setPassword] = useState("MyPassword1234");
+  const [password, setPassword] = useState("");
   //pour voir quand il va fetch les données
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();

@@ -13,22 +13,24 @@ router.use(express.json());
 //to check if the email already exists
 router.get("/checkUpn", (req, res) => {
   let upn = req.query.upn;
-  const query = `SELECT idTe FROM teacher WHERE upn=${upn}`
-  db.query(query, (err, data) => {
-    if (err) return res.json(err)
-    return res.json(data)
-  })
-})
+  const query = "SELECT idTe FROM teacher WHERE upn = ?";
+  db.query(query, [upn], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
 
 //to check if the user is admin
 router.get("/checkAdmin", (req, res) => {
   let upn = req.query.upn;
-  const query = `SELECT isAdmin = 1 AS isAdmin FROM teacher  WHERE upn = ${upn}`
-  db.query(query, (err, data) => {
-    if (err) return res.json(err)
-    return res.json(data)
-  })
-})
+  const query = "SELECT isAdmin = 1 AS isAdmin FROM teacher WHERE upn = ?";
+  db.query(query, [upn], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
 
 // To add a user
 router.post("/registration", async (req, res) => {
@@ -111,6 +113,7 @@ router.post("/registration", async (req, res) => {
 //to log in an user
 router.post('/login', async (req, res) => {
   const recaptchaResponse = req.body.recaptchaResponse;
+
   // Verify reCAPTCHA response
   try {
     const verificationUrl = 'https://www.google.com/recaptcha/api/siteverify';
@@ -125,21 +128,22 @@ router.post('/login', async (req, res) => {
     const data = await response.json();
     const { success } = data;
 
-
     if (!success) {
       return res.status(400).json({ error: 'reCAPTCHA verification failed.' });
     }
   } catch (error) {
     return res.status(500).json({ error: 'Failed to verify reCAPTCHA.' });
-
   }
+
   const { upn, password } = req.body;
   try {
     const user = await new Promise((resolve, reject) => {
-      db.query(`
-      SELECT teacher.upn, password, teacher.isAdmin 
-      FROM connection join teacher on connection.upn = teacher.upn
-      WHERE teacher.upn='${upn}'`, (error, results) => {
+      const query = `
+        SELECT teacher.upn, password, teacher.isAdmin 
+        FROM connection JOIN teacher ON connection.upn = teacher.upn
+        WHERE teacher.upn = ?`;
+
+      db.query(query, [upn], (error, results) => {
         if (error) {
           reject(error);
         } else if (results.length === 0) {
@@ -179,6 +183,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
 //to update the token of an user with a variable token
 router.put("/token", (req, res) => {
   // generate a 10-character token
@@ -186,14 +191,14 @@ router.put("/token", (req, res) => {
   // hash it with bcrypt
   const hashedToken = hashToken(token, 10);
   const query = `
-              UPDATE teacher
-              SET session_id="${hashedToken}"
-              WHERE upn = "${req.body.upn}"
-              `;
-  db.query(query, (err, data) => {
-    if (err) return res.json(err)
-    return res.json("Token updated successfully.")
-  })
-})
+    UPDATE teacher
+    SET session_id=?
+    WHERE upn = ?`;
+  db.query(query, [hashedToken, req.body.upn], (err, data) => {
+    if (err) return res.json(err);
+    return res.json("Token updated successfully.");
+  });
+});
+
 
 export default router;

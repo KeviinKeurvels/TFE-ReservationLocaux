@@ -6,35 +6,33 @@ const router = express.Router();
 router.use(express.json());
 
 
-//to get information about all rooms
-router.get("/byImplantation", (req,res)=>{
+// to get information about all rooms by implantation
+router.get("/byImplantation", (req, res) => {
               let implantation = req.query.implantation;
               const query = `
-              SELECT DISTINCT room.idRo, room.name, description
-
-              FROM ephecreservation.implantation  
-              inner join ephecreservation.room on room.idIm=implantation.idIm 
-              WHERE implantation.idIm=${implantation}
-
+                SELECT DISTINCT room.idRo, room.name, description
+                FROM ephecreservation.implantation
+                INNER JOIN ephecreservation.room ON room.idIm = implantation.idIm
+                WHERE implantation.idIm = ?
               `;
-              db.query(query,(err,data)=>{
-                            if(err) return res.json(err)
+
+              db.query(query, [implantation], (err, data) => {
+                            if (err) return res.json(err)
                             return res.json(data)
               })
 })
 
-//to get the name of a room
-router.get("/", (req,res)=>{
+// to get the name of a room
+router.get("/", (req, res) => {
               let idRo = req.query.idRo;
               const query = `
-              SELECT DISTINCT room.name
-
-              FROM ephecreservation.room  
-              WHERE room.idRo=${idRo}
-
+                SELECT DISTINCT room.name
+                FROM ephecreservation.room
+                WHERE room.idRo = ?
               `;
-              db.query(query,(err,data)=>{
-                            if(err) return res.json(err)
+
+              db.query(query, [idRo], (err, data) => {
+                            if (err) return res.json(err)
                             return res.json(data)
               })
 })

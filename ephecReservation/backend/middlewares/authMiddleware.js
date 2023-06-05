@@ -6,7 +6,7 @@ const isAuthenticated = async (req, res, next) => {
 
   try {
     // Retrieve user from the database
-    db.query(`SELECT * FROM teacher WHERE upn='${upn}'`, (error, results) => {
+    db.query('SELECT * FROM teacher WHERE upn = ?', [upn], (error, results) => {
       if (error) {
         console.error(error);
         return res.status(500).send("Erreur lors de l'authentification");
