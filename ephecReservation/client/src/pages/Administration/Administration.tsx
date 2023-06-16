@@ -438,7 +438,7 @@ const Administration: React.FC = () => {
 
                   </IonCol>
                 </IonRow>
-                <p className='form_text'>Seules les réservations antérieures à ajourd'hui sont visualisables.</p>
+                <p className='form_text'>Seules les réservations antérieures à aujourd'hui sont visualisables.</p>
 
               </div>
               <GraphRooms data={dataGraph} />
